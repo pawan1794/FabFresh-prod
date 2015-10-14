@@ -29,6 +29,7 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return User.objects.filter(id=self.request.user.id)
 
+
 class UserInfoViewSet(viewsets.ModelViewSet):
     serializer_class = UserInfoSerializer
     #queryset = UserInfo.objects.all()

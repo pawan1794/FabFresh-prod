@@ -46,6 +46,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -55,6 +56,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
 )
+
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 ROOT_URLCONF = 'FabFresh.urls'
 AUTHENTICATION_BACKENDS = (
@@ -149,6 +153,7 @@ SOCIAL_AUTH_FACEBOOK_SECRET = '8cf52470a9df4b75bb36729377872dfc'
 
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
+'''
 #For Heroku
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
@@ -169,3 +174,4 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+'''
