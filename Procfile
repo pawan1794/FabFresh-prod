@@ -1,1 +1,1 @@
-web: gunicorn FabFreshLogin.wsgi --log-file -
+web: gunicorn FabFresh.wsgi --log-file -
