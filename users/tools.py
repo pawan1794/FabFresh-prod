@@ -33,7 +33,7 @@ def get_access_token(user):
 
     token = generate_token()
     refresh_token = generate_token()
-    oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS = 10000000000000
+    #oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS = 10000000000000
     expires = now() + timedelta(seconds=oauth2_settings.
                                 ACCESS_TOKEN_EXPIRE_SECONDS)
     scope = "read write"

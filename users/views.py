@@ -54,7 +54,9 @@ def register_by_access_token(request, backend):
     email = request.GET.get('email')
 
     try:
+
         user = request.backend.do_auth(token)
+
         if user:
             login(request, user)
             if email:
@@ -63,9 +65,9 @@ def register_by_access_token(request, backend):
                 u.save()
             return get_access_token(user)
         else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response("asd",status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
-        return HttpResponse("Error",status=status.H)
+        return HttpResponse(e,status=status.HTTP_404_NOT_FOUND)
 
 
 class CheckAvailabilityApiView(APIView):
