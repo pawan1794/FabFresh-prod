@@ -40,9 +40,9 @@ class PlaceOrderShipment(APIView):
         #add data to json
         payload['order_details']['order_id'] = unicode(order.id)
 
-        url = 'http://128.199.241.199/v1/orders/ship'
-        #url = 'http://roadrunnr.in/v1/orders/ship'
-        headers = {'Authorization' : 'Bearer 4RaJAmtaOEfHJu1dkyWIUVGmckcTizGXyyxPFIgy' , 'Content-Type' : 'application/json'}
+        #url = 'http://128.199.241.199/v1/orders/ship'
+        url = 'http://roadrunnr.in/v1/orders/ship'
+        headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
         try:
             print(json.dumps(payload))
             r = requests.post(url, json.dumps(payload), headers=headers)
