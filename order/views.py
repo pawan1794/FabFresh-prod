@@ -51,7 +51,8 @@ class PlaceOrderShipment(APIView):
                 response = Response(r.json(),status=status.HTTP_200_OK)
                 order.roadrunner_order_id = r.json()['order_id']
                 order.delivery_id = r.json()['delivery_id']
-                #enter special instructions details and oeder_type for order before save
+
+                #enter special instructions details and order_type for order before save
                 order.save()
                 return response
             else:
