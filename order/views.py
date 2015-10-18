@@ -33,9 +33,11 @@ class PlaceOrderShipment(APIView):
         payload = request.data
         #payload['order_details']['order_id']
         #createOrder(payload['order_details'])
-
-        order = orders(owner=self.request.user)
-        order.save()
+        try:
+            order = orders(owner=self.request.user)
+            order.save()
+        except Exception as e:
+            return Response(e,status=status.HTTP_404_NOT_FOUND)
 
         #add data to json
         payload['order_details']['order_id'] = unicode(order.id)
