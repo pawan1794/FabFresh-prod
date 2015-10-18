@@ -23,8 +23,10 @@ class ordersViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         print(self.request.user)
-        serializer.save(owner=self.request.user)
-
+        try:
+            serializer.save(owner=self.request.user)
+        except Exception as e:
+            return Response(e,status=status.HTTP_404_NOT_FOUND)
 
 class PlaceOrderShipment(APIView):
     permission_classes = [permissions.AllowAny]
