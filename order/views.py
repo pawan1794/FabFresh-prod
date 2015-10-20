@@ -123,6 +123,12 @@ class setPrice(APIView):
             order.update(weight = float(payload['weight']))
             order.update(status = payload['status'])
 
+
+            a = str(order[0].created_at_time)
+            print a
+            a = a[-10:]
+            order.update(p_id = a[:4])
+
             if order[0].order_type == 1:
                 order.update(amount = 30)
             else:

@@ -24,6 +24,7 @@ class orders(models.Model):
     status = models.CharField(max_length=1, choices=STATUS, default='1')
     order_type = models.CharField(max_length=10,blank=True,null=True)
     special_instructions = models.CharField(max_length=200,blank=True,null=True)
+    p_id = models.IntegerField(blank=True,null=True)
 
     delivery_id = models.CharField(max_length=200, blank=True, null=True)
     roadrunner_order_id = models.CharField(max_length=200, blank=True, null=True)
