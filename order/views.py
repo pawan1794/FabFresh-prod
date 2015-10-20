@@ -6,8 +6,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 import requests
 import json
-from django.views.decorators.csrf import csrf_exempt
-import os
 
 class ordersViewSet(viewsets.ModelViewSet):
     serializer_class = ordersSerializer
@@ -55,14 +53,34 @@ class PlaceOrderShipment(APIView):
                 response = Response(r.json(),status=status.HTTP_200_OK)
                 order.roadrunner_order_id = r.json()['order_id']
                 order.delivery_id = r.json()['delivery_id']
-
-                #enter special instructions details and order_type for order before save
                 order.save()
                 return response
             else:
                 return Response(r.json(),status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response( e,status=status.HTTP_404_NOT_FOUND)
+
+class OrderCancel(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def post(self, request, *args, **kw):
+        payload = request.data
+
+        try:
+            order = orders.objects.filter(id = payload['id'])
+        except Exception as e:
+            return Response(e,status=status.HTTP_204_NO_CONTENT)
+
+        url = "http://roadrunnr.in/v1/orders/"+ payload['id'] +"/cancel"
+        headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
+        try:
+            r = requests.get(url , headers=headers)
+            if r.status_code == 200:
+                order.update(status = 0)
+                return Response("Order Cancelled" , status=status.HTTP_200_OK)
+            else:
+                return Response("Order Not Cancelled" , status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return Response(e , status = status.HTTP_404_NOT_FOUND)
 
 
 class Track(APIView):
@@ -75,34 +93,13 @@ class Track(APIView):
         j = "asd"
         for i in roadrunner_order_id:
             j = str(i.id)
+            print(j)
         url = "http://128.199.241.199/v1/orders/" + j + "/track"
         headers = {'Authorization' : 'Bearer 4RaJAmtaOEfHJu1dkyWIUVGmckcTizGXyyxPFIgy' , 'Content-Type' : 'application/json'}
         r = requests.get(url, headers=headers)
         if r.status_code == 200:
             response = Response(r.json(), status=status.HTTP_200_OK)
             return response
-
-class CancelOrder(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-    def post(self, request, *args, **kw ):
-        payload = request.data
-        url = 'http://roadrunnr.in/v1/orders/ship'
-        headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
-        try:
-            print(json.dumps(payload))
-            r = requests.post(url, json.dumps(payload), headers=headers)
-            if r.status_code == 200:
-                response = Response(r.json(),status=status.HTTP_200_OK)
-                order.roadrunner_order_id = r.json()['order_id']
-                order.delivery_id = r.json()['delivery_id']
-
-                #enter special instructions details and order_type for order before save
-                order.save()
-                return response
-            else:
-                return Response(r.json(),status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            return Response( e,status=status.HTTP_404_NOT_FOUND)
 
 
 class setPrice(APIView):
@@ -117,7 +114,7 @@ class setPrice(APIView):
         try:
             payload = request.data
 
-            #order = orders.objects.filter(id = request.data.id)
+            order = orders.objects.filter(id = request.data.id)
             print order
             print payload
         except Exception as e:
@@ -132,20 +129,4 @@ class CallBackApiView(APIView):
         payload = request.data
         print(payload)
         return Response("Success", status=status.HTTP_200_OK)
-
-
-class SpecialInstructions(APIView):
-    permission_classes = [permissions.AllowAny]
-
-    def get(self,request):
-        payload = {
-            "instructions":{
-                "1" : "Wassup",
-                "2" : "Go",
-                "3" : "Beep",
-                "4":"youself"
-            }
-        }
-        return Response(payload, status=status.HTTP_200_OK)
-
 
