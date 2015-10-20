@@ -33,20 +33,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="settings.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/FabFresh/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="133" column="29" selection-start-line="133" selection-start-column="29" selection-end-line="133" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.933126">
+              <caret line="138" column="63" selection-start-line="138" selection-start-column="63" selection-end-line="138" selection-end-column="63" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="01-django_eb.config" pinned="false" current-in-tab="true">
+      <file leaf-file-name="01-django_eb.config" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.ebextensions/01-django_eb.config">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.41990668">
+            <state vertical-scroll-proportion="0.0">
               <caret line="18" column="16" selection-start-line="18" selection-start-column="16" selection-end-line="18" selection-end-column="16" />
               <folding />
             </state>
@@ -82,8 +82,8 @@
         <option value="$PROJECT_DIR$/users/views.py" />
         <option value="$PROJECT_DIR$/order/models.py" />
         <option value="$PROJECT_DIR$/order/serializers.py" />
-        <option value="$PROJECT_DIR$/FabFresh/settings.py" />
         <option value="$PROJECT_DIR$/.ebextensions/01-django_eb.config" />
+        <option value="$PROJECT_DIR$/FabFresh/settings.py" />
       </list>
     </option>
   </component>
@@ -688,18 +688,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/FabFresh/settings.py">
+    <entry file="file://$PROJECT_DIR$/.ebextensions/01-django_eb.config">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="133" column="29" selection-start-line="133" selection-start-column="29" selection-end-line="133" selection-end-column="29" />
+          <caret line="18" column="16" selection-start-line="18" selection-start-column="16" selection-end-line="18" selection-end-column="16" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.ebextensions/01-django_eb.config">
+    <entry file="file://$PROJECT_DIR$/FabFresh/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.41990668">
-          <caret line="18" column="16" selection-start-line="18" selection-start-column="16" selection-end-line="18" selection-end-column="16" />
+        <state vertical-scroll-proportion="0.933126">
+          <caret line="138" column="63" selection-start-line="138" selection-start-column="63" selection-end-line="138" selection-end-column="63" />
           <folding />
         </state>
       </provider>
