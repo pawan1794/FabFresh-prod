@@ -5,20 +5,21 @@ from oauth2_provider.models import AccessToken, Application, RefreshToken
 from django.utils.timezone import now, timedelta
 
 
-def get_token_json(access_token):
+def get_token_json(access_token, a):
     token = {
         'access_token': access_token.token,
         'expires_in': oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS,
         'token_type': 'Bearer',
         'refresh_token': access_token.refresh_token.token,
-        'scope': access_token.scope
+        'scope': access_token.scope,
+        'user_status' : a
     }
     return JsonResponse(token)
 
 
 def get_access_token(user):
     app = Application.objects.get(name="FabFresh")
-
+    a = 1
     try:
         old_access_token = AccessToken.objects.get(
             user=user, application=app)
@@ -28,6 +29,7 @@ def get_access_token(user):
     except:
         pass
     else:
+        a = 0
         old_access_token.delete()
         old_refresh_token.delete()
 
@@ -51,4 +53,4 @@ def get_access_token(user):
                token=refresh_token,
                access_token=access_token)
 
-    return get_token_json(access_token)
+    return get_token_json(access_token,a)
