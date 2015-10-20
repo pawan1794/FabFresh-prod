@@ -87,7 +87,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'FabFresh.wsgi.application'
 
 
-# Database
 
 
 if 'RDS_HOSTNAME' in os.environ:

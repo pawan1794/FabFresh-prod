@@ -23,4 +23,3 @@ class orders(models.Model):
     delivery_id = models.CharField(max_length=200, blank=True, null=True)
     roadrunner_order_id = models.CharField(max_length=200, blank=True, null=True)
 
-

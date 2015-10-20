@@ -82,6 +82,26 @@ class Track(APIView):
             response = Response(r.json(), status=status.HTTP_200_OK)
             return response
 
+class setPrice(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return orders.objects.all()
+        else:
+            return orders.objects.filter(owner=self.request.user.id)
+
+    def post(self, request, *args,**kw):
+        try:
+            payload = request.data
+
+            #order = orders.objects.filter(id = request.data.id)
+            print order
+            print payload
+        except Exception as e:
+            return Response(e ,status = status.HTTP_404_NOT_FOUND)
+        return Response("Success" , status = status.HTTP_200_OK)
+
+
 class CallBackApiView(APIView):
     permission_classes = [permissions.AllowAny]
 
@@ -104,3 +124,5 @@ class SpecialInstructions(APIView):
             }
         }
         return Response(payload, status=status.HTTP_200_OK)
+
+

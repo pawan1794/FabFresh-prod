@@ -14,4 +14,5 @@ urlpatterns = patterns(
         views.register_by_access_token),
     url(r'^availability/$',
         views.CheckAvailabilityApiView.as_view(), name='my_rest_view'),
+
 )

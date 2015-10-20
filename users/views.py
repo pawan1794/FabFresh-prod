@@ -54,7 +54,6 @@ def register_by_access_token(request, backend):
     email = request.GET.get('email')
 
     try:
-
         user = request.backend.do_auth(token)
 
         if user:
@@ -81,3 +80,4 @@ class CheckAvailabilityApiView(APIView):
         r = requests.post(url, json.dumps(payload), headers=headers)
         response = Response(r.json(),status=status.HTTP_200_OK)
         return response
+
