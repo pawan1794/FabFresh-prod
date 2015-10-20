@@ -62,6 +62,7 @@ class PlaceOrderShipment(APIView):
 
 class OrderCancel(APIView):
     permission_classes = [permissions.IsAuthenticated]
+
     def post(self, request, *args, **kw):
         payload = request.data
 
