@@ -2,11 +2,15 @@ from django.db import models
 
 # Create your models here.
 STATUS = (
+    ('0' , 'cancelled')
     ('1', 'created'),
     ('2', 'wash'),
     ('3', 'dry'),
     ('4', 'iron'),
     ('5','complete')
+    ('6','')
+    ('7','')
+    ('8','')
 )
 
 class orders(models.Model):

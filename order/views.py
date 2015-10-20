@@ -82,6 +82,29 @@ class Track(APIView):
             response = Response(r.json(), status=status.HTTP_200_OK)
             return response
 
+class CancelOrder(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def post(self, request, *args, **kw ):
+        payload = request.data
+        url = 'http://roadrunnr.in/v1/orders/ship'
+        headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
+        try:
+            print(json.dumps(payload))
+            r = requests.post(url, json.dumps(payload), headers=headers)
+            if r.status_code == 200:
+                response = Response(r.json(),status=status.HTTP_200_OK)
+                order.roadrunner_order_id = r.json()['order_id']
+                order.delivery_id = r.json()['delivery_id']
+
+                #enter special instructions details and order_type for order before save
+                order.save()
+                return response
+            else:
+                return Response(r.json(),status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response( e,status=status.HTTP_404_NOT_FOUND)
+
+
 class setPrice(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get_queryset(self):
