@@ -10,6 +10,6 @@ class UserInfo(models.Model):
     addressLatitude = models.FloatField(blank=True,null=True)
     addressLogitude = models.FloatField(blank=True,null=True)
     created_at_time = models.DateTimeField(auto_now_add=True, blank=True)
-    flag = models.BooleanField(default=0,blank=True)
+    flag = models.BooleanField(default=0, blank=True)
 
 

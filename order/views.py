@@ -117,10 +117,11 @@ class setPrice(APIView):
             try:
                 order = orders.objects.filter(id = payload['id'])
             except Exception as e:
-                return Response(e , status = status.HTTP_404_NOT_FOUND)
+                return Response(e ,status = status.HTTP_404_NOT_FOUND)
 
             order.update(quantity = payload['quantity'])
             order.update(weight = float(payload['weight']))
+            order.update(status = payload['status'])
 
             if order[0].order_type == 1:
                 order.update(amount = 30)
