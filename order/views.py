@@ -113,10 +113,18 @@ class setPrice(APIView):
     def post(self, request, *args,**kw):
         try:
             payload = request.data
+            try:
+                order = orders.objects.filter(id = payload['id'])
+            except Exception as e:
+                return Response(e , status = status.HTTP_404_NOT_FOUND)
 
-            order = orders.objects.filter(id = request.data.id)
-            print order
-            print payload
+            order.update(quantity = payload['quantity'])
+            order.update(weight = float(payload['weight']))
+
+            if order[0].order_type == 1:
+                order.update(amount = 30)
+            else:
+                order.update(amount = 40)
         except Exception as e:
             return Response(e ,status = status.HTTP_404_NOT_FOUND)
         return Response("Success" , status = status.HTTP_200_OK)
@@ -129,4 +137,5 @@ class CallBackApiView(APIView):
         payload = request.data
         print(payload)
         return Response("Success", status=status.HTTP_200_OK)
+
 
