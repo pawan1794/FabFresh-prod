@@ -139,3 +139,22 @@ class CallBackApiView(APIView):
         return Response("Success", status=status.HTTP_200_OK)
 
 
+class AboutUs(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self , request, *args , **kw):
+        payload = {
+            "About Us" : "FabFresh Is KickAss"
+        }
+        return Response(payload , status=status.HTTP_200_OK)
+
+
+class Faq(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, *args, **kw):
+        payload = {
+            "What is this" : "Fab FResh it is",
+            "Another question" : "New Ans"
+        }
+        return  Response(payload, status=status.HTTP_200_OK)

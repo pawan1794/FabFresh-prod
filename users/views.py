@@ -34,7 +34,6 @@ class UserInfoViewSet(viewsets.ModelViewSet):
     serializer_class = UserInfoSerializer
     #queryset = UserInfo.objects.all()
     permission_classes = [permissions.IsAuthenticated,TokenHasReadWriteScope]
-
     def get_queryset(self):
         if self.request.user.is_superuser:
             return UserInfo.objects.all()

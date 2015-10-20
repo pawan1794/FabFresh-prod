@@ -7,10 +7,10 @@ STATUS = (
     ('2', 'wash'),
     ('3', 'dry'),
     ('4', 'iron'),
-    ('5','complete'),
-    ('6',''),
-    ('7',''),
-    ('8','')
+    ('5','processComplete'),
+    ('6','shipRequest'),
+    ('7','shipped'),
+    ('8','completed')
 )
 
 class orders(models.Model):
