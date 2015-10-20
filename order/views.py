@@ -127,6 +127,9 @@ class setPrice(APIView):
             a = str(order[0].created_at_time)
             print a
             a = a[-10:]
+            if int(a[1]) == 0:
+                a = int(a) + 1000
+                a = str(a)
             order.update(p_id = a[:4])
 
             if order[0].order_type == 1:
