@@ -17,6 +17,8 @@ from .models import UserInfo
 from rest_framework import viewsets
 from .permission import IsOwnerOrReadOnly
 
+
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -47,7 +49,6 @@ class UserInfoViewSet(viewsets.ModelViewSet):
 
 @psa('social:complete')
 def register_by_access_token(request, backend):
-
     token = request.GET.get('access_token')
     number = request.GET.get('number')
     email = request.GET.get('email')
@@ -57,11 +58,15 @@ def register_by_access_token(request, backend):
 
         if user:
             login(request, user)
+            u = User.objects.get(id = user.id)
             if email:
-                u = User.objects.get(id = user.id)
                 u.email = email
                 u.save()
-            return get_access_token(user)
+            if number:
+                userInfo = UserInfo(owner=u)
+                userInfo.phone = number
+                userInfo.save()
+            return get_access_token(user,number)
         else:
             return Response("asd",status=status.HTTP_404_NOT_FOUND)
     except Exception as e:

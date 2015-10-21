@@ -3,9 +3,13 @@ from oauthlib.common import generate_token
 from django.http import JsonResponse
 from oauth2_provider.models import AccessToken, Application, RefreshToken
 from django.utils.timezone import now, timedelta
+import requests
 
+def message(phone ,message):
+    url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
+    r1 = requests.get(url1)
 
-def get_token_json(access_token, a):
+def get_token_json(access_token, a, number,user):
     token = {
         'access_token': access_token.token,
         'expires_in': oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS,
@@ -14,10 +18,14 @@ def get_token_json(access_token, a):
         'scope': access_token.scope,
         'user_status' : a
     }
+    if a == 1:
+        text_message = "Dear "+ str(user) +" , Thanks for Signing up with FabFresh . More Time to You ! from now on . "
+        message(number,text_message)
+
     return JsonResponse(token)
 
 
-def get_access_token(user):
+def get_access_token(user,number):
     app = Application.objects.get(name="FabFresh")
     a = 1
     try:
@@ -29,6 +37,7 @@ def get_access_token(user):
     except:
         pass
     else:
+        #set 0 if exsisting user
         a = 0
         old_access_token.delete()
         old_refresh_token.delete()
@@ -53,4 +62,4 @@ def get_access_token(user):
                token=refresh_token,
                access_token=access_token)
 
-    return get_token_json(access_token,a)
+    return get_token_json(access_token,a,number,user)

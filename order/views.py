@@ -12,7 +12,6 @@ from users.models import UserInfo
 def message(self, phone ,message):
     url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
     r1 = requests.get(url1)
-    print("asd")
 
 
 
@@ -56,8 +55,6 @@ class PlaceOrderShipment(APIView):
             flag = 1
             order = orders.objects.filter(id = payload['order_details']['order_id'])
         userInfo = UserInfo.objects.filter(owner = self.request.user)
-        text_message = "Dear "+payload['pickup']['user']['name']+". Your Order No :"+payload['order_details']['order_id']+" with FabFresh is placed Successfully. Our Logistics Partner will be there to pick up your clothes . Pickup boy details will be sent to you shortly. You can track your order in the app now !"
-        message(self,userInfo[0].phone,text_message)
 
         #url = 'http://128.199.241.199/v1/orders/ship'
         url = 'http://roadrunnr.in/v1/orders/ship'
@@ -72,6 +69,8 @@ class PlaceOrderShipment(APIView):
                     order.roadrunner_order_id = r.json()['order_id']
                     order.delivery_id = r.json()['delivery_id']
                     order.save()
+                    text_message = "Dear "+payload['pickup']['user']['name']+". Your Order No :"+payload['order_details']['order_id']+" with FabFresh is placed Successfully. Our Logistics Partner will be there to pick up your clothes . Pickup boy details will be sent to you shortly. You can track your order in the app now !"
+                    message(self,userInfo[0].phone,text_message)
                 return response
             else:
                 order.delete()
