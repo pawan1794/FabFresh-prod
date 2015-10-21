@@ -30,19 +30,21 @@ class PlaceOrderShipment(APIView):
     permission_classes = [permissions.AllowAny]
     http_method_names = ['get', 'put', 'head' ,'patch','post']
     def post(self,request, *args, **kw):
+        flag = 0
         payload = request.data
-        #payload['order_details']['order_id']
-        #createOrder(payload['order_details'])
-        try:
-            order = orders(owner=self.request.user)
-            order.special_instructions = payload['special_instructions']
-            order.order_type = payload['order_type']
-            order.save()
-        except Exception as e:
-            return Response(e,status=status.HTTP_404_NOT_FOUND)
-
-        #add data to json
-        payload['order_details']['order_id'] = unicode(order.id)
+        print type(payload['order_details']['order_id'])
+        if int(payload['order_details']['order_id']) is 0:
+            try:
+                order = orders(owner=self.request.user)
+                order.special_instructions = payload['special_instructions']
+                order.order_type = payload['order_type']
+                order.save()
+                payload['order_details']['order_id'] = unicode(order.id)
+            except Exception as e:
+                return Response(e,status=status.HTTP_404_NOT_FOUND)
+        else:
+            flag = 1
+            order = orders.objects.filter(id = payload['order_details']['order_id'])
 
         #url = 'http://128.199.241.199/v1/orders/ship'
         url = 'http://roadrunnr.in/v1/orders/ship'
@@ -53,9 +55,10 @@ class PlaceOrderShipment(APIView):
 
             if r.status_code == 200:
                 response = Response(r.json(),status=status.HTTP_200_OK)
-                order.roadrunner_order_id = r.json()['order_id']
-                order.delivery_id = r.json()['delivery_id']
-                order.save()
+                if flag == 0:
+                    order.roadrunner_order_id = r.json()['order_id']
+                    order.delivery_id = r.json()['delivery_id']
+                    order.save()
                 return response
             else:
                 return Response(r.json(),status=status.HTTP_404_NOT_FOUND)
