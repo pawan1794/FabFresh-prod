@@ -71,6 +71,9 @@ class PlaceOrderShipment(APIView):
                     order.save()
                     text_message = "Dear "+payload['pickup']['user']['name']+". Your Order No :"+payload['order_details']['order_id']+" with FabFresh is placed Successfully. Our Logistics Partner will be there to pick up your clothes . Pickup boy details will be sent to you shortly. You can track your order in the app now !"
                     message(self,userInfo[0].phone,text_message)
+                if flag == 1:
+                    text_message = "Dear "+payload['drop']['user']['name']+". Your Order No :"+payload['order_details']['order_id']+"  is on its way. Delivery Boy details will be sent to you shortly. Once again , Thanks for using FabFresh. Please provide your feedback in the app . Have a Wonderful day ! "
+                    message(self,userInfo[0].phone,text_message)
                 return response
             else:
                 order.delete()
