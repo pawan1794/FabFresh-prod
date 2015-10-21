@@ -1,3 +1,4 @@
+
 from rest_framework import viewsets,permissions,status
 from .serializers import ordersSerializer
 from order.models import orders
@@ -158,7 +159,7 @@ class setPrice(APIView):
             order.update(status = payload['status'])
 
             a = str(order[0].created_at_time)
-            print a
+
             a = a[-10:]
             if int(a[1]) == 0:
                 a = int(a) + 1000
