@@ -19,7 +19,7 @@ class ordersViewSet(viewsets.ModelViewSet):
     serializer_class = ordersSerializer
     queryset = orders.objects.all()
     #permission_classes = [permissions.IsAuthenticated,TokenHasReadWriteScope]
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         if self.request.user.is_superuser:
@@ -33,6 +33,17 @@ class ordersViewSet(viewsets.ModelViewSet):
             serializer.save(owner=self.request.user)
         except Exception as e:
             return Response(e,status=status.HTTP_404_NOT_FOUND)
+
+    def update(self, request, *args, **kwargs):
+        for i in request.data:
+            if str(i) == "status":
+                order = orders.objects.filter(id = kwargs['pk'])
+                userInfo = UserInfo.objects.filter(owner = self.request.user)
+                if int(request.data['status']) is 6 :
+                    text_message = "Dear "+ str(self.request.user) +" , Your Order is packed and Ready for Delivery . Please Select Deliver Now in the app to get it at your doorstep. "
+                    message(self,userInfo[0].phone, text_message)
+
+        return super(ordersViewSet, self).update(request, *args, **kwargs)
 
 class PlaceOrderShipment(APIView):
     permission_classes = [permissions.AllowAny]
@@ -146,7 +157,6 @@ class setPrice(APIView):
             order.update(weight = float(payload['weight']))
             order.update(status = payload['status'])
 
-
             a = str(order[0].created_at_time)
             print a
             a = a[-10:]
@@ -159,6 +169,11 @@ class setPrice(APIView):
                 order.update(amount = 30)
             else:
                 order.update(amount = 40)
+
+            userInfo = UserInfo.objects.filter(owner = self.request.user)
+            text_message = "Dear "+ str(self.request.user) +" , Your Order No : "+ str(payload['id']) +". Number of Clothes : "+ str(order[0].quantity) +" , Weight : "+ str(order[0].weight) +" KG , Price : "+ str(order[0].amount) +" .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
+            message(self,userInfo[0].phone, text_message)
+
         except Exception as e:
             return Response(e ,status = status.HTTP_404_NOT_FOUND)
         return Response("Success" , status = status.HTTP_200_OK)
