@@ -6,6 +6,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 import requests
 import json
+from users.models import UserInfo
+
+
+def message(self, phone ,message):
+    url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
+    r1 = requests.get(url1)
+    print("asd")
+
+
 
 class ordersViewSet(viewsets.ModelViewSet):
     serializer_class = ordersSerializer
@@ -32,6 +41,7 @@ class PlaceOrderShipment(APIView):
     def post(self,request, *args, **kw):
         flag = 0
         payload = request.data
+
         print type(payload['order_details']['order_id'])
         if int(payload['order_details']['order_id']) is 0:
             try:
@@ -45,6 +55,9 @@ class PlaceOrderShipment(APIView):
         else:
             flag = 1
             order = orders.objects.filter(id = payload['order_details']['order_id'])
+        userInfo = UserInfo.objects.filter(owner = self.request.user)
+        text_message = "Dear "+payload['pickup']['user']['name']+". Your Order No :"+payload['order_details']['order_id']+" with FabFresh is placed Successfully. Our Logistics Partner will be there to pick up your clothes . Pickup boy details will be sent to you shortly. You can track your order in the app now !"
+        message(self,userInfo[0].phone,text_message)
 
         #url = 'http://128.199.241.199/v1/orders/ship'
         url = 'http://roadrunnr.in/v1/orders/ship'
@@ -61,9 +74,12 @@ class PlaceOrderShipment(APIView):
                     order.save()
                 return response
             else:
+                order.delete()
                 return Response(r.json(),status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response( e,status=status.HTTP_404_NOT_FOUND)
+
+
 
 class OrderCancel(APIView):
     permission_classes = [permissions.IsAuthenticated]
