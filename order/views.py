@@ -35,6 +35,8 @@ class PlaceOrderShipment(APIView):
         #createOrder(payload['order_details'])
         try:
             order = orders(owner=self.request.user)
+            order.special_instructions = payload['special_instructions']
+            order.order_type = payload['order_type']
             order.save()
         except Exception as e:
             return Response(e,status=status.HTTP_404_NOT_FOUND)
