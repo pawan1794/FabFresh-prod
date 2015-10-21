@@ -179,13 +179,15 @@ class setPrice(APIView):
                 order.update(amount = 30)
             else:
                 order.update(amount = 40)
+
+            userInfo = UserInfo.objects.filter(owner = self.request.user)
+            text_message = "Dear "+ str(self.request.user) +" , Your Order No : "+ str(payload['id']) +". Number of Clothes : "+ str(order[0].quantity) +" , Weight : "+ str(order[0].weight) +" KG , Price : "+ str(order[0].amount) +" .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
+            message(self,userInfo[0].phone, text_message)
+
         except Exception as e:
             return Response(e ,status = status.HTTP_404_NOT_FOUND)
         return Response("Success" , status = status.HTTP_200_OK)
 
-            #userInfo = UserInfo.objects.filter(owner = self.request.user)
-            #text_message = "Dear "+ str(self.request.user) +" , Your Order No : "+ str(payload['id']) +". Number of Clothes : "+ str(order[0].quantity) +" , Weight : "+ str(order[0].weight) +" KG , Price : "+ str(order[0].amount) +" .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
-            #message(self,userInfo[0].phone, text_message)
 
 
 class CallBackApiView(APIView):
