@@ -19,7 +19,6 @@ def message(self, phone ,message):
 class ordersViewSet(viewsets.ModelViewSet):
     serializer_class = ordersSerializer
     queryset = orders.objects.all()
-    #permission_classes = [permissions.IsAuthenticated,TokenHasReadWriteScope]
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
@@ -35,7 +34,7 @@ class ordersViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response(e,status=status.HTTP_404_NOT_FOUND)
 
-    def update(self, request, *args, **kwargs):
+    '''def update(self, request, *args, **kwargs):
         for i in request.data:
             if str(i) == "status":
                 order = orders.objects.filter(id = kwargs['pk'])
@@ -45,7 +44,7 @@ class ordersViewSet(viewsets.ModelViewSet):
                     message(self,userInfo[0].phone, text_message)
 
         return super(ordersViewSet, self).update(request, *args, **kwargs)
-
+     '''
 class PlaceOrderShipment(APIView):
     permission_classes = [permissions.AllowAny]
     http_method_names = ['get', 'put', 'head' ,'patch','post']
@@ -68,12 +67,11 @@ class PlaceOrderShipment(APIView):
             order = orders.objects.filter(id = payload['order_details']['order_id'])
 
         userInfo = UserInfo.objects.filter(owner = self.request.user)
-
+        print(userInfo[0].phone)
         #url = 'http://128.199.241.199/v1/orders/ship'
         url = 'http://roadrunnr.in/v1/orders/ship'
-        headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
+        headers = {'Authorization' : 'Bearer aHQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
         try:
-            print(json.dumps(payload))
             r = requests.post(url, json.dumps(payload), headers=headers)
 
             if r.status_code == 200:
