@@ -81,11 +81,12 @@ class PlaceOrderShipment(APIView):
                     order.roadrunner_order_id = r.json()['order_id']
                     order.delivery_id = r.json()['delivery_id']
                     order.save()
-                    text_message = "Dear "+payload['pickup']['user']['name']+". Your Order No :"+payload['order_details']['order_id']+" with FabFresh is placed Successfully. Our Logistics Partner will be there to pick up your clothes . Pickup boy details will be sent to you shortly. You can track your order in the app now !"
-                    message(self,userInfo[0].phone,text_message)
+                    #text_message = "Dear "+payload['pickup']['user']['name']+". Your Order No :"+payload['order_details']['order_id']+" with FabFresh is placed Successfully. Our Logistics Partner will be there to pick up your clothes . Pickup boy details will be sent to you shortly. You can track your order in the app now !"
+                    #message(self,userInfo[0].phone,text_message)
                 if flag == 1:
-                    text_message = "Dear "+payload['drop']['user']['name']+". Your Order No :"+payload['order_details']['order_id']+"  is on its way. Delivery Boy details will be sent to you shortly. Once again , Thanks for using FabFresh. Please provide your feedback in the app . Have a Wonderful day ! "
-                    message(self,userInfo[0].phone,text_message)
+                    pass
+                    #text_message = "Dear "+payload['drop']['user']['name']+". Your Order No :"+payload['order_details']['order_id']+"  is on its way. Delivery Boy details will be sent to you shortly. Once again , Thanks for using FabFresh. Please provide your feedback in the app . Have a Wonderful day ! "
+                    #message(self,userInfo[0].phone,text_message)
                 return response
             else:
                 order.delete()
@@ -181,8 +182,8 @@ class setPrice(APIView):
                 order.update(amount = 40)
 
             userInfo = UserInfo.objects.filter(owner = self.request.user)
-            text_message = "Dear "+ str(self.request.user) +" , Your Order No : "+ str(payload['id']) +". Number of Clothes : "+ str(order[0].quantity) +" , Weight : "+ str(order[0].weight) +" KG , Price : "+ str(order[0].amount) +" .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
-            message(self,userInfo[0].phone, text_message)
+            #text_message = "Dear "+ str(self.request.user) +" , Your Order No : "+ str(payload['id']) +". Number of Clothes : "+ str(order[0].quantity) +" , Weight : "+ str(order[0].weight) +" KG , Price : "+ str(order[0].amount) +" .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
+            #message(self,userInfo[0].phone, text_message)
 
         except Exception as e:
             return Response(e ,status = status.HTTP_404_NOT_FOUND)
