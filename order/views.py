@@ -66,6 +66,7 @@ class PlaceOrderShipment(APIView):
         else:
             flag = 1
             order = orders.objects.filter(id = payload['order_details']['order_id'])
+
         userInfo = UserInfo.objects.filter(owner = self.request.user)
 
         #url = 'http://128.199.241.199/v1/orders/ship'
@@ -82,7 +83,7 @@ class PlaceOrderShipment(APIView):
                     order.delivery_id = r.json()['delivery_id']
                     order.save()
                     text_message = "Dear "+payload['pickup']['user']['name']+". Your Order No :"+payload['order_details']['order_id']+" with FabFresh is placed Successfully. Our Logistics Partner will be there to pick up your clothes . Pickup boy details will be sent to you shortly. You can track your order in the app now !"
-                    message(self,userInfo[0].phone,text_message)
+                    #message(self,userInfo[0].phone,text_message)
                 if flag == 1:
                     pass
                     text_message = "Dear "+payload['drop']['user']['name']+". Your Order No :"+payload['order_details']['order_id']+"  is on its way. Delivery Boy details will be sent to you shortly. Once again , Thanks for using FabFresh. Please provide your feedback in the app . Have a Wonderful day ! "
