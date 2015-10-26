@@ -25,10 +25,9 @@ class ordersViewSet(viewsets.ModelViewSet):
         if self.request.user.is_superuser:
             return orders.objects.all()
         else:
-            return orders.objects.filter(owner = self.request.user.id)
+            return orders.objects.filter(owner = self.request.user)
 
     def perform_create(self, serializer):
-        print(self.request.user)
         try:
             serializer.save(owner=self.request.user)
         except Exception as e:
@@ -44,7 +43,7 @@ class ordersViewSet(viewsets.ModelViewSet):
                     message(self,userInfo[0].phone, text_message)
 
         return super(ordersViewSet, self).update(request, *args, **kwargs)
-     '''
+    '''
 class PlaceOrderShipment(APIView):
     permission_classes = [permissions.AllowAny]
     http_method_names = ['get', 'put', 'head' ,'patch','post']
