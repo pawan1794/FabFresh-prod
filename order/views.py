@@ -67,6 +67,18 @@ class PlaceOrderShipment(APIView):
 
         userInfo = UserInfo.objects.filter(owner = self.request.user)
         print(userInfo[0].phone)
+        if flag == 1:
+            payload['pickup']['user']['name'] = "FabFresh"
+            payload['pickup']['user']['phone_no'] = "09066093765"
+            payload['pickup']['user']['email'] = "fabfresh.in"
+            payload['pickup']['user']['type'] = "merchant"
+            payload['pickup']['user']['external_id'] = "BLR-NAT-123"
+            payload['pickup']['user']['full_address']['address'] = "Shopaaaaaano51,5tttzzzzhblock"
+            payload['pickup']['user']['full_address']['locality']['name'] = "Koramangala"
+            payload['pickup']['user']['full_address']['city']['name'] = "Bangalore"
+            payload['pickup']['user']['full_address']['geo']['latitude'] = "12.935322"
+            payload['pickup']['user']['full_address']['geo']['longitude'] = "77.618754"
+
         #url = 'http://128.199.241.199/v1/orders/ship'
         url = 'http://roadrunnr.in/v1/orders/ship'
         headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
