@@ -171,9 +171,9 @@ class setPrice(APIView):
             order.update(p_id = a[:4])
 
             if order[0].order_type == 1:
-                order.update(amount = 30)
+                order.update(amount = 0)
             else:
-                order.update(amount = 40)
+                order.update(amount = 0)
 
             userInfo = UserInfo.objects.filter(owner = self.request.user)
             text_message = "Dear "+ str(self.request.user) +" , Your Order No : "+ str(payload['id']) +". Number of Clothes : "+ str(order[0].quantity) +" , Weight : "+ str(order[0].weight) +" KG , Price : "+ str(order[0].amount) +" .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
