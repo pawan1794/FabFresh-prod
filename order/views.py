@@ -72,12 +72,12 @@ class PlaceOrderShipment(APIView):
             payload['pickup']['user']['phone_no'] = "09066093765"
             payload['pickup']['user']['email'] = "fabfresh.in"
             payload['pickup']['user']['type'] = "merchant"
-            payload['pickup']['user']['external_id'] = "BLR-NAT-123"
-            payload['pickup']['user']['full_address']['address'] = "Shopaaaaaano51,5tttzzzzhblock"
-            payload['pickup']['user']['full_address']['locality']['name'] = "Koramangala"
+            payload['pickup']['user']['external_id'] = "1002"
+            payload['pickup']['user']['full_address']['address'] = "#67, 2nd Floor,7th cross,Near Police Station"
+            payload['pickup']['user']['full_address']['locality']['name'] = "Wilson Garden"
             payload['pickup']['user']['full_address']['city']['name'] = "Bangalore"
-            payload['pickup']['user']['full_address']['geo']['latitude'] = "12.935322"
-            payload['pickup']['user']['full_address']['geo']['longitude'] = "77.618754"
+            payload['pickup']['user']['full_address']['geo']['latitude'] = "12.943834"
+            payload['pickup']['user']['full_address']['geo']['longitude'] = "77.623928"
 
         #url = 'http://128.199.241.199/v1/orders/ship'
         url = 'http://roadrunnr.in/v1/orders/ship'
