@@ -78,7 +78,18 @@ class PlaceOrderShipment(APIView):
             payload['pickup']['user']['full_address']['city']['name'] = "Bangalore"
             payload['pickup']['user']['full_address']['geo']['latitude'] = "12.943834"
             payload['pickup']['user']['full_address']['geo']['longitude'] = "77.623928"
-
+        '''if flag == 0:
+            payload['drop']['user']['name'] = "FabFresh"
+            payload['drop']['user']['phone_no'] = "09066093765"
+            payload['drop']['user']['email'] = "fabfresh.in"
+            payload['drop']['user']['type'] = "merchant"
+            payload['drop']['user']['external_id'] = "1002"
+            payload['drop']['user']['full_address']['address'] = "#67, 2nd Floor,7th cross,Near Police Station"
+            payload['drop']['user']['full_address']['locality']['name'] = "Wilson Garden"
+            payload['drop']['user']['full_address']['city']['name'] = "Bangalore"
+            payload['drop']['user']['full_address']['geo']['latitude'] = "12.943834"
+            payload['drop']['user']['full_address']['geo']['longitude'] = "77.623928"
+        '''
         #url = 'http://128.199.241.199/v1/orders/ship'
         url = 'http://roadrunnr.in/v1/orders/ship'
         headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
