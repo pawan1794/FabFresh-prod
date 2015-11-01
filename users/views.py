@@ -1,3 +1,4 @@
+from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.contrib.auth import login
 from social.apps.django_app.utils import psa
@@ -16,7 +17,7 @@ from .serializers import UserSerializer,UserInfoSerializer
 from .models import UserInfo
 from rest_framework import viewsets
 from .permission import IsOwnerOrReadOnly
-
+from django.conf import settings
 
 
 class UserViewSet(viewsets.ModelViewSet):

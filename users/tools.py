@@ -4,6 +4,9 @@ from django.http import JsonResponse
 from oauth2_provider.models import AccessToken, Application, RefreshToken
 from django.utils.timezone import now, timedelta
 import requests
+from django.core.mail import send_mail
+from django.conf import settings
+
 
 def message(phone ,message):
     url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
@@ -21,6 +24,8 @@ def get_token_json(access_token, a, number,user):
     if a == 1:
         text_message = "Dear "+ str(user) +" , Thanks for Signing up with FabFresh . More Time to You ! from now on . "
         message(number,text_message)
+        send_mail('FabFresh Welcome\'s You', 'Welcome to FabFresh. We are happy to have you. More Time to You ! from now on', settings.EMAIL_HOST_USER, ['ha219ri@gmail.com'], fail_silently=False)
+
 
     return JsonResponse(token)
 
