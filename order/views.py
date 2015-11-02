@@ -8,7 +8,13 @@ from rest_framework.response import Response
 import requests
 import json
 from users.models import UserInfo
-
+from .models import Color,Type,Size, ClothInfo
+from .serializers import  ColorSerializer,\
+    TypeSerializer,\
+    SizeSerializer,\
+    ClothInfoSerializer,\
+    ClothInforamtionSerializer,\
+    ClothsOrdersSerializer
 
 def message(self, phone ,message):
     url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
@@ -236,3 +242,32 @@ class Faq(APIView):
             "Another question" : "New Ans"
         }
         return  Response(payload, status=status.HTTP_200_OK)
+
+class ColorViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+
+    queryset = Color.objects.all()
+    serializer_class = ColorSerializer
+
+class TypeViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Type.objects.all()
+    serializer_class = TypeSerializer
+
+class SizeViewSet(viewsets.ModelViewSet):
+
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Size.objects.all()
+    serializer_class = SizeSerializer
+
+class ClothViewSet(viewsets.ModelViewSet):
+
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = ClothInfo.objects.all()
+    serializer_class = ClothInfoSerializer
+
+class ClothInfoViewSet(viewsets.ModelViewSet):
+
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = ClothInfo.objects.all()
+    serializer_class = ClothInforamtionSerializer
