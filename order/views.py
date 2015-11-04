@@ -15,6 +15,7 @@ from .serializers import  ColorSerializer,\
     ClothInfoSerializer,\
     ClothInforamtionSerializer,\
     ClothsOrdersSerializer
+from gcm import *
 
 def message(self, phone ,message):
     url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
@@ -208,6 +209,10 @@ class setPrice(APIView):
             text_message = "Dear "+ str(self.request.user) +" , Your Order No : "+ str(payload['id']) +". Number of Clothes : "+ str(order[0].quantity) +" , Weight : "+ str(order[0].weight) +" KG , Price : "+ str(order[0].amount) +" .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
             message(self,userInfo[0].phone, text_message)
 
+            gcm = GCM("AIzaSyALq9M9qOYsu7Nqm0KQOJXCwCrtODif0ig")
+            data = {'The_message' : 'you have x new friends','param2':'value1'}
+            reg_id = 'APA91bEpgPjHmT0mA9YPwXvRFPTuHQr9U0mKCWmg4eBWdE3kefaFlGxt0xChLtOpBI9IKqwefKI3ahAfZPZ0b4p-0kLVrbsXBa86ro7aVmdGbE5XdqKVuakbI4PwfX4JX_995k8fk8i4ix2O3zIz0fhkfkzK3mKqmQ'
+            gcm.plaintext_request(registration_id=reg_id, data=data)
         except Exception as e:
             return Response(e ,status = status.HTTP_404_NOT_FOUND)
         return Response("Success" , status = status.HTTP_200_OK)
