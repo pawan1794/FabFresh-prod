@@ -204,10 +204,22 @@ class setPrice(APIView):
                 order.update(amount = 0)
             else:
                 order.update(amount = 0)
+            try:
+                order = orders.objects.filter(id = payload['id'])
+                for i in order:
+                    print i.owner
+                userInfo = UserInfo.objects.filter(owner = i.owner)
+                phone = 0
+                name = " "
+                for i in userInfo:
+                    phone = i.phone
+                    name = i.owner
 
-            userInfo = UserInfo.objects.filter(owner = self.request.user)
-            text_message = "Dear "+ str(self.request.user) +" , Your Order No : "+ str(payload['id']) +". Number of Clothes : "+ str(order[0].quantity) +" , Weight : "+ str(order[0].weight) +" KG , Price : "+ str(order[0].amount) +" .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
-            message(self,userInfo[0].phone, text_message)
+                #userInfo = UserInfo.objects.filter(owner = self.request.user)
+                text_message = "Dear "+ str(name) +" , Your Order No : "+ str(payload['id']) +". Number of Clothes : "+ str(order[0].quantity) +" , Weight : "+ str(order[0].weight) +" KG , Price : "+ str(order[0].amount) +" .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
+                message(self,phone, text_message)
+            except Exception as e:
+                return Response(userInfo[0].phone+userInfo+"SMS Not Sent" ,status = status.HTTP_404_NOT_FOUND)
 
             gcm = GCM("AIzaSyALq9M9qOYsu7Nqm0KQOJXCwCrtODif0ig")
             data = {'The_message' : 'you have x new friends','param2':'value1'}
