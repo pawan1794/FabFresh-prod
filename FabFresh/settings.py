@@ -20,6 +20,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
+    'rest_framework',
     'oauth2_provider',
     'corsheaders',
     'users',
@@ -85,9 +86,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'FabFresh.wsgi.application'
-
-
-
 
 if 'RDS_HOSTNAME' in os.environ:
     DATABASES = {

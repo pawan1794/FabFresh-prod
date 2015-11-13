@@ -13,6 +13,31 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='ClothInfo',
+            fields=[
+                ('cloth_id', models.AutoField(serialize=False, primary_key=True)),
+                ('gender', models.CharField(max_length=7)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Color',
+            fields=[
+                ('color_id', models.AutoField(serialize=False, primary_key=True)),
+                ('color_name', models.CharField(max_length=10)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='DriverDetails',
+            fields=[
+                ('id', models.AutoField(serialize=False, primary_key=True)),
+                ('driver_phone', models.CharField(max_length=20, null=True, blank=True)),
+                ('order_id', models.CharField(max_length=20, null=True, blank=True)),
+                ('delivery_id', models.CharField(max_length=20, null=True, blank=True)),
+                ('new_trip', models.BooleanField()),
+                ('driver_name', models.CharField(max_length=20, null=True, blank=True)),
+            ],
+        ),
+        migrations.CreateModel(
             name='orders',
             fields=[
                 ('id', models.AutoField(serialize=False, primary_key=True)),
@@ -28,5 +53,44 @@ class Migration(migrations.Migration):
                 ('roadrunner_order_id', models.CharField(max_length=200, null=True, blank=True)),
                 ('owner', models.ForeignKey(related_name='orders', to=settings.AUTH_USER_MODEL)),
             ],
+        ),
+        migrations.CreateModel(
+            name='Size',
+            fields=[
+                ('size_id', models.AutoField(serialize=False, primary_key=True)),
+                ('size_name', models.CharField(max_length=10)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Type',
+            fields=[
+                ('type_id', models.AutoField(serialize=False, primary_key=True)),
+                ('type_name', models.CharField(max_length=10)),
+            ],
+        ),
+        migrations.AddField(
+            model_name='driverdetails',
+            name='orders',
+            field=models.ForeignKey(to='order.orders'),
+        ),
+        migrations.AddField(
+            model_name='clothinfo',
+            name='color',
+            field=models.ForeignKey(to='order.Color'),
+        ),
+        migrations.AddField(
+            model_name='clothinfo',
+            name='order',
+            field=models.ForeignKey(to='order.orders'),
+        ),
+        migrations.AddField(
+            model_name='clothinfo',
+            name='size',
+            field=models.ForeignKey(to='order.Size'),
+        ),
+        migrations.AddField(
+            model_name='clothinfo',
+            name='type',
+            field=models.ForeignKey(to='order.Type'),
         ),
     ]

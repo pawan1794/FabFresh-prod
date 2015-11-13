@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import orders, Size,Type, Color,ClothInfo
+from .models import orders, Size,Type, Color,ClothInfo,DriverDetails
 
 class ordersSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -7,6 +7,11 @@ class ordersSerializer(serializers.ModelSerializer):
     class Meta:
         model = orders
         fields = ('id','amount','status','created_at_time','owner','weight','quantity','order_type','p_id' , 'special_instructions')
+
+class DriverDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DriverDetails
+
 
 class SizeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,7 +43,6 @@ class ClothInforamtionSerializer(serializers.ModelSerializer):
     type = TypeSerializer(read_only=True)
     size = SizeSerializer(read_only=True)
     class Meta:
-
         model = ClothInfo
 
 
