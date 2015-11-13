@@ -121,25 +121,26 @@ class PlaceOrderShipment(APIView):
                     print(r.json())
 
 
-                    DriverDetail = DriverDetails(orders_id = payload['order_details']['order_id'],
+                    '''DriverDetail = DriverDetails(orders_id = payload['order_details']['order_id'],
                                                 delivery_id = r.json()['delivery_id'],
                                                 driver_name = r.json()['driver_name'],
                                                 driver_phone = r.json()['driver_phone'],
                                                 order_id = r.json()['order_id'])
+                    '''
                     if flag == 0:
                         order.roadrunner_order_id = r.json()['order_id']
                         order.delivery_id = r.json()['delivery_id']
                         order.save()
 
-                        DriverDetail.new_trip = True
-                        DriverDetail.save()
+                        #DriverDetail.new_trip = True
+                        #DriverDetail.save()
 
                         text_message = "Dear " + payload['pickup']['user']['name'] + ". Your Order No :" + \
                                    payload['order_details']['order_id'] + " with FabFresh is placed Successfully. Our Logistics Partner will be there to pick up your clothes . Pickup boy details will be sent to you shortly. You can track your order in the app now !"
                         message(self, userInfo[0].phone, text_message)
                     if flag == 1:
-                        DriverDetail.new_trip = False
-                        DriverDetail.save()
+                        #DriverDetail.new_trip = False
+                        #DriverDetail.save()
                         text_message = "Dear " + payload['drop']['user']['name'] + ". Your Order No :" + \
                                    payload['order_details'][
                                        'order_id'] + "  is on its way. Delivery Boy details will be sent to you shortly. Once again , Thanks for using FabFresh. Please provide your feedback in the app . Have a Wonderful day ! "
