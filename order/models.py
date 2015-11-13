@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here.
 STATUS = (
     ('0' , 'cancelled'),
     ('1', 'created'),
@@ -28,4 +27,36 @@ class orders(models.Model):
 
     delivery_id = models.CharField(max_length=200, blank=True, null=True)
     roadrunner_order_id = models.CharField(max_length=200, blank=True, null=True)
+
+class DriverDetails(models.Model):
+    orders = models.ForeignKey(orders)
+    id = models.AutoField(primary_key=True)
+    driver_phone = models.CharField(max_length=20,blank=True,null=True)
+    order_id = models.CharField(max_length=20,blank=True,null=True)
+    delivery_id = models.CharField(max_length=20,blank=True,null=True)
+    new_trip = models.BooleanField(blank=True)
+    driver_name = models.CharField(max_length=20,blank=True,null=True)
+
+#medium small or large
+class Size(models.Model):
+    size_id = models.AutoField(primary_key=True)
+    size_name = models.CharField(max_length=10)
+
+#shirt or pant
+class Type(models.Model):
+    type_id = models.AutoField(primary_key=True)
+    type_name = models.CharField(max_length=10)
+
+#blue green etc
+class Color(models.Model):
+    color_id = models.AutoField(primary_key=True)
+    color_name = models.CharField(max_length=10)
+
+class ClothInfo(models.Model):
+    cloth_id = models.AutoField(primary_key=True)
+    order = models.ForeignKey(orders)
+    size = models.ForeignKey(Size)
+    type = models.ForeignKey(Type)
+    color = models.ForeignKey(Color)
+    gender = models.CharField(max_length=7)
 
