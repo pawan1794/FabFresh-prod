@@ -28,6 +28,9 @@ class orders(models.Model):
     delivery_id = models.CharField(max_length=200, blank=True, null=True)
     roadrunner_order_id = models.CharField(max_length=200, blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.id)
+
 class DriverDetails(models.Model):
     orders = models.ForeignKey(orders)
     id = models.AutoField(primary_key=True)
@@ -42,15 +45,22 @@ class Size(models.Model):
     size_id = models.AutoField(primary_key=True)
     size_name = models.CharField(max_length=10)
 
+    def __unicode__(self):
+        return unicode(self.size_name)
+
 #shirt or pant
 class Type(models.Model):
     type_id = models.AutoField(primary_key=True)
     type_name = models.CharField(max_length=10)
 
+    def __unicode__(self):
+        return unicode(self.type_name)
 #blue green etc
 class Color(models.Model):
     color_id = models.AutoField(primary_key=True)
     color_name = models.CharField(max_length=10)
+    def __unicode__(self):
+        return unicode(self.color_name)
 
 class ClothInfo(models.Model):
     cloth_id = models.AutoField(primary_key=True)
@@ -59,4 +69,5 @@ class ClothInfo(models.Model):
     type = models.ForeignKey(Type)
     color = models.ForeignKey(Color)
     gender = models.CharField(max_length=7)
+
 
