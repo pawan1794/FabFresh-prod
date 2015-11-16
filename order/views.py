@@ -254,10 +254,10 @@ class setPrice(APIView):
             except Exception as e:
                 return Response(userInfo[0].phone + userInfo + "SMS Not Sent", status=status.HTTP_404_NOT_FOUND)
 
-            gcm = GCM("AIzaSyALq9M9qOYsu7Nqm0KQOJXCwCrtODif0ig")
-            data = {'The_message': 'you have x new friends', 'param2': 'value1'}
-            reg_id = 'APA91bEpgPjHmT0mA9YPwXvRFPTuHQr9U0mKCWmg4eBWdE3kefaFlGxt0xChLtOpBI9IKqwefKI3ahAfZPZ0b4p-0kLVrbsXBa86ro7aVmdGbE5XdqKVuakbI4PwfX4JX_995k8fk8i4ix2O3zIz0fhkfkzK3mKqmQ'
-            gcm.plaintext_request(registration_id=reg_id, data=data)
+            #gcm = GCM("AIzaSyALq9M9qOYsu7Nqm0KQOJXCwCrtODif0ig")
+            #data = {'The_message': 'you have x new friends', 'param2': 'value1'}
+            #reg_id = 'APA91bEpgPjHmT0mA9YPwXvRFPTuHQr9U0mKCWmg4eBWdE3kefaFlGxt0xChLtOpBI9IKqwefKI3ahAfZPZ0b4p-0kLVrbsXBa86ro7aVmdGbE5XdqKVuakbI4PwfX4JX_995k8fk8i4ix2O3zIz0fhkfkzK3mKqmQ'
+            #gcm.plaintext_request(registration_id=reg_id, data=data)
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND)
         return Response("Success", status=status.HTTP_200_OK)
