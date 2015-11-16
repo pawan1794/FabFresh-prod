@@ -139,6 +139,7 @@ class PlaceOrderShipment(APIView):
                                    payload['order_details']['order_id'] + " with FabFresh is placed Successfully. Our Logistics Partner will be there to pick up your clothes . Pickup boy details will be sent to you shortly. You can track your order in the app now !"
                         message(self, userInfo[0].phone, text_message)
                     if flag == 1:
+                        order.update(status=8)
                         DriverDetail.new_trip = False
                         DriverDetail.save()
                         text_message = "Dear " + payload['drop']['user']['name'] + ". Your Order No :" + \
