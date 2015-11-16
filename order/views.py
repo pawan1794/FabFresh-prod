@@ -41,7 +41,7 @@ class ordersViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND)
 
-    '''def update(self, request, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         for i in request.data:
             if str(i) == "status":
                 order = orders.objects.filter(id = kwargs['pk'])
@@ -51,7 +51,6 @@ class ordersViewSet(viewsets.ModelViewSet):
                     message(self,userInfo[0].phone, text_message)
 
         return super(ordersViewSet, self).update(request, *args, **kwargs)
-    '''
 
 
 class PlaceOrderShipment(APIView):
