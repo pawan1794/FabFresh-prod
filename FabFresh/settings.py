@@ -26,7 +26,7 @@ INSTALLED_APPS = (
     'users',
     'order',
     'rest_framework_swagger',
-    'push_notifications',
+
 )
 
 MIDDLEWARE_CLASSES = (
