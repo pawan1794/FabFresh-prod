@@ -17,6 +17,7 @@ from .serializers import ColorSerializer, \
     ClothsOrdersSerializer, \
     DriverDetailsSerializer
 from gcm import *
+from push_notifications.models import GCMDevice
 
 def message(self, phone ,message):
     url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
@@ -45,10 +46,22 @@ class ordersViewSet(viewsets.ModelViewSet):
         for i in request.data:
             if str(i) == "status":
                 order = orders.objects.filter(id = kwargs['pk'])
+
                 userInfo = UserInfo.objects.filter(owner = self.request.user)
                 if int(request.data['status']) is 6 :
                     text_message = "Dear "+ str(self.request.user) +" , Your Order is packed and Ready for Delivery . Please Select Deliver Now in the app to get it at your doorstep. "
                     message(self,userInfo[0].phone, text_message)
+
+                reg_id = GCMDevice.objects.filter(user_id = self.request.user.id,active=True)
+                try:
+                    gcm_reg_id= reg_id[0].registration_id
+                    device = GCMDevice.objects.get(registration_id=gcm_reg_id)
+                    try:
+                        device.send_message(str(kwargs['pk']) +" " +str(request.data['status']))
+                    except Exception as e:
+                        print e
+                except Exception as e:
+                    print e
 
         return super(ordersViewSet, self).update(request, *args, **kwargs)
 
@@ -223,12 +236,11 @@ class setPrice(APIView):
             order.update(status=payload['status'])
 
             a = str(order[0].created_at_time)
-            print a
+
             a = a[-10:]
             if int(a[1]) == 0:
                 a = int(a) + 1000
                 a = str(a)
-
             order.update(p_id=a[:4])
 
             if order[0].order_type == 1:
@@ -251,9 +263,20 @@ class setPrice(APIView):
                     payload['id']) + ". Number of Clothes : " + str(order[0].quantity) + " , Weight : " + str(
                     order[0].weight) + " KG , Price : " + str(order[
                                                                   0].amount) + " .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
-                message(self, phone, text_message)
+                #message(self, phone, text_message)
             except Exception as e:
                 return Response(userInfo[0].phone + userInfo + "SMS Not Sent", status=status.HTTP_404_NOT_FOUND)
+
+            reg_id = GCMDevice.objects.filter(user_id = self.request.user.id,active=True)
+            try:
+                gcm_reg_id= reg_id[0].registration_id
+                device = GCMDevice.objects.get(registration_id=gcm_reg_id)
+                try:
+                    device.send_message( str(payload['id']) + " 2")
+                except Exception as e:
+                    print e
+            except Exception as e:
+                print e
 
             #gcm = GCM("AIzaSyALq9M9qOYsu7Nqm0KQOJXCwCrtODif0ig")
             #data = {'The_message': 'you have x new friends', 'param2': 'value1'}

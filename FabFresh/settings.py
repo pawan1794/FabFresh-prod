@@ -26,6 +26,7 @@ INSTALLED_APPS = (
     'users',
     'order',
     'rest_framework_swagger',
+    'push_notifications',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -124,7 +125,9 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+PUSH_NOTIFICATIONS_SETTINGS = {
+        "GCM_API_KEY": "AIzaSyC7r-bihlBSfZ3MfHfMCmbshjOloiUCFBU"
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
