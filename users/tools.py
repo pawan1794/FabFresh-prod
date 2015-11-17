@@ -31,6 +31,8 @@ def get_token_json(access_token, a, number,user):
 
 
 def get_access_token(user,number):
+    print ("asd")
+    print (number)
     app = Application.objects.get(name="FabFresh")
     a = 1
     try:
@@ -49,7 +51,7 @@ def get_access_token(user,number):
 
     token = generate_token()
     refresh_token = generate_token()
-    #oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS = 10000000000000
+    oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS = 100000000
     expires = now() + timedelta(seconds=oauth2_settings.
                                 ACCESS_TOKEN_EXPIRE_SECONDS)
     scope = "read write"

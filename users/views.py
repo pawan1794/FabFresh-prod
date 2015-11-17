@@ -51,7 +51,7 @@ class UserInfoViewSet(viewsets.ModelViewSet):
 @psa('social:complete')
 def register_by_access_token(request, backend):
     token = request.GET.get('access_token')
-    number = request.GET.get('number')
+    phone = request.GET.get('phone')
     email = request.GET.get('email')
 
     try:
@@ -63,11 +63,11 @@ def register_by_access_token(request, backend):
             if email:
                 u.email = email
                 u.save()
-            if number:
+            if phone:
                 userInfo = UserInfo(owner=u)
-                userInfo.phone = number
+                userInfo.phone = phone
                 userInfo.save()
-            return get_access_token(user,number)
+            return get_access_token(user,phone)
         else:
             return Response("asd",status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
