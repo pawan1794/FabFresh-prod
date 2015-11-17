@@ -67,7 +67,7 @@ def register_by_access_token(request, backend):
                 userInfo = UserInfo(owner=u)
                 userInfo.phone = phone
                 userInfo.save()
-            return get_access_token(user,phone)
+            return get_access_token(user,phone,email)
         else:
             return Response("asd",status=status.HTTP_404_NOT_FOUND)
     except Exception as e:

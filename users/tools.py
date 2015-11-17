@@ -12,7 +12,8 @@ def message(phone ,message):
     url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
     r1 = requests.get(url1)
 
-def get_token_json(access_token, a, number,user):
+def get_token_json(access_token, a, number,user,email):
+
     token = {
         'access_token': access_token.token,
         'expires_in': oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS,
@@ -21,18 +22,18 @@ def get_token_json(access_token, a, number,user):
         'scope': access_token.scope,
         'user_status' : a
     }
+
     if a == 1:
         text_message = "Dear "+ str(user) +" , Thanks for Signing up with FabFresh . More Time to You ! from now on . "
         message(number,text_message)
-        send_mail('FabFresh Welcome\'s You', 'Welcome to FabFresh. We are happy to have you. More Time to You ! from now on', settings.EMAIL_HOST_USER, ['ha219ri@gmail.com'], fail_silently=False)
+
+        send_mail('FabFresh Welcome\'s You', 'Welcome to FabFresh. We are happy to have you. More Time to You ! from now on', settings.EMAIL_HOST_USER, [str(email)], fail_silently=False)
 
 
     return JsonResponse(token)
 
 
-def get_access_token(user,number):
-    print ("asd")
-    print (number)
+def get_access_token(user,number,email):
     app = Application.objects.get(name="FabFresh")
     a = 1
     try:
@@ -69,4 +70,4 @@ def get_access_token(user,number):
                token=refresh_token,
                access_token=access_token)
 
-    return get_token_json(access_token,a,number,user)
+    return get_token_json(access_token,a,number,user,email)
