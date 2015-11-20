@@ -270,11 +270,12 @@ class setPrice(APIView):
                 text_message = "Dear " + str(name) + " , Your Order No : " + str(
                     payload['id']) + ". Number of Clothes : " + str(order[0].quantity) + " , Weight : " + str(
                     order[0].weight) + " KG , Price : " + str(order[0].amount) + " .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
-                message(self, phone, text_message)
+                #message(self, phone, text_message)
             except Exception as e:
                 return Response(userInfo[0].phone + userInfo + "SMS Not Sent", status=status.HTTP_404_NOT_FOUND)
 
-            reg_id = GCMDevice.objects.filter(user_id = self.request.user.id,active=True)
+            #reg_id = GCMDevice.objects.filter(user_id = self.request.user.id,active=True)
+            reg_id = GCMDevice.objects.filter(user_id = i.owner,active=True)
             try:
                 gcm_reg_id= reg_id[0].registration_id
                 device = GCMDevice.objects.get(registration_id=gcm_reg_id)
