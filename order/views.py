@@ -1,4 +1,4 @@
-
+from django.http import JsonResponse
 from rest_framework import viewsets,permissions,status
 from .serializers import ordersSerializer
 from order.models import orders
@@ -80,7 +80,7 @@ class PlaceOrderShipment(APIView):
         flag = 0
         payload = request.data
         print now
-        if now < 22 and now > 8:
+        if now < 23 and now > 8:
             print type(payload['order_details']['order_id'])
             if int(payload['order_details']['order_id']) is 0:
                 try:
@@ -135,7 +135,7 @@ class PlaceOrderShipment(APIView):
 
                     if r.json()['status']['code'] == 706:
                         order.delete()
-                        response = Response("DeliveryBoy not available",status=status.HTTP_200_OK)
+                        response = JsonResponse({"status" : "Delivery Boy Not Available"})
                     else:
                         response = Response(r.json(),status=status.HTTP_200_OK)
                         DriverDetail = DriverDetails(orders_id = payload['order_details']['order_id'],
@@ -171,8 +171,8 @@ class PlaceOrderShipment(APIView):
                     return Response(r.json(), status=status.HTTP_404_NOT_FOUND)
             except Exception as e:
                 return Response(e, status=status.HTTP_404_NOT_FOUND)
-
-        return Response("Time up",status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({'status':'Time Up'}, status = status.HTTP_200_OK)
 
 class OrderCancel(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -192,9 +192,9 @@ class OrderCancel(APIView):
             r = requests.get(url, headers=headers)
             if r.status_code == 200:
                 order.update(status=0)
-                return Response("Order Cancelled", status=status.HTTP_200_OK)
+                return JsonResponse({'status':'Order Cancelled'}, status=status.HTTP_200_OK)
             else:
-                return Response("Order Not Cancelled", status=status.HTTP_204_NO_CONTENT)
+                return JsonResponse({"status" : "Order Not Cancelled"}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND)
 
