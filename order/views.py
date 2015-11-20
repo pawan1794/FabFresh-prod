@@ -18,6 +18,9 @@ from .serializers import ColorSerializer, \
     DriverDetailsSerializer
 from gcm import *
 from push_notifications.models import GCMDevice
+import datetime
+from django.utils.timezone import utc
+
 
 def message(self, phone ,message):
     url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
@@ -71,102 +74,104 @@ class PlaceOrderShipment(APIView):
     http_method_names = ['get', 'put', 'head', 'patch', 'post']
 
     def post(self, request, *args, **kw):
+        now = int(datetime.datetime.now().strftime('%H'))
+        #add time details
         flag = 0
         payload = request.data
+        now = 23
+        if now < 22 and now > 6:
+            print type(payload['order_details']['order_id'])
+            if int(payload['order_details']['order_id']) is 0:
+                try:
+                    order = orders(owner=self.request.user)
+                    order.special_instructions = payload['special_instructions']
+                    order.order_type = payload['order_type']
+                    order.save()
+                    payload['order_details']['order_id'] = unicode(order.id)
 
-        print type(payload['order_details']['order_id'])
-        if int(payload['order_details']['order_id']) is 0:
+                except Exception as e:
+                    return Response(e, status=status.HTTP_404_NOT_FOUND)
+            else:
+                flag = 1
+                order = orders.objects.filter(id=payload['order_details']['order_id'])
+                if not order:
+                    return Response("orderid is not available",status=status.HTTP_200_OK)
+
+            userInfo = UserInfo.objects.filter(owner=self.request.user)
+
+            print(userInfo[0].phone)
+
+            if flag == 1:
+                payload['pickup']['user']['name'] = "FabFresh"
+                payload['pickup']['user']['phone_no'] = "09066093765"
+                payload['pickup']['user']['email'] = "fabfresh.in"
+                payload['pickup']['user']['type'] = "merchant"
+                payload['pickup']['user']['external_id'] = "1002"
+                payload['pickup']['user']['full_address']['address'] = "#67, 2nd Floor,7th cross,Near Police Station"
+                payload['pickup']['user']['full_address']['locality']['name'] = "Wilson Garden"
+                payload['pickup']['user']['full_address']['city']['name'] = "Bangalore"
+                payload['pickup']['user']['full_address']['geo']['latitude'] = "12.943834"
+                payload['pickup']['user']['full_address']['geo']['longitude'] = "77.623928"
+            if flag == 0:
+                payload['drop']['user']['name'] = "FabFresh"
+                payload['drop']['user']['phone_no'] = "09066093765"
+                payload['drop']['user']['email'] = "fabfresh.in"
+                payload['drop']['user']['type'] = "merchant"
+                payload['drop']['user']['external_id'] = "1002"
+                payload['drop']['user']['full_address']['address'] = "#67, 2nd Floor,7th cross,Near Police Station"
+                payload['drop']['user']['full_address']['locality']['name'] = "Wilson Garden"
+                payload['drop']['user']['full_address']['city']['name'] = "Bangalore"
+                payload['drop']['user']['full_address']['geo']['latitude'] = "12.943834"
+                payload['drop']['user']['full_address']['geo']['longitude'] = "77.623928"
+
+            #url = 'http://128.199.241.199/v1/orders/ship'
+            url = 'http://roadrunnr.in/v1/orders/ship'
+            headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
             try:
-                order = orders(owner=self.request.user)
-                order.special_instructions = payload['special_instructions']
-                order.order_type = payload['order_type']
-                order.save()
-                payload['order_details']['order_id'] = unicode(order.id)
 
-            except Exception as e:
-                return Response(e, status=status.HTTP_404_NOT_FOUND)
-        else:
-            flag = 1
-            order = orders.objects.filter(id=payload['order_details']['order_id'])
+                r = requests.post(url, json.dumps(payload), headers=headers)
+                if r.status_code == 200:
 
-        userInfo = UserInfo.objects.filter(owner=self.request.user)
-
-        print(userInfo[0].phone)
-
-        if flag == 1:
-            payload['pickup']['user']['name'] = "FabFresh"
-            payload['pickup']['user']['phone_no'] = "09066093765"
-            payload['pickup']['user']['email'] = "fabfresh.in"
-            payload['pickup']['user']['type'] = "merchant"
-            payload['pickup']['user']['external_id'] = "1002"
-            payload['pickup']['user']['full_address']['address'] = "#67, 2nd Floor,7th cross,Near Police Station"
-            payload['pickup']['user']['full_address']['locality']['name'] = "Wilson Garden"
-            payload['pickup']['user']['full_address']['city']['name'] = "Bangalore"
-            payload['pickup']['user']['full_address']['geo']['latitude'] = "12.943834"
-            payload['pickup']['user']['full_address']['geo']['longitude'] = "77.623928"
-        if flag == 0:
-            payload['drop']['user']['name'] = "FabFresh"
-            payload['drop']['user']['phone_no'] = "09066093765"
-            payload['drop']['user']['email'] = "fabfresh.in"
-            payload['drop']['user']['type'] = "merchant"
-            payload['drop']['user']['external_id'] = "1002"
-            payload['drop']['user']['full_address']['address'] = "#67, 2nd Floor,7th cross,Near Police Station"
-            payload['drop']['user']['full_address']['locality']['name'] = "Wilson Garden"
-            payload['drop']['user']['full_address']['city']['name'] = "Bangalore"
-            payload['drop']['user']['full_address']['geo']['latitude'] = "12.943834"
-            payload['drop']['user']['full_address']['geo']['longitude'] = "77.623928"
-
-        #url = 'http://128.199.241.199/v1/orders/ship'
-        url = 'http://roadrunnr.in/v1/orders/ship'
-        headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
-        try:
-            print(json.dumps(payload))
-
-            r = requests.post(url, json.dumps(payload), headers=headers)
-            print(r.status_code)
-            if r.status_code == 200:
-                if r.json()['status']['code'] == 706:
-                    order.delete()
-                    response = Response("DeliveryBoy not available",status=status.HTTP_200_OK)
-                else:
-                    response = Response(r.json(),status=status.HTTP_200_OK)
-                    print(r.json())
-
-
-                    DriverDetail = DriverDetails(orders_id = payload['order_details']['order_id'],
+                    if r.json()['status']['code'] == 706:
+                        order.delete()
+                        response = Response("DeliveryBoy not available",status=status.HTTP_200_OK)
+                    else:
+                        response = Response(r.json(),status=status.HTTP_200_OK)
+                        DriverDetail = DriverDetails(orders_id = payload['order_details']['order_id'],
                                                 delivery_id = r.json()['delivery_id'],
                                                 driver_name = r.json()['driver_name'],
                                                 driver_phone = r.json()['driver_phone'],
                                                 order_id = r.json()['order_id'])
 
-                    if flag == 0:
-                        order.roadrunner_order_id = r.json()['order_id']
-                        order.delivery_id = r.json()['delivery_id']
-                        order.save()
-
-                        DriverDetail.new_trip = True
-                        DriverDetail.save()
-
-                        text_message = "Dear " + payload['pickup']['user']['name'] + ". Your Order No :" + \
+                        if flag == 0:
+                            order.roadrunner_order_id = r.json()['order_id']
+                            order.delivery_id = r.json()['delivery_id']
+                            order.save()
+                            DriverDetail.new_trip = True
+                            DriverDetail.save()
+                            text_message = "Dear " + payload['pickup']['user']['name'] + ". Your Order No :" + \
                                    payload['order_details']['order_id'] + " with FabFresh is placed Successfully. Our Logistics Partner will be there to pick up your clothes . Pickup boy details will be sent to you shortly. You can track your order in the app now !"
-                        message(self, userInfo[0].phone, text_message)
-                    if flag == 1:
-                        order.update(status=7)
-                        DriverDetail.new_trip = False
-                        DriverDetail.save()
-                        text_message = "Dear " + payload['drop']['user']['name'] + ". Your Order No :" + \
-                                   payload['order_details'][
+                            message(self, userInfo[0].phone, text_message)
+
+                        if flag == 1:
+                            order.update(status=7)
+                            DriverDetail.new_trip = False
+                            DriverDetail.save()
+                            text_message = "Dear " + payload['drop']['user']['name'] + ". Your Order No :" + \
+                                       payload['order_details'][
                                        'order_id'] + "  is on its way. Delivery Boy details will be sent to you shortly. Once again , Thanks for using FabFresh. Please provide your feedback in the app . Have a Wonderful day ! "
+                            message(self, userInfo[0].phone, text_message)
+                    return response
 
-                        message(self, userInfo[0].phone, text_message)
-                return response
-            else:
-                if flag == 0:
-                    order.delete()
-                return Response(r.json(), status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            return Response(e, status=status.HTTP_404_NOT_FOUND)
+                else:
+                    if flag == 0:
+                        order.delete()
 
+                    return Response(r.json(), status=status.HTTP_404_NOT_FOUND)
+            except Exception as e:
+                return Response(e, status=status.HTTP_404_NOT_FOUND)
+
+        return Response("Time up",status=status.HTTP_200_OK)
 
 class OrderCancel(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -230,10 +235,16 @@ class setPrice(APIView):
                 order = orders.objects.filter(id=payload['id'])
             except Exception as e:
                 return Response(e, status=status.HTTP_404_NOT_FOUND)
-
             order.update(quantity=payload['quantity'])
             order.update(weight=float(payload['weight']))
             order.update(status=payload['status'])
+            now = int(datetime.datetime.now().strftime('%H'))
+            print now
+            if now < 22 and now > 6:
+                print("eureka")
+
+            print now
+            print(type(now))
 
             a = str(order[0].created_at_time)
 
@@ -257,13 +268,11 @@ class setPrice(APIView):
                 for i in userInfo:
                     phone = i.phone
                     name = i.owner
-
                 # userInfo = UserInfo.objects.filter(owner = self.request.user)
                 text_message = "Dear " + str(name) + " , Your Order No : " + str(
                     payload['id']) + ". Number of Clothes : " + str(order[0].quantity) + " , Weight : " + str(
-                    order[0].weight) + " KG , Price : " + str(order[
-                                                                  0].amount) + " .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
-                message(self, phone, text_message)
+                    order[0].weight) + " KG , Price : " + str(order[0].amount) + " .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
+                #message(self, phone, text_message)
             except Exception as e:
                 return Response(userInfo[0].phone + userInfo + "SMS Not Sent", status=status.HTTP_404_NOT_FOUND)
 
