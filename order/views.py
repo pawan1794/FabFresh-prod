@@ -20,6 +20,7 @@ from gcm import *
 from push_notifications.models import GCMDevice
 import datetime
 from django.utils.timezone import utc
+from random import randint
 
 
 def message(self, phone ,message):
@@ -218,6 +219,10 @@ class Track(APIView):
             response = Response(r.json(), status=status.HTTP_200_OK)
             return response
 
+def random_with_N_digits(n):
+    range_start = 10**(n-1)
+    range_end = (10**n)-1
+    return randint(range_start, range_end)
 
 class setPrice(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -238,19 +243,12 @@ class setPrice(APIView):
             order.update(quantity=payload['quantity'])
             order.update(weight=float(payload['weight']))
             order.update(status=payload['status'])
-            now = int(datetime.datetime.now().strftime('%H'))
-            print now
-            if now < 22 and now > 6:
-                print("eureka")
-
-            print now
-            print(type(now))
 
             a = str(order[0].created_at_time)
 
             a = a[-10:]
             if int(a[1]) == 0:
-                a = int(a) + 1000
+                a = random_with_N_digits(4)
                 a = str(a)
             order.update(p_id=a[:4])
 
@@ -272,7 +270,7 @@ class setPrice(APIView):
                 text_message = "Dear " + str(name) + " , Your Order No : " + str(
                     payload['id']) + ". Number of Clothes : " + str(order[0].quantity) + " , Weight : " + str(
                     order[0].weight) + " KG , Price : " + str(order[0].amount) + " .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
-                #message(self, phone, text_message)
+                message(self, phone, text_message)
             except Exception as e:
                 return Response(userInfo[0].phone + userInfo + "SMS Not Sent", status=status.HTTP_404_NOT_FOUND)
 
