@@ -78,7 +78,7 @@ class PlaceOrderShipment(APIView):
         #add time details
         flag = 0
         payload = request.data
-        now = 23
+        print now
         if now < 22 and now > 6:
             print type(payload['order_details']['order_id'])
             if int(payload['order_details']['order_id']) is 0:
