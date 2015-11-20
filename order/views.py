@@ -304,6 +304,12 @@ class CallBackApiView(APIView):
         print(payload)
         return Response("Success", status=status.HTTP_200_OK)
 
+class deleteGCM(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, *args, **kw):
+        GCMDevice.objects.all().delete()
+        return Response("Success", status=status.HTTP_200_OK)
 
 class AboutUs(APIView):
     permission_classes = [permissions.AllowAny]
