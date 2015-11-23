@@ -126,7 +126,8 @@ USE_L10N = True
 USE_TZ = True
 
 PUSH_NOTIFICATIONS_SETTINGS = {
-        "GCM_API_KEY": "AIzaSyC7r-bihlBSfZ3MfHfMCmbshjOloiUCFBU"
+        "GCM_API_KEY": "AIzaSyC7r-bihlBSfZ3MfHfMCmbshjOloiUCFBU",
+        "APNS_CERTIFICATE" : "/home/hari/Downloads/apns-dev-cert.pem"
 }
 
 # Static files (CSS, JavaScript, Images)
@@ -148,3 +149,4 @@ EMAIL_HOST_USER = 'hari@fabfresh.in'
 EMAIL_HOST_PASSWORD = 'BlackListed!23'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+

@@ -2,7 +2,7 @@ from django.conf.urls import url, patterns, include
 from . import views
 from rest_framework.routers import DefaultRouter
 #GCM
-from push_notifications.api.rest_framework import GCMDeviceAuthorizedViewSet
+from push_notifications.api.rest_framework import GCMDeviceAuthorizedViewSet, APNSDeviceAuthorizedViewSet
 
 
 router = DefaultRouter()
@@ -10,6 +10,7 @@ router.register(r'info',views.UserViewSet)
 router.register(r'^userinfo',views.UserInfoViewSet,base_name='userinfo')
 router.register(r'device/gcm', GCMDeviceAuthorizedViewSet)
 #router.register(r'gcm',GCMDeviceViewSet)
+router.register(r'device/apns', APNSDeviceAuthorizedViewSet)
 
 urlpatterns = patterns(
     '',

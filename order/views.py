@@ -17,7 +17,7 @@ from .serializers import ColorSerializer, \
     ClothsOrdersSerializer, \
     DriverDetailsSerializer
 from gcm import *
-from push_notifications.models import GCMDevice
+from push_notifications.models import GCMDevice,APNSDevice
 import datetime
 from django.utils.timezone import utc
 from random import randint
@@ -270,12 +270,17 @@ class setPrice(APIView):
                 text_message = "Dear " + str(name) + " , Your Order No : " + str(
                     payload['id']) + ". Number of Clothes : " + str(order[0].quantity) + " , Weight : " + str(
                     order[0].weight) + " KG , Price : " + str(order[0].amount) + " .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
-                #message(self, phone, text_message)
+                message(self, phone, text_message)
             except Exception as e:
                 return Response(userInfo[0].phone + userInfo + "SMS Not Sent", status=status.HTTP_404_NOT_FOUND)
 
+            apns_token = "87f26e125e83985a5b7854098af198f357290152b47d353578e0667b5f89c229"
+            device = APNSDevice.objects.get(registration_id=apns_token)
+            device.send_message(str(payload['id']) + " 2")
+
             #reg_id = GCMDevice.objects.filter(user_id = self.request.user.id,active=True)
             reg_id = GCMDevice.objects.filter(user_id = i.owner,active=True)
+            print reg_id
             try:
                 gcm_reg_id= reg_id[0].registration_id
                 device = GCMDevice.objects.get(registration_id=gcm_reg_id)
@@ -301,6 +306,9 @@ class CallBackApiView(APIView):
     def post(self, request, *args, **kw):
         payload = request.data
         print(payload)
+        text_message = str(payload)
+        message(self, "7204680605", text_message)
+
         return Response("Success", status=status.HTTP_200_OK)
 
 class deleteGCM(APIView):
