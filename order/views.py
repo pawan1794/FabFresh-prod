@@ -238,6 +238,9 @@ class setPrice(APIView):
             payload = request.data
             try:
                 order = orders.objects.filter(id=payload['id'])
+                print type(order)
+                if not order:
+                    return JsonResponse({'status' : 'Order not Avalilable'}, status=status.HTTP_404_NOT_FOUND)
             except Exception as e:
                 return Response(e, status=status.HTTP_404_NOT_FOUND)
             order.update(quantity=payload['quantity'])
@@ -274,13 +277,16 @@ class setPrice(APIView):
             except Exception as e:
                 return Response(userInfo[0].phone + userInfo + "SMS Not Sent", status=status.HTTP_404_NOT_FOUND)
 
-            apns_token = "87f26e125e83985a5b7854098af198f357290152b47d353578e0667b5f89c229"
-            device = APNSDevice.objects.get(registration_id=apns_token)
-            device.send_message(str(payload['id']) + " 2")
-
+            '''apns_token = "87f26e125e83985a5b7854098af198f357290152b47d353578e0667b5f89c229"
+            try:
+                device = APNSDevice.objects.get(registration_id=apns_token)
+                device.send_message(str(payload['id']) + " 2")
+            except Exception as e:
+                print "e"
+            '''
             #reg_id = GCMDevice.objects.filter(user_id = self.request.user.id,active=True)
-            reg_id = GCMDevice.objects.filter(user_id = i.owner,active=True)
-            print reg_id
+
+            reg_id = GCMDevice.objects.filter(user_id = i.id,active=True)
             try:
                 gcm_reg_id= reg_id[0].registration_id
                 device = GCMDevice.objects.get(registration_id=gcm_reg_id)
