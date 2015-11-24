@@ -13,11 +13,23 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from django.contrib.auth.models import User
-from .serializers import UserSerializer,UserInfoSerializer
-from .models import UserInfo
+from .serializers import UserSerializer,UserInfoSerializer, UserProfileSerializer
+from .models import UserInfo, UserProfile
 from rest_framework import viewsets
 from .permission import IsOwnerOrReadOnly
 from django.conf import settings
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated,TokenHasReadWriteScope]
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return UserProfile.objects.all()
+        else:
+            return UserProfile.objects.filter(user=self.request.user.id)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -64,6 +76,11 @@ def register_by_access_token(request, backend):
                 u.email = email
                 u.save()
             if phone:
+                #NEW
+                userProfile = UserProfile(user = u)
+                userProfile.phone = phone
+                userProfile.save()
+                #OLD
                 userInfo = UserInfo(owner=u)
                 userInfo.phone = phone
                 userInfo.save()

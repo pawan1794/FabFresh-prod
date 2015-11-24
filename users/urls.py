@@ -11,6 +11,7 @@ router.register(r'^userinfo',views.UserInfoViewSet,base_name='userinfo')
 router.register(r'device/gcm', GCMDeviceAuthorizedViewSet)
 #router.register(r'gcm',GCMDeviceViewSet)
 router.register(r'device/apns', APNSDeviceAuthorizedViewSet)
+router.register(r'usersprofile',views.UserProfileViewSet)
 
 urlpatterns = patterns(
     '',
