@@ -243,6 +243,7 @@ class setPrice(APIView):
                     return JsonResponse({'status' : 'Order not Avalilable'}, status=status.HTTP_404_NOT_FOUND)
             except Exception as e:
                 return Response(e, status=status.HTTP_404_NOT_FOUND)
+
             order.update(quantity=payload['quantity'])
             order.update(weight=float(payload['weight']))
             order.update(status=payload['status'])
@@ -264,6 +265,7 @@ class setPrice(APIView):
                 for i in order:
                     print i.owner
                 userInfo = UserInfo.objects.filter(owner = i.owner)
+
                 phone = 0
                 name = " "
                 for i in userInfo:
@@ -273,7 +275,7 @@ class setPrice(APIView):
                 text_message = "Dear " + str(name) + " , Your Order No : " + str(
                     payload['id']) + ". Number of Clothes : " + str(order[0].quantity) + " , Weight : " + str(
                     order[0].weight) + " KG , Price : " + str(order[0].amount) + " .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
-                message(self, phone, text_message)
+                #message(self, phone, text_message)
             except Exception as e:
                 return Response(userInfo[0].phone + userInfo + "SMS Not Sent", status=status.HTTP_404_NOT_FOUND)
 
@@ -285,9 +287,12 @@ class setPrice(APIView):
                 print "e"
             '''
             #reg_id = GCMDevice.objects.filter(user_id = self.request.user.id,active=True)
+            print i.id
             reg_id = GCMDevice.objects.filter(user_id = i.id,active=True)
+            print reg_id
             try:
                 gcm_reg_id= reg_id[0].registration_id
+
                 device = GCMDevice.objects.get(registration_id=gcm_reg_id)
                 try:
                     device.send_message( str(payload['id']) + " 2")
@@ -295,6 +300,11 @@ class setPrice(APIView):
                     print e
             except Exception as e:
                 print e
+
+            #gcm = GCM("AIzaSyALq9M9qOYsu7Nqm0KQOJXCwCrtODif0ig")
+            #data = {'The_message': 'you have x new friends', 'param2': 'value1'}
+            #reg_id = 'APA91bEpgPjHmT0mA9YPwXvRFPTuHQr9U0mKCWmg4eBWdE3kefaFlGxt0xChLtOpBI9IKqwefKI3ahAfZPZ0b4p-0kLVrbsXBa86ro7aVmdGbE5XdqKVuakbI4PwfX4JX_995k8fk8i4ix2O3zIz0fhkfkzK3mKqmQ'
+            #gcm.plaintext_request(registration_id=reg_id, data=data)
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND)
         return Response("Success", status=status.HTTP_200_OK)
