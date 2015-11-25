@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserInfo, UserProfile
+from .models import UserInfo, UserProfile #, Locality, Address, City
 from django.contrib.auth.models import User
 from order.models import orders
 
@@ -17,7 +17,6 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserInfo
-
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)

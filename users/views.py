@@ -77,10 +77,12 @@ def register_by_access_token(request, backend):
                 u.save()
             if phone:
                 #NEW
-                userProfile = UserProfile(user = u)
-                userProfile.phone = phone
-                userProfile.save()
-                #OLD
+                up = UserProfile.objects.get(user = user.id)
+                if not up.phone:
+                    userProfile = UserProfile(user = u)
+                    userProfile.phone = phone
+                    userProfile.save()
+                    #OLD
                 userInfo = UserInfo(owner=u)
                 userInfo.phone = phone
                 userInfo.save()

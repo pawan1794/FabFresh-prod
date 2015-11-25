@@ -20,7 +20,8 @@ def get_token_json(access_token, a, number,user,email):
         'token_type': 'Bearer',
         'refresh_token': access_token.refresh_token.token,
         'scope': access_token.scope,
-        'user_status' : a
+        'user_status' : a,
+        'phone' : number
     }
     if a == 1:
         #sending message to new registered users
@@ -54,6 +55,7 @@ def get_access_token(user,number,email):
     expires = now() + timedelta(seconds=oauth2_settings.
                                 ACCESS_TOKEN_EXPIRE_SECONDS)
     scope = "read write"
+
 
     access_token = AccessToken.objects.\
         create(user=user,
