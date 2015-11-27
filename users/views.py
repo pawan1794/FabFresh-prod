@@ -78,6 +78,7 @@ def register_by_access_token(request, backend):
             if phone:
                 #NEW
                 up = UserProfile.objects.get(user = user.id)
+
                 if not up.phone:
                     userProfile = UserProfile(user = u)
                     userProfile.phone = phone
