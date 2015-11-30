@@ -27,7 +27,17 @@ def message(self, phone ,message):
     url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
     r1 = requests.get(url1)
 
-
+def gcm(self, owner_id,order_id,status):
+    reg_id = GCMDevice.objects.filter(user_id = owner_id)
+    try:
+        gcm_reg_id = reg_id[0].registration_id
+        device = GCMDevice.objects.get(registration_id = gcm_reg_id)
+        try:
+            device.send_message( str(order_id) + " " +str(status) )
+        except Exception as e:
+            print e
+    except Exception as e:
+        print e
 
 class ordersViewSet(viewsets.ModelViewSet):
     serializer_class = ordersSerializer
@@ -47,25 +57,25 @@ class ordersViewSet(viewsets.ModelViewSet):
             return Response(e, status=status.HTTP_404_NOT_FOUND)
 
     def update(self, request, *args, **kwargs):
+        order = orders.objects.filter(id= kwargs['pk'])
+        for i in order:
+            print i.owner
+        owner = i.owner
+        userInfo = UserInfo.objects.filter(owner = i.owner)
+        for j in userInfo:
+            phone = j.phone
+
+        gcm(self,j.owner_id,kwargs['pk'],request.data['status'])
+
         for i in request.data:
             if str(i) == "status":
                 order = orders.objects.filter(id = kwargs['pk'])
 
                 userInfo = UserInfo.objects.filter(owner = self.request.user)
-                if int(request.data['status']) is 6 :
-                    text_message = "Dear "+ str(self.request.user) +" , Your Order is packed and Ready for Delivery . Please Select Deliver Now in the app to get it at your doorstep. "
-                    message(self,userInfo[0].phone, text_message)
 
-                reg_id = GCMDevice.objects.filter(user_id = self.request.user.id,active=True)
-                try:
-                    gcm_reg_id= reg_id[0].registration_id
-                    device = GCMDevice.objects.get(registration_id=gcm_reg_id)
-                    try:
-                        device.send_message(str(kwargs['pk']) +" " +str(request.data['status']))
-                    except Exception as e:
-                        print e
-                except Exception as e:
-                    print e
+                if int(request.data['status']) is 6 :
+                    text_message = "Dear "+ str(owner) +" , Your Order is packed and Ready for Delivery . Please Select Deliver Now in the app to get it at your doorstep. "
+                    message(self,phone, text_message)
 
         return super(ordersViewSet, self).update(request, *args, **kwargs)
 
@@ -276,7 +286,7 @@ class setPrice(APIView):
                 text_message = "Dear " + str(name) + " , Your Order No : " + str(
                     payload['id']) + ". Number of Clothes : " + str(order[0].quantity) + " , Weight : " + str(
                     order[0].weight) + " KG , Price : " + str(order[0].amount) + " .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
-                message(self, phone, text_message)
+                #message(self, phone, text_message)
             except Exception as e:
                 return Response(userInfo[0].phone + userInfo + "SMS Not Sent", status=status.HTTP_404_NOT_FOUND)
 
@@ -287,8 +297,9 @@ class setPrice(APIView):
             except Exception as e:
                 print "e"
             '''
-            #reg_id = GCMDevice.objects.filter(user_id = self.request.user.id,active=True)
-            print i.id
+            gcm(self,i.owner_id,payload['id'],2)
+
+            '''print i.id
             print "user id" + str(self.request.user.id)
             reg_id = GCMDevice.objects.filter(user_id = i.owner_id)
             print reg_id
@@ -302,11 +313,8 @@ class setPrice(APIView):
                     print e
             except Exception as e:
                 print e
+            '''
 
-            #gcm = GCM("AIzaSyALq9M9qOYsu7Nqm0KQOJXCwCrtODif0ig")
-            #data = {'The_message': 'you have x new friends', 'param2': 'value1'}
-            #reg_id = 'APA91bEpgPjHmT0mA9YPwXvRFPTuHQr9U0mKCWmg4eBWdE3kefaFlGxt0xChLtOpBI9IKqwefKI3ahAfZPZ0b4p-0kLVrbsXBa86ro7aVmdGbE5XdqKVuakbI4PwfX4JX_995k8fk8i4ix2O3zIz0fhkfkzK3mKqmQ'
-            #gcm.plaintext_request(registration_id=reg_id, data=data)
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND)
         return Response("Success", status=status.HTTP_200_OK)
