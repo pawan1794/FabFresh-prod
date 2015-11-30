@@ -76,6 +76,7 @@ def register_by_access_token(request, backend):
                 u.email = email
                 u.save()
             if phone:
+                '''
                 #NEW
                 up = UserProfile.objects.get(user = user.id)
 
@@ -84,6 +85,7 @@ def register_by_access_token(request, backend):
                     userProfile.phone = phone
                     userProfile.save()
                     #OLD
+                '''
                 userInfo = UserInfo(owner=u)
                 userInfo.phone = phone
                 userInfo.save()
