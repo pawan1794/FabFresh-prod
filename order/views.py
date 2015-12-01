@@ -342,9 +342,9 @@ class AboutUs(APIView):
 
     def get(self, request, *args, **kw):
         payload = {
-            "About Us": "FabFresh Is KickAss"
+            "About Us": "More Time to you"
         }
-        return Response(payload, status=status.HTTP_200_OK)
+        return JsonResponse(payload, status=status.HTTP_200_OK)
 
 
 class Faq(APIView):
