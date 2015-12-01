@@ -144,7 +144,8 @@ class PlaceOrderShipment(APIView):
                 if r.status_code == 200:
 
                     if r.json()['status']['code'] == 706:
-                        order.delete()
+                        if flag == 0:
+                            order.delete()
                         response = JsonResponse({"status" : "Delivery Boy Not Available"})
                     else:
                         response = Response(r.json(),status=status.HTTP_200_OK)
@@ -220,8 +221,8 @@ class Track(APIView):
         for i in roadrunner_order_id:
             j = str(i.id)
             print(j)
-        url = "http://128.199.241.199/v1/orders/" + j + "/track"
-        headers = {'Authorization': 'Bearer 4RaJAmtaOEfHJu1dkyWIUVGmckcTizGXyyxPFIgy',
+        url = "http://roadrunnr.in/v1/orders/" + j + "/track"
+        headers = {'Authorization': 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04',
                    'Content-Type': 'application/json'}
         r = requests.get(url, headers=headers)
         if r.status_code == 200:
@@ -357,6 +358,7 @@ class Faq(APIView):
         }
         return Response(payload, status=status.HTTP_200_OK)
 
+class
 
 class ColorViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
