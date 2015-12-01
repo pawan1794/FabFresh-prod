@@ -139,7 +139,7 @@ class PlaceOrderShipment(APIView):
             url = 'http://roadrunnr.in/v1/orders/ship'
             headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
             try:
-
+                
                 r = requests.post(url, json.dumps(payload), headers=headers)
                 if r.status_code == 200:
 
@@ -358,7 +358,6 @@ class Faq(APIView):
         }
         return Response(payload, status=status.HTTP_200_OK)
 
-class
 
 class ColorViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
