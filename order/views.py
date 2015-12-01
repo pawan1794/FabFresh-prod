@@ -177,7 +177,6 @@ class PlaceOrderShipment(APIView):
                 else:
                     if flag == 0:
                         order.delete()
-
                     return Response(r.json(), status=status.HTTP_404_NOT_FOUND)
             except Exception as e:
                 return Response(e, status=status.HTTP_404_NOT_FOUND)
