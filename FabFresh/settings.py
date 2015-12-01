@@ -26,6 +26,7 @@ INSTALLED_APPS = (
     'users',
     'order',
     'rest_framework_swagger',
+    'push_notifications',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -124,7 +125,10 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+PUSH_NOTIFICATIONS_SETTINGS = {
+        "GCM_API_KEY": "AIzaSyC7r-bihlBSfZ3MfHfMCmbshjOloiUCFBU",
+        "APNS_CERTIFICATE" : "/home/hari/Downloads/apns-dev-cert.pem"
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
@@ -141,7 +145,8 @@ SOCIAL_AUTH_FACEBOOK_SECRET = '5fc388d8613577ec2b1ce2d74b19c424'
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'hari@fabfresh.in'
-EMAIL_HOST_PASSWORD = 'BlackListed!23'
+EMAIL_HOST_USER = 'noreply@fabfresh.in'
+EMAIL_HOST_PASSWORD = 'fabfresh123'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+

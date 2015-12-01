@@ -1,4 +1,4 @@
-
+from django.http import JsonResponse
 from rest_framework import viewsets,permissions,status
 from .serializers import ordersSerializer
 from order.models import orders
@@ -17,12 +17,27 @@ from .serializers import ColorSerializer, \
     ClothsOrdersSerializer, \
     DriverDetailsSerializer
 from gcm import *
+from push_notifications.models import GCMDevice,APNSDevice
+import datetime
+from django.utils.timezone import utc
+from random import randint
+
 
 def message(self, phone ,message):
     url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
     r1 = requests.get(url1)
 
-
+def gcm(self, owner_id,order_id,status):
+    reg_id = GCMDevice.objects.filter(user_id = owner_id)
+    try:
+        gcm_reg_id = reg_id[0].registration_id
+        device = GCMDevice.objects.get(registration_id = gcm_reg_id)
+        try:
+            device.send_message( str(order_id) + " " +str(status) )
+        except Exception as e:
+            print e
+    except Exception as e:
+        print e
 
 class ordersViewSet(viewsets.ModelViewSet):
     serializer_class = ordersSerializer
@@ -42,13 +57,25 @@ class ordersViewSet(viewsets.ModelViewSet):
             return Response(e, status=status.HTTP_404_NOT_FOUND)
 
     def update(self, request, *args, **kwargs):
+        order = orders.objects.filter(id= kwargs['pk'])
+        for i in order:
+            print i.owner
+        owner = i.owner
+        userInfo = UserInfo.objects.filter(owner = i.owner)
+        for j in userInfo:
+            phone = j.phone
+
+        gcm(self,j.owner_id,kwargs['pk'],request.data['status'])
+
         for i in request.data:
             if str(i) == "status":
                 order = orders.objects.filter(id = kwargs['pk'])
+
                 userInfo = UserInfo.objects.filter(owner = self.request.user)
+
                 if int(request.data['status']) is 6 :
-                    text_message = "Dear "+ str(self.request.user) +" , Your Order is packed and Ready for Delivery . Please Select Deliver Now in the app to get it at your doorstep. "
-                    message(self,userInfo[0].phone, text_message)
+                    text_message = "Dear "+ str(owner) +" , Your Order is packed and Ready for Delivery . Please Select Deliver Now in the app to get it at your doorstep. "
+                    message(self,phone, text_message)
 
         return super(ordersViewSet, self).update(request, *args, **kwargs)
 
@@ -58,102 +85,103 @@ class PlaceOrderShipment(APIView):
     http_method_names = ['get', 'put', 'head', 'patch', 'post']
 
     def post(self, request, *args, **kw):
+        now = int(datetime.datetime.now().strftime('%H'))
+        #add time details
         flag = 0
         payload = request.data
+        print now
+        if now < 18 and now > 10:
+            print type(payload['order_details']['order_id'])
+            if int(payload['order_details']['order_id']) is 0:
+                try:
+                    order = orders(owner=self.request.user)
+                    order.special_instructions = payload['special_instructions']
+                    order.order_type = payload['order_type']
+                    order.save()
+                    payload['order_details']['order_id'] = unicode(order.id)
 
-        print type(payload['order_details']['order_id'])
-        if int(payload['order_details']['order_id']) is 0:
+                except Exception as e:
+                    return Response(e, status=status.HTTP_404_NOT_FOUND)
+            else:
+                flag = 1
+                order = orders.objects.filter(id=payload['order_details']['order_id'])
+                if not order:
+                    return Response("orderid is not available",status=status.HTTP_200_OK)
+
+            userInfo = UserInfo.objects.filter(owner=self.request.user)
+
+            print(userInfo[0].phone)
+
+            if flag == 1:
+                payload['pickup']['user']['name'] = "FabFresh"
+                payload['pickup']['user']['phone_no'] = "09066093765"
+                payload['pickup']['user']['email'] = "fabfresh.in"
+                payload['pickup']['user']['type'] = "merchant"
+                payload['pickup']['user']['external_id'] = "1002"
+                payload['pickup']['user']['full_address']['address'] = "#67, 2nd Floor,7th cross,Near Police Station"
+                payload['pickup']['user']['full_address']['locality']['name'] = "Wilson Garden"
+                payload['pickup']['user']['full_address']['city']['name'] = "Bangalore"
+                payload['pickup']['user']['full_address']['geo']['latitude'] = "12.943834"
+                payload['pickup']['user']['full_address']['geo']['longitude'] = "77.623928"
+            if flag == 0:
+                payload['drop']['user']['name'] = "FabFresh"
+                payload['drop']['user']['phone_no'] = "09066093765"
+                payload['drop']['user']['email'] = "fabfresh.in"
+                payload['drop']['user']['type'] = "merchant"
+                payload['drop']['user']['external_id'] = "1002"
+                payload['drop']['user']['full_address']['address'] = "#67, 2nd Floor,7th cross,Near Police Station"
+                payload['drop']['user']['full_address']['locality']['name'] = "Wilson Garden"
+                payload['drop']['user']['full_address']['city']['name'] = "Bangalore"
+                payload['drop']['user']['full_address']['geo']['latitude'] = "12.943834"
+                payload['drop']['user']['full_address']['geo']['longitude'] = "77.623928"
+
+            #url = 'http://128.199.241.199/v1/orders/ship'
+            url = 'http://roadrunnr.in/v1/orders/ship'
+            headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
             try:
-                order = orders(owner=self.request.user)
-                order.special_instructions = payload['special_instructions']
-                order.order_type = payload['order_type']
-                order.save()
-                payload['order_details']['order_id'] = unicode(order.id)
 
-            except Exception as e:
-                return Response(e, status=status.HTTP_404_NOT_FOUND)
-        else:
-            flag = 1
-            order = orders.objects.filter(id=payload['order_details']['order_id'])
+                r = requests.post(url, json.dumps(payload), headers=headers)
+                if r.status_code == 200:
 
-        userInfo = UserInfo.objects.filter(owner=self.request.user)
-
-        print(userInfo[0].phone)
-
-        if flag == 1:
-            payload['pickup']['user']['name'] = "FabFresh"
-            payload['pickup']['user']['phone_no'] = "09066093765"
-            payload['pickup']['user']['email'] = "fabfresh.in"
-            payload['pickup']['user']['type'] = "merchant"
-            payload['pickup']['user']['external_id'] = "1002"
-            payload['pickup']['user']['full_address']['address'] = "#67, 2nd Floor,7th cross,Near Police Station"
-            payload['pickup']['user']['full_address']['locality']['name'] = "Wilson Garden"
-            payload['pickup']['user']['full_address']['city']['name'] = "Bangalore"
-            payload['pickup']['user']['full_address']['geo']['latitude'] = "12.943834"
-            payload['pickup']['user']['full_address']['geo']['longitude'] = "77.623928"
-        if flag == 0:
-            payload['drop']['user']['name'] = "FabFresh"
-            payload['drop']['user']['phone_no'] = "09066093765"
-            payload['drop']['user']['email'] = "fabfresh.in"
-            payload['drop']['user']['type'] = "merchant"
-            payload['drop']['user']['external_id'] = "1002"
-            payload['drop']['user']['full_address']['address'] = "#67, 2nd Floor,7th cross,Near Police Station"
-            payload['drop']['user']['full_address']['locality']['name'] = "Wilson Garden"
-            payload['drop']['user']['full_address']['city']['name'] = "Bangalore"
-            payload['drop']['user']['full_address']['geo']['latitude'] = "12.943834"
-            payload['drop']['user']['full_address']['geo']['longitude'] = "77.623928"
-
-        #url = 'http://128.199.241.199/v1/orders/ship'
-        url = 'http://roadrunnr.in/v1/orders/ship'
-        headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
-        try:
-            print(json.dumps(payload))
-
-            r = requests.post(url, json.dumps(payload), headers=headers)
-            print(r.status_code)
-            if r.status_code == 200:
-                if r.json()['status']['code'] == 706:
-                    order.delete()
-                    response = Response("DeliveryBoy not available",status=status.HTTP_200_OK)
-                else:
-                    response = Response(r.json(),status=status.HTTP_200_OK)
-                    print(r.json())
-
-
-                    DriverDetail = DriverDetails(orders_id = payload['order_details']['order_id'],
+                    if r.json()['status']['code'] == 706:
+                        order.delete()
+                        response = JsonResponse({"status" : "Delivery Boy Not Available"})
+                    else:
+                        response = Response(r.json(),status=status.HTTP_200_OK)
+                        DriverDetail = DriverDetails(orders_id = payload['order_details']['order_id'],
                                                 delivery_id = r.json()['delivery_id'],
                                                 driver_name = r.json()['driver_name'],
                                                 driver_phone = r.json()['driver_phone'],
                                                 order_id = r.json()['order_id'])
 
-                    if flag == 0:
-                        order.roadrunner_order_id = r.json()['order_id']
-                        order.delivery_id = r.json()['delivery_id']
-                        order.save()
-
-                        DriverDetail.new_trip = True
-                        DriverDetail.save()
-
-                        text_message = "Dear " + payload['pickup']['user']['name'] + ". Your Order No :" + \
+                        if flag == 0:
+                            order.roadrunner_order_id = r.json()['order_id']
+                            order.delivery_id = r.json()['delivery_id']
+                            order.save()
+                            DriverDetail.new_trip = True
+                            DriverDetail.save()
+                            text_message = "Dear " + payload['pickup']['user']['name'] + ". Your Order No :" + \
                                    payload['order_details']['order_id'] + " with FabFresh is placed Successfully. Our Logistics Partner will be there to pick up your clothes . Pickup boy details will be sent to you shortly. You can track your order in the app now !"
-                        message(self, userInfo[0].phone, text_message)
-                    if flag == 1:
-                        order.update(status=7)
-                        DriverDetail.new_trip = False
-                        DriverDetail.save()
-                        text_message = "Dear " + payload['drop']['user']['name'] + ". Your Order No :" + \
-                                   payload['order_details'][
+                            message(self, userInfo[0].phone, text_message)
+
+                        if flag == 1:
+                            order.update(status=7)
+                            DriverDetail.new_trip = False
+                            DriverDetail.save()
+                            text_message = "Dear " + payload['drop']['user']['name'] + ". Your Order No :" + \
+                                       payload['order_details'][
                                        'order_id'] + "  is on its way. Delivery Boy details will be sent to you shortly. Once again , Thanks for using FabFresh. Please provide your feedback in the app . Have a Wonderful day ! "
+                            message(self, userInfo[0].phone, text_message)
+                    return response
 
-                        message(self, userInfo[0].phone, text_message)
-                return response
-            else:
-                if flag == 0:
-                    order.delete()
-                return Response(r.json(), status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            return Response(e, status=status.HTTP_404_NOT_FOUND)
-
+                else:
+                    if flag == 0:
+                        order.delete()
+                    return Response(r.json(), status=status.HTTP_404_NOT_FOUND)
+            except Exception as e:
+                return Response(e, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return JsonResponse({'status':'Time Up'}, status = status.HTTP_200_OK)
 
 class OrderCancel(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -173,9 +201,9 @@ class OrderCancel(APIView):
             r = requests.get(url, headers=headers)
             if r.status_code == 200:
                 order.update(status=0)
-                return Response("Order Cancelled", status=status.HTTP_200_OK)
+                return JsonResponse({'status':'Order Cancelled'}, status=status.HTTP_200_OK)
             else:
-                return Response("Order Not Cancelled", status=status.HTTP_204_NO_CONTENT)
+                return JsonResponse({"status" : "Order Not Cancelled"}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND)
 
@@ -200,6 +228,10 @@ class Track(APIView):
             response = Response(r.json(), status=status.HTTP_200_OK)
             return response
 
+def random_with_N_digits(n):
+    range_start = 10**(n-1)
+    range_end = (10**n)-1
+    return randint(range_start, range_end)
 
 class setPrice(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -215,6 +247,8 @@ class setPrice(APIView):
             payload = request.data
             try:
                 order = orders.objects.filter(id=payload['id'])
+                if not order:
+                    return JsonResponse({'status' : 'Order not Avalilable'}, status=status.HTTP_404_NOT_FOUND)
             except Exception as e:
                 return Response(e, status=status.HTTP_404_NOT_FOUND)
 
@@ -223,12 +257,11 @@ class setPrice(APIView):
             order.update(status=payload['status'])
 
             a = str(order[0].created_at_time)
-            print a
+
             a = a[-10:]
             if int(a[1]) == 0:
-                a = int(a) + 1000
+                a = random_with_N_digits(4)
                 a = str(a)
-
             order.update(p_id=a[:4])
 
             if order[0].order_type == 1:
@@ -240,25 +273,47 @@ class setPrice(APIView):
                 for i in order:
                     print i.owner
                 userInfo = UserInfo.objects.filter(owner = i.owner)
+
+
                 phone = 0
                 name = " "
                 for i in userInfo:
                     phone = i.phone
                     name = i.owner
-
+                print (i.owner_id)
                 # userInfo = UserInfo.objects.filter(owner = self.request.user)
                 text_message = "Dear " + str(name) + " , Your Order No : " + str(
                     payload['id']) + ". Number of Clothes : " + str(order[0].quantity) + " , Weight : " + str(
-                    order[0].weight) + " KG , Price : " + str(order[
-                                                                  0].amount) + " .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
+                    order[0].weight) + " KG , Price : " + str(order[0].amount) + " .We have started processing your clothes. You can check the status of processing (like Washing , Drying , Ironing , Packaging ) in the app now !  "
                 message(self, phone, text_message)
             except Exception as e:
                 return Response(userInfo[0].phone + userInfo + "SMS Not Sent", status=status.HTTP_404_NOT_FOUND)
 
-            #gcm = GCM("AIzaSyALq9M9qOYsu7Nqm0KQOJXCwCrtODif0ig")
-            #data = {'The_message': 'you have x new friends', 'param2': 'value1'}
-            #reg_id = 'APA91bEpgPjHmT0mA9YPwXvRFPTuHQr9U0mKCWmg4eBWdE3kefaFlGxt0xChLtOpBI9IKqwefKI3ahAfZPZ0b4p-0kLVrbsXBa86ro7aVmdGbE5XdqKVuakbI4PwfX4JX_995k8fk8i4ix2O3zIz0fhkfkzK3mKqmQ'
-            #gcm.plaintext_request(registration_id=reg_id, data=data)
+            '''apns_token = "87f26e125e83985a5b7854098af198f357290152b47d353578e0667b5f89c229"
+            try:
+                device = APNSDevice.objects.get(registration_id=apns_token)
+                device.send_message(str(payload['id']) + " 2")
+            except Exception as e:
+                print "e"
+            '''
+            gcm(self,i.owner_id,payload['id'],2)
+
+            '''print i.id
+            print "user id" + str(self.request.user.id)
+            reg_id = GCMDevice.objects.filter(user_id = i.owner_id)
+            print reg_id
+            try:
+                gcm_reg_id= reg_id[0].registration_id
+
+                device = GCMDevice.objects.get(registration_id=gcm_reg_id)
+                try:
+                    device.send_message( str(payload['id']) + " 2")
+                except Exception as e:
+                    print e
+            except Exception as e:
+                print e
+            '''
+
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND)
         return Response("Success", status=status.HTTP_200_OK)
@@ -270,8 +325,17 @@ class CallBackApiView(APIView):
     def post(self, request, *args, **kw):
         payload = request.data
         print(payload)
+        text_message = str(payload)
+        message(self, "7204680605", text_message)
+
         return Response("Success", status=status.HTTP_200_OK)
 
+class deleteGCM(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, *args, **kw):
+        GCMDevice.objects.all().delete()
+        return Response("Success", status=status.HTTP_200_OK)
 
 class AboutUs(APIView):
     permission_classes = [permissions.AllowAny]

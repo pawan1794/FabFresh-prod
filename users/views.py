@@ -13,11 +13,23 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from django.contrib.auth.models import User
-from .serializers import UserSerializer,UserInfoSerializer
-from .models import UserInfo
+from .serializers import UserSerializer,UserInfoSerializer, UserProfileSerializer
+from .models import UserInfo, UserProfile
 from rest_framework import viewsets
 from .permission import IsOwnerOrReadOnly
 from django.conf import settings
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated,TokenHasReadWriteScope]
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return UserProfile.objects.all()
+        else:
+            return UserProfile.objects.filter(user=self.request.user.id)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -51,7 +63,7 @@ class UserInfoViewSet(viewsets.ModelViewSet):
 @psa('social:complete')
 def register_by_access_token(request, backend):
     token = request.GET.get('access_token')
-    number = request.GET.get('number')
+    phone = request.GET.get('phone')
     email = request.GET.get('email')
 
     try:
@@ -63,11 +75,21 @@ def register_by_access_token(request, backend):
             if email:
                 u.email = email
                 u.save()
-            if number:
+            if phone:
+                '''
+                #NEW
+                up = UserProfile.objects.get(user = user.id)
+
+                if not up.phone:
+                    userProfile = UserProfile(user = u)
+                    userProfile.phone = phone
+                    userProfile.save()
+                    #OLD
+                '''
                 userInfo = UserInfo(owner=u)
-                userInfo.phone = number
+                userInfo.phone = phone
                 userInfo.save()
-            return get_access_token(user,number)
+            return get_access_token(user,phone,email)
         else:
             return Response("asd",status=status.HTTP_404_NOT_FOUND)
     except Exception as e:

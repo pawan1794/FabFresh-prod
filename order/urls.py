@@ -23,5 +23,6 @@ urlpatterns = patterns(
     url(r'^setAmount/$' , views.setPrice.as_view(), name='setPrice'),
     url(r'^cancel/$', views.OrderCancel.as_view(), name = 'CancelOrder'),
     url(r'^aboutus/$' , views.AboutUs.as_view(), name='AboutUs'),
-    url(r'^faq/$', views.Faq.as_view(), name='FaQ')
+    url(r'^faq/$', views.Faq.as_view(), name='FaQ'),
+    url(r'^deletegcm/$',views.deleteGCM.as_view(),name='deleteGCM')
 )
