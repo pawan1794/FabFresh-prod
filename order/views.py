@@ -90,7 +90,7 @@ class PlaceOrderShipment(APIView):
         flag = 0
         payload = request.data
         print now
-        if now < 18 and now > 10:
+        if now < 20 and now > 10:
             print type(payload['order_details']['order_id'])
             if int(payload['order_details']['order_id']) is 0:
                 try:
