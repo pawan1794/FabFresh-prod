@@ -86,11 +86,12 @@ class PlaceOrderShipment(APIView):
 
     def post(self, request, *args, **kw):
         now = int(datetime.datetime.now().strftime('%H'))
+        print now
         #add time details
         flag = 0
         payload = request.data
         print now
-        if now < 20 and now > 10:
+        if now < 20 and now > 9:
             print type(payload['order_details']['order_id'])
             if int(payload['order_details']['order_id']) is 0:
                 try:
@@ -139,7 +140,7 @@ class PlaceOrderShipment(APIView):
             url = 'http://roadrunnr.in/v1/orders/ship'
             headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
             try:
-                
+
                 r = requests.post(url, json.dumps(payload), headers=headers)
                 if r.status_code == 200:
 
