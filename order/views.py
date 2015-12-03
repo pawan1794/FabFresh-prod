@@ -86,7 +86,6 @@ class PlaceOrderShipment(APIView):
 
     def post(self, request, *args, **kw):
         now = int(datetime.datetime.now().strftime('%H'))
-        print now
         #add time details
         flag = 0
         payload = request.data
@@ -115,7 +114,7 @@ class PlaceOrderShipment(APIView):
 
             if flag == 1:
                 payload['pickup']['user']['name'] = "FabFresh"
-                payload['pickup']['user']['phone_no'] = "09066093765"
+                payload['pickup']['user']['phone_no'] = "9108014238"
                 payload['pickup']['user']['email'] = "fabfresh.in"
                 payload['pickup']['user']['type'] = "merchant"
                 payload['pickup']['user']['external_id'] = "1002"
@@ -126,7 +125,7 @@ class PlaceOrderShipment(APIView):
                 payload['pickup']['user']['full_address']['geo']['longitude'] = "77.623928"
             if flag == 0:
                 payload['drop']['user']['name'] = "FabFresh"
-                payload['drop']['user']['phone_no'] = "09066093765"
+                payload['drop']['user']['phone_no'] = "9108014238"
                 payload['drop']['user']['email'] = "fabfresh.in"
                 payload['drop']['user']['type'] = "merchant"
                 payload['drop']['user']['external_id'] = "1002"
