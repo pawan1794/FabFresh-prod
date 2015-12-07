@@ -326,9 +326,9 @@ class CallBackApiView(APIView):
     def post(self, request, *args, **kw):
         payload = request.data
         print(payload)
-        text_message = str(payload)
-        message(self, "7204680605", text_message)
-
+        if payload['status'] == "REACHED_PICKUP":
+            text_message = str(payload)
+            message(self, "7204680605", text_message)
         return Response("Success", status=status.HTTP_200_OK)
 
 class deleteGCM(APIView):
