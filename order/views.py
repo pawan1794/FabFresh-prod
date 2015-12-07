@@ -327,7 +327,7 @@ class CallBackApiView(APIView):
         payload = request.data
         print(payload)
         if payload['status'] == "REACHED_PICKUP":
-            text_message = str(payload)
+            text_message = str(payload['order_id'])
             message(self, "7204680605", text_message)
         return Response("Success", status=status.HTTP_200_OK)
 
