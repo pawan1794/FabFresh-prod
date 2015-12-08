@@ -29,7 +29,11 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         if self.request.user.is_superuser:
             return UserProfile.objects.all()
         else:
-            return UserProfile.objects.filter(user=self.request.user.id)
+            return UserProfile.objects.filter(owner=self.request.user.id)
+
+    def perform_create(self, serializer):
+        print(self.request.user)
+        serializer.save(owner=self.request.user)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -75,8 +79,9 @@ def register_by_access_token(request, backend):
             if email:
                 u.email = email
                 u.save()
+            '''
             if phone:
-                '''
+
                 #NEW
                 up = UserProfile.objects.get(user = user.id)
 
@@ -85,10 +90,10 @@ def register_by_access_token(request, backend):
                     userProfile.phone = phone
                     userProfile.save()
                     #OLD
-                '''
                 userInfo = UserInfo(owner=u)
                 userInfo.phone = phone
                 userInfo.save()
+            '''
             return get_access_token(user,phone,email)
         else:
             return Response("asd",status=status.HTTP_404_NOT_FOUND)

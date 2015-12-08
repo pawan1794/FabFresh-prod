@@ -6,6 +6,7 @@ from django.utils.timezone import now, timedelta
 import requests
 from django.core.mail import send_mail
 from django.conf import settings
+from models import User,UserInfo
 
 #Method to be called for sending message
 def message(phone ,message):
@@ -24,6 +25,13 @@ def get_token_json(access_token, a, number,user,email):
         'phone' : number
     }
     if a == 1:
+        if number:
+            u = User.objects.get(id = user.id)
+            up = UserInfo.objects.get(user = user.id)
+            if not up.phone:
+                userInfo = UserInfo(user = u)
+                userInfo.phone = number
+                userInfo.save()
         #sending message to new registered users
         text_message = "Dear "+ str(user) +" , Thanks for Signing up with FabFresh . More Time to You ! from now on . "
         message(number,text_message)

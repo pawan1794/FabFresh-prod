@@ -1,6 +1,6 @@
 branch-defaults:
   dev:
-    environment: FabFresh
+    environment: FabFresh-prod
   master:
     environment: FabFresh
 global:

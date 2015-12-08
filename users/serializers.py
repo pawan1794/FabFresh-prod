@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'UserInfo', 'first_name','orders','email')
 
-
+'''
 class UserInfoSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
 
@@ -21,6 +21,20 @@ class UserInfoSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     #address = serializers.HyperlinkedRelatedField(read_only=True,many=True,view_name = 'address-detail')
+
+    class Meta:
+        model = UserProfile
+'''
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
+    class Meta:
+        model = UserInfo
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
         model = UserProfile
