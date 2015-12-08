@@ -24,6 +24,7 @@ def get_token_json(access_token, a, number,user,email):
         'user_status' : a,
         'phone' : number
     }
+    print a
     if a == 1:
         if number:
             print "inside phone1"
@@ -43,7 +44,17 @@ def get_token_json(access_token, a, number,user,email):
         message(number,text_message)
         #send email
         send_mail('FabFresh Welcome\'s You', 'Welcome to FabFresh. We are happy to have you. More Time to You ! from now on', settings.EMAIL_HOST_USER, [str(email)], fail_silently=False)
-    return JsonResponse(token)
+        return JsonResponse(token)
+    else:
+        token1 = {
+        'access_token': access_token.token,
+        'expires_in': oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS,
+        'token_type': 'Bearer',
+        'refresh_token': access_token.refresh_token.token,
+        'scope': access_token.scope,
+        'user_status' : a,
+        }
+        return JsonResponse(token1)
 
 
 def get_access_token(user,number,email):
@@ -83,5 +94,5 @@ def get_access_token(user,number,email):
                application=app,
                token=refresh_token,
                access_token=access_token)
-
+    print a
     return get_token_json(access_token,a,number,user,email)
