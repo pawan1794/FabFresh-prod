@@ -3,8 +3,27 @@ from .models import UserInfo, UserProfile #, Locality, Address, City
 from django.contrib.auth.models import User
 from order.models import orders
 
+class UserInfoSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    class Meta:
+        model = UserInfo
+
+#Only to get phone number[userinfo model]
+class PhoneNumberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserInfo
+        fields = ('phone',)
+
+#Getting address
+class UserProfileSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
+    class Meta:
+        model = UserProfile
+
 class UserSerializer(serializers.ModelSerializer):
-    UserInfo = serializers.PrimaryKeyRelatedField(many=True, queryset=UserInfo.objects.all())
+    UserInfo = PhoneNumberSerializer()
+    #UserInfo = serializers.PrimaryKeyRelatedField(queryset=UserInfo.objects.all())
     orders = serializers.PrimaryKeyRelatedField(many=True, queryset=orders.objects.all())
 
     class Meta:
@@ -26,15 +45,4 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
 '''
 
-class UserInfoSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
 
-    class Meta:
-        model = UserInfo
-
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
-
-    class Meta:
-        model = UserProfile
