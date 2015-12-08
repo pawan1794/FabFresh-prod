@@ -13,6 +13,9 @@ class UserInfo(models.Model):
     created_at_time = models.DateTimeField(auto_now_add=True, blank=True)
     flag = models.BooleanField(default=0, blank=True)
 
+    def __unicode__(self):
+        return unicode(self.owner)
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)

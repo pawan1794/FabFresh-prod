@@ -89,8 +89,9 @@ class PlaceOrderShipment(APIView):
         #add time details
         flag = 0
         payload = request.data
+        payload['callback'] = "http://fabfresh-prod.elasticbeanstalk.com/callback"
         print now
-        if now < 18 and now > 10:
+        if now < 20 and now > 9:
             print type(payload['order_details']['order_id'])
             if int(payload['order_details']['order_id']) is 0:
                 try:
@@ -114,7 +115,7 @@ class PlaceOrderShipment(APIView):
 
             if flag == 1:
                 payload['pickup']['user']['name'] = "FabFresh"
-                payload['pickup']['user']['phone_no'] = "09066093765"
+                payload['pickup']['user']['phone_no'] = "9108014238"
                 payload['pickup']['user']['email'] = "fabfresh.in"
                 payload['pickup']['user']['type'] = "merchant"
                 payload['pickup']['user']['external_id'] = "1002"
@@ -125,7 +126,7 @@ class PlaceOrderShipment(APIView):
                 payload['pickup']['user']['full_address']['geo']['longitude'] = "77.623928"
             if flag == 0:
                 payload['drop']['user']['name'] = "FabFresh"
-                payload['drop']['user']['phone_no'] = "09066093765"
+                payload['drop']['user']['phone_no'] = "9108014238"
                 payload['drop']['user']['email'] = "fabfresh.in"
                 payload['drop']['user']['type'] = "merchant"
                 payload['drop']['user']['external_id'] = "1002"
@@ -144,7 +145,8 @@ class PlaceOrderShipment(APIView):
                 if r.status_code == 200:
 
                     if r.json()['status']['code'] == 706:
-                        order.delete()
+                        if flag == 0:
+                            order.delete()
                         response = JsonResponse({"status" : "Delivery Boy Not Available"})
                     else:
                         response = Response(r.json(),status=status.HTTP_200_OK)
@@ -220,8 +222,8 @@ class Track(APIView):
         for i in roadrunner_order_id:
             j = str(i.id)
             print(j)
-        url = "http://128.199.241.199/v1/orders/" + j + "/track"
-        headers = {'Authorization': 'Bearer 4RaJAmtaOEfHJu1dkyWIUVGmckcTizGXyyxPFIgy',
+        url = "http://roadrunnr.in/v1/orders/" + j + "/track"
+        headers = {'Authorization': 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04',
                    'Content-Type': 'application/json'}
         r = requests.get(url, headers=headers)
         if r.status_code == 200:
@@ -325,9 +327,9 @@ class CallBackApiView(APIView):
     def post(self, request, *args, **kw):
         payload = request.data
         print(payload)
-        text_message = str(payload)
-        message(self, "7204680605", text_message)
-
+        if payload['status'] == "REACHED_PICKUP":
+            text_message = str(payload['status'])
+            message(self, "7204680605", text_message)
         return Response("Success", status=status.HTTP_200_OK)
 
 class deleteGCM(APIView):
@@ -342,9 +344,9 @@ class AboutUs(APIView):
 
     def get(self, request, *args, **kw):
         payload = {
-            "About Us": "FabFresh Is KickAss"
+            "About Us": "More Time to you"
         }
-        return Response(payload, status=status.HTTP_200_OK)
+        return JsonResponse(payload, status=status.HTTP_200_OK)
 
 
 class Faq(APIView):
