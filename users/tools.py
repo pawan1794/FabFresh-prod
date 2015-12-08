@@ -24,8 +24,8 @@ def get_token_json(access_token, a, number,user,email):
         'user_status' : a,
         'phone' : number
     }
-    print a
     if a == 1:
+        print a
         if number:
             print "inside phone1"
             u = User.objects.get(id = user.id)
@@ -54,6 +54,7 @@ def get_token_json(access_token, a, number,user,email):
         'scope': access_token.scope,
         'user_status' : a,
         }
+        print a
         return JsonResponse(token1)
 
 
