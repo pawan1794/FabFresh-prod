@@ -71,11 +71,13 @@ def register_by_access_token(request, backend):
     email = request.GET.get('email')
 
     try:
-        user = request.backend.do_auth(token)
 
+        user = request.backend.do_auth(token)
+        print "asd"
         if user:
             login(request, user)
             u = User.objects.get(id = user.id)
+
             if email:
                 u.email = email
                 u.save()

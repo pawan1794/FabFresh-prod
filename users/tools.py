@@ -26,12 +26,18 @@ def get_token_json(access_token, a, number,user,email):
     }
     if a == 1:
         if number:
+            print "inside phone1"
             u = User.objects.get(id = user.id)
-            up = UserInfo.objects.get(user = user.id)
+            print "inside phone2"
+            print u.id
+            up = UserInfo.objects.get(owner = u.id)
+            print u
             if not up.phone:
-                userInfo = UserInfo(user = u)
-                userInfo.phone = number
-                userInfo.save()
+                print "inside phone3"
+                userInfo = UserInfo.objects.filter(owner = u)
+                userInfo.update(phone=number)
+                print "inside phone4"
+                print "inside phon5"
         #sending message to new registered users
         text_message = "Dear "+ str(user) +" , Thanks for Signing up with FabFresh . More Time to You ! from now on . "
         message(number,text_message)

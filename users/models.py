@@ -11,7 +11,7 @@ class UserInfo(models.Model):
 
 def create_user_Info(sender, instance, created, **kwargs):
     if created:
-       profile, created = UserInfo.objects.get_or_create(user=instance)
+       profile, created = UserInfo.objects.get_or_create(owner=instance)
 
 
 post_save.connect(create_user_Info, sender=User)
@@ -28,7 +28,7 @@ class UserProfile(models.Model):
     flag = models.BooleanField(default=0, blank=True)
 
     def __str__(self):
-        return "%s's Profile" % self.user
+        return "%s's Profile" % self.owner
 
 
 '''def create_user_profile(sender, instance, created, **kwargs):
