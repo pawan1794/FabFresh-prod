@@ -25,20 +25,12 @@ def get_token_json(access_token, a, number,user,email):
         'phone' : number
     }
     if a == 1:
-        print a
         if number:
-            print "inside phone1"
             u = User.objects.get(id = user.id)
-            print "inside phone2"
-            print u.id
             up = UserInfo.objects.get(owner = u.id)
-            print u
             if not up.phone:
-                print "inside phone3"
                 userInfo = UserInfo.objects.filter(owner = u)
                 userInfo.update(phone=number)
-                print "inside phone4"
-                print "inside phon5"
         #sending message to new registered users
         text_message = "Dear "+ str(user) +" , Thanks for Signing up with FabFresh . More Time to You ! from now on . "
         message(number,text_message)
@@ -54,7 +46,6 @@ def get_token_json(access_token, a, number,user,email):
         'scope': access_token.scope,
         'user_status' : a,
         }
-        print a
         return JsonResponse(token1)
 
 
@@ -95,5 +86,4 @@ def get_access_token(user,number,email):
                application=app,
                token=refresh_token,
                access_token=access_token)
-    print a
     return get_token_json(access_token,a,number,user,email)

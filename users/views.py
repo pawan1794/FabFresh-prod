@@ -81,21 +81,6 @@ def register_by_access_token(request, backend):
             if email:
                 u.email = email
                 u.save()
-            '''
-            if phone:
-
-                #NEW
-                up = UserProfile.objects.get(user = user.id)
-
-                if not up.phone:
-                    userProfile = UserProfile(user = u)
-                    userProfile.phone = phone
-                    userProfile.save()
-                    #OLD
-                userInfo = UserInfo(owner=u)
-                userInfo.phone = phone
-                userInfo.save()
-            '''
             return get_access_token(user,phone,email)
         else:
             return Response("asd",status=status.HTTP_404_NOT_FOUND)
