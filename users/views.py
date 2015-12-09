@@ -18,7 +18,7 @@ from .models import UserInfo, UserProfile
 from rest_framework import viewsets
 from .permission import IsOwnerOrReadOnly
 from django.conf import settings
-
+import logging
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
@@ -71,7 +71,6 @@ def register_by_access_token(request, backend):
     email = request.GET.get('email')
 
     try:
-
         user = request.backend.do_auth(token)
         print "asd"
         if user:

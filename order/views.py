@@ -21,7 +21,7 @@ from push_notifications.models import GCMDevice,APNSDevice
 import datetime
 from django.utils.timezone import utc
 from random import randint
-
+import math
 
 def message(self, phone ,message):
     url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
@@ -38,6 +38,17 @@ def gcm(self, owner_id,order_id,status):
             print e
     except Exception as e:
         print e
+
+def haversine(lon1, lat1, lon2, lat2):
+    lon1, lat1, lon2, lat2 = map(math.radians, [lon1, lat1, lon2, lat2])
+
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+    c = 2 * math.asin(math.sqrt(a))
+    r = 6371 # Radius of earth in kilometers. Use 3956 for miles
+
+    return ((c*r)+2)
 
 class ordersViewSet(viewsets.ModelViewSet):
     serializer_class = ordersSerializer
@@ -136,6 +147,15 @@ class PlaceOrderShipment(APIView):
                 payload['drop']['user']['full_address']['geo']['latitude'] = "12.943834"
                 payload['drop']['user']['full_address']['geo']['longitude'] = "77.623928"
 
+                print payload['pickup']['user']['full_address']['geo']['latitude']
+                print payload['pickup']['user']['full_address']['geo']['longitude']
+                print "asd"
+                print(haversine(12.9283383781042,77.6302055642009,12.948645,77.594783))
+                print haversine(float(payload['pickup']['user']['full_address']['geo']['latitude']),float(payload['pickup']['user']['full_address']['geo']['longitude']),12.948645,77.594783)
+                if haversine(float(payload['pickup']['user']['full_address']['geo']['latitude']),float(payload['pickup']['user']['full_address']['geo']['longitude']),12.948645,77.594783) < 6.0:
+                    pass
+                else:
+                    return JsonResponse({'status':'Service Not Available'}, status = status.HTTP_200_OK)
             #url = 'http://128.199.241.199/v1/orders/ship'
             url = 'http://roadrunnr.in/v1/orders/ship'
             headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}

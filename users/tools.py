@@ -7,6 +7,9 @@ import requests
 from django.core.mail import send_mail
 from django.conf import settings
 from models import User,UserInfo
+import logging
+
+logger = logging.getLogger(__name__)
 
 #Method to be called for sending message
 def message(phone ,message):
@@ -36,6 +39,7 @@ def get_token_json(access_token, a, number,user,email):
         message(number,text_message)
         #send email
         send_mail('FabFresh Welcome\'s You', 'Welcome to FabFresh. We are happy to have you. More Time to You ! from now on', settings.EMAIL_HOST_USER, [str(email)], fail_silently=False)
+        logger.info("New User " + str(user) + " has registered with fabfresh" )
         return JsonResponse(token)
     else:
         token1 = {
@@ -46,6 +50,7 @@ def get_token_json(access_token, a, number,user,email):
         'scope': access_token.scope,
         'user_status' : a,
         }
+        logger.info("New Access token " + access_token.token + " is assigined for user " + str(user))
         return JsonResponse(token1)
 
 
@@ -63,6 +68,7 @@ def get_access_token(user,number,email):
     else:
         #set 0 if exsisting user
         a = 0
+        logger.info("Deleting Old Access Token for " + str(user) + " " + str(old_access_token))
         old_access_token.delete()
         old_refresh_token.delete()
 
