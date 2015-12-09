@@ -23,12 +23,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     UserInfo = PhoneNumberSerializer()
+    UserProfile = UserProfileSerializer(many=True)
     #UserInfo = serializers.PrimaryKeyRelatedField(queryset=UserInfo.objects.all())
     orders = serializers.PrimaryKeyRelatedField(many=True, queryset=orders.objects.all())
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'UserInfo', 'first_name','orders','email')
+        fields = ('id', 'username', 'UserInfo','UserProfile', 'first_name','orders','email')
 
 '''
 class UserInfoSerializer(serializers.ModelSerializer):
