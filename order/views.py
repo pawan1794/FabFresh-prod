@@ -47,8 +47,8 @@ def haversine(lon1, lat1, lon2, lat2):
     a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
     c = 2 * math.asin(math.sqrt(a))
     r = 6371 # Radius of earth in kilometers. Use 3956 for miles
-
-    return ((c*r)+2)
+    print c*r
+    return (c*r)
 
 class ordersViewSet(viewsets.ModelViewSet):
     serializer_class = ordersSerializer
@@ -146,13 +146,10 @@ class PlaceOrderShipment(APIView):
                 payload['drop']['user']['full_address']['city']['name'] = "Bangalore"
                 payload['drop']['user']['full_address']['geo']['latitude'] = "12.943834"
                 payload['drop']['user']['full_address']['geo']['longitude'] = "77.623928"
-
-                print payload['pickup']['user']['full_address']['geo']['latitude']
-                print payload['pickup']['user']['full_address']['geo']['longitude']
                 print "asd"
-                print(haversine(12.9283383781042,77.6302055642009,12.948645,77.594783))
                 print haversine(float(payload['pickup']['user']['full_address']['geo']['latitude']),float(payload['pickup']['user']['full_address']['geo']['longitude']),12.948645,77.594783)
-                if haversine(float(payload['pickup']['user']['full_address']['geo']['latitude']),float(payload['pickup']['user']['full_address']['geo']['longitude']),12.948645,77.594783) < 6.0:
+
+                if haversine(float(payload['pickup']['user']['full_address']['geo']['latitude']),float(payload['pickup']['user']['full_address']['geo']['longitude']),12.948645,77.594783) < 4.0:
                     pass
                 else:
                     return JsonResponse({'status':'Service Not Available'}, status = status.HTTP_200_OK)

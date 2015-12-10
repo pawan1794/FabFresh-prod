@@ -12,6 +12,7 @@ router.register(r'^device/gcm', GCMDeviceAuthorizedViewSet)
 #router.register(r'gcm',GCMDeviceViewSet)
 router.register(r'^device/apns', APNSDeviceAuthorizedViewSet)
 router.register(r'^address',views.UserProfileViewSet)
+router.register(r'^postalcode',views.PostalCodeViewSet)
 
 urlpatterns = patterns(
     '',

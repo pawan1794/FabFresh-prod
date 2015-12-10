@@ -13,12 +13,16 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from django.contrib.auth.models import User
-from .serializers import UserSerializer,UserInfoSerializer, UserProfileSerializer
-from .models import UserInfo, UserProfile
+from .serializers import UserSerializer,UserInfoSerializer, UserProfileSerializer, PostalCodeSerializer
+from .models import UserInfo, UserProfile, PostalCode
 from rest_framework import viewsets
 from .permission import IsOwnerOrReadOnly
 from django.conf import settings
 import logging
+
+class PostalCodeViewSet(viewsets.ModelViewSet):
+    queryset = PostalCode.objects.all()
+    serializer_class = PostalCodeSerializer
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()

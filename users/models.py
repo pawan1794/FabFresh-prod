@@ -16,9 +16,17 @@ def create_user_Info(sender, instance, created, **kwargs):
 
 post_save.connect(create_user_Info, sender=User)
 
+class PostalCode(models.Model):
+    postalCode = models.IntegerField(primary_key=True)
+    Locality = models.CharField(max_length=255,blank=True,null=True)
+
+    def __str__(self):
+        return str(self.postalCode)
+
 class UserProfile(models.Model):
 
     owner = models.ForeignKey('auth.User', related_name='UserProfile')
+    postalcode = models.ForeignKey('PostalCode',related_name='postalcode')
     address = models.CharField(max_length=255)
     addressLocality = models.CharField(max_length=255,blank=True,null=True)
     addressSubLocality = models.CharField(max_length=100, blank=True,null=True)

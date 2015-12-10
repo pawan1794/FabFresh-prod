@@ -1,7 +1,12 @@
 from rest_framework import serializers
-from .models import UserInfo, UserProfile #, Locality, Address, City
+from .models import UserInfo, UserProfile,PostalCode #, Locality, Address, City
 from django.contrib.auth.models import User
 from order.models import orders
+
+
+class PostalCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostalCode
 
 class UserInfoSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
