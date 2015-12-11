@@ -210,10 +210,11 @@ class OrderCancel(APIView):
 
         try:
             order = orders.objects.filter(id=payload['id'])
+            print order[0].roadrunner_order_id
         except Exception as e:
             return Response(e, status=status.HTTP_204_NO_CONTENT)
 
-        url = "http://roadrunnr.in/v1/orders/" + payload['id'] + "/cancel"
+        url = "http://roadrunnr.in/v1/orders/" + order[0].roadrunner_order_id + "/cancel"
         headers = {'Authorization': 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04',
                    'Content-Type': 'application/json'}
         try:
@@ -317,7 +318,7 @@ class setPrice(APIView):
             '''
             gcm(self,i.owner_id,payload['id'],2)
 
-            '''print i.id
+            '''print i.idBearer gZISOx8U53A3108fQfiz04xNKXetvV
             print "user id" + str(self.request.user.id)
             reg_id = GCMDevice.objects.filter(user_id = i.owner_id)
             print reg_id
