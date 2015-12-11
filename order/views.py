@@ -318,7 +318,7 @@ class setPrice(APIView):
             '''
             gcm(self,i.owner_id,payload['id'],2)
 
-            '''print i.idBearer gZISOx8U53A3108fQfiz04xNKXetvV
+            '''print i.id
             print "user id" + str(self.request.user.id)
             reg_id = GCMDevice.objects.filter(user_id = i.owner_id)
             print reg_id
