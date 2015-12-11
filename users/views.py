@@ -36,6 +36,7 @@ class UserProfileViewSet(viewsets.ModelViewSet):
             return UserProfile.objects.filter(owner=self.request.user.id)
 
     def perform_create(self, serializer):
+
         print(self.request.user)
         serializer.save(owner=self.request.user)
 
