@@ -132,7 +132,7 @@ PUSH_NOTIFICATIONS_SETTINGS = {
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-STATIC_URL = '/static/'
+STATIC_URL = '/static/static'
 STATIC_ROOT = os.path.join(BASE_DIR, '..','static') 
 #STATIC_ROOT = "/opt/python/current/app/FabFresh/FabFresh/static"
 
