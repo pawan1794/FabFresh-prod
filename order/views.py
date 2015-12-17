@@ -161,7 +161,7 @@ class PlaceOrderShipment(APIView):
 
                 r = requests.post(url, json.dumps(payload), headers=headers)
                 if r.status_code == 200:
-
+                    print "Inside 200 status"
                     if r.json()['status']['code'] == 706:
                         if flag == 0:
                             order.delete()
@@ -173,7 +173,7 @@ class PlaceOrderShipment(APIView):
                                                 driver_name = r.json()['driver_name'],
                                                 driver_phone = r.json()['driver_phone'],
                                                 order_id = r.json()['order_id'])
-
+                        print "After driver informations stored"
                         if flag == 0:
                             order.roadrunner_order_id = r.json()['order_id']
                             order.delivery_id = r.json()['delivery_id']
@@ -192,6 +192,7 @@ class PlaceOrderShipment(APIView):
                                        payload['order_details'][
                                        'order_id'] + "  is on its way. Delivery Boy details will be sent to you shortly. Once again , Thanks for using FabFresh. Please provide your feedback in the app . Have a Wonderful day ! "
                             message(self, userInfo[0].phone, text_message)
+                    print "After message sent "
                     return response
 
                 else:
