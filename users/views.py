@@ -99,7 +99,7 @@ class CheckAvailabilityApiView(APIView):
     def post(self,request, *args, **kw):
         payload = request.data
         url = 'http://roadrunnr.in/v1/orders/serviceability'
-        headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
+        headers = {'Authorization' : 'Bearer L0vqwtrFUodi6VA8HhxKtSdVjTinUUaoHEUk2VPP' , 'Content-Type' : 'application/json'}
         r = requests.post(url, json.dumps(payload), headers=headers)
         response = Response(r.json(),status=status.HTTP_200_OK)
         return response

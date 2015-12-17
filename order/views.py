@@ -156,7 +156,7 @@ class PlaceOrderShipment(APIView):
                     return JsonResponse({'status':'Service Not Available'}, status = status.HTTP_200_OK)
             #url = 'http://128.199.241.199/v1/orders/ship'
             url = 'http://roadrunnr.in/v1/orders/ship'
-            headers = {'Authorization' : 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04' , 'Content-Type' : 'application/json'}
+            headers = {'Authorization' : 'Bearer L0vqwtrFUodi6VA8HhxKtSdVjTinUUaoHEUk2VPP' , 'Content-Type' : 'application/json'}
             try:
 
                 r = requests.post(url, json.dumps(payload), headers=headers)
@@ -216,7 +216,7 @@ class OrderCancel(APIView):
             return Response(e, status=status.HTTP_204_NO_CONTENT)
 
         url = "http://roadrunnr.in/v1/orders/" + order[0].roadrunner_order_id + "/cancel"
-        headers = {'Authorization': 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04',
+        headers = {'Authorization': 'Bearer L0vqwtrFUodi6VA8HhxKtSdVjTinUUaoHEUk2VPP',
                    'Content-Type': 'application/json'}
         try:
             r = requests.get(url, headers=headers)
@@ -242,7 +242,7 @@ class Track(APIView):
             j = str(i.id)
             print(j)
         url = "http://roadrunnr.in/v1/orders/" + j + "/track"
-        headers = {'Authorization': 'Bearer HQ0FoVxzj292CZxSOVVZCRTwJ6QgThcmNy56RJ04',
+        headers = {'Authorization': 'Bearer L0vqwtrFUodi6VA8HhxKtSdVjTinUUaoHEUk2VPP',
                    'Content-Type': 'application/json'}
         r = requests.get(url, headers=headers)
         if r.status_code == 200:
