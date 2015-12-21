@@ -278,10 +278,12 @@ class setPrice(APIView):
             order.update(status=payload['status'])
 
             a = str(order[0].created_at_time)
-
+            print a
             a = a[-10:]
             if int(a[1]) == 0:
                 a = random_with_N_digits(4)
+                if a < 1000:
+                    a = a + 1000
                 a = str(a)
             order.update(p_id=a[:4])
 
@@ -403,6 +405,14 @@ class ClothViewSet(viewsets.ModelViewSet):
     queryset = ClothInfo.objects.all()
     serializer_class = ClothInfoSerializer
 
+    def get_serializer(self, *args, **kwargs):
+        if "data" in kwargs:
+            data = kwargs["data"]
+
+        if isinstance(data, list):
+            kwargs["many"] = True
+
+        return super(ClothViewSet, self).get_serializer(*args, **kwargs)
 
 class ClothInfoViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]

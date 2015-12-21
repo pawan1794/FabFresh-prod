@@ -64,7 +64,7 @@ class Color(models.Model):
 
 class ClothInfo(models.Model):
     cloth_id = models.AutoField(primary_key=True)
-    order = models.ForeignKey(orders)
+    order = models.ForeignKey(orders,related_name='ClothInfo')
     size = models.ForeignKey(Size)
     type = models.ForeignKey(Type)
     color = models.ForeignKey(Color)
