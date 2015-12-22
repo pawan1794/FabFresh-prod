@@ -24,7 +24,7 @@ class ordersSerializer(serializers.ModelSerializer):
     ClothInfo = ClothInforamtionSerializer(many=True)
     class Meta:
         model = orders
-        fields = ('id','amount','status','created_at_time','owner','weight','quantity','order_type','p_id' , 'special_instructions','ClothInfo')
+        fields = ('id','amount','status','created_at_time','modified_at_time','owner','weight','quantity','order_type','p_id' , 'special_instructions','ClothInfo')
 
 class DriverDetailsSerializer(serializers.ModelSerializer):
     class Meta:

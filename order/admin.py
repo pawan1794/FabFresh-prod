@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import orders,DriverDetails,Size, Type, Color, ClothInfo, Brand
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('owner','id','amount' , 'quantity' , 'weight' , 'created_at_time', 'status', 'special_instructions','p_id')
+    list_display = ('owner','id','amount' , 'quantity' , 'weight' , 'created_at_time','modified_at_time' ,'status', 'special_instructions','p_id')
 
 class DriverDetailsAdmin(admin.ModelAdmin):
     list_display = ('orders','id','driver_name','new_trip','delivery_id','order_id','driver_phone')

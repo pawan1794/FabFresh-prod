@@ -23,6 +23,7 @@ import datetime
 from django.utils.timezone import utc
 from random import randint
 import math
+from django.utils import timezone
 
 def message(self, phone ,message):
     url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
@@ -69,9 +70,13 @@ class ordersViewSet(viewsets.ModelViewSet):
             return Response(e, status=status.HTTP_404_NOT_FOUND)
 
     def update(self, request, *args, **kwargs):
+        print "asd"
         order = orders.objects.filter(id= kwargs['pk'])
+        order.update(modified_at_time=timezone.now())
+        print order
         for i in order:
             print i.owner
+            i.modified_at_time=timezone.now()
         owner = i.owner
         userInfo = UserInfo.objects.filter(owner = i.owner)
         for j in userInfo:
@@ -101,7 +106,7 @@ class PlaceOrderShipment(APIView):
         #add time details
         flag = 0
         payload = request.data
-        payload['callback'] = "http://fabfresh-prod.elasticbeanstalk.com/callback"
+        payload['callback'] = "http://fabfresh.elasticbeanstalk.com/callback"
         print now
         if now < 20 and now > 9:
             print type(payload['order_details']['order_id'])
@@ -276,7 +281,8 @@ class setPrice(APIView):
             order.update(quantity=payload['quantity'])
             order.update(weight=float(payload['weight']))
             order.update(status=payload['status'])
-
+            order.update(modified_at_time=timezone.now())
+            print timezone.now()
             a = str(order[0].created_at_time)
             print a
             a = a[-10:]
@@ -285,6 +291,8 @@ class setPrice(APIView):
                 if a < 1000:
                     a = a + 1000
                 a = str(a)
+                if a < 1000:
+                    a = a + 1000
             order.update(p_id=a[:4])
 
             if order[0].order_type == 1:

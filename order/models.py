@@ -19,7 +19,7 @@ class orders(models.Model):
     quantity = models.IntegerField(blank=True,null=True)
     weight = models.FloatField(blank=True,null=True)
     created_at_time = models.DateTimeField(auto_now_add=True, blank=True)
-
+    modified_at_time = models.DateTimeField(auto_now_add=True, blank=True,null=True)
     status = models.CharField(max_length=1, choices=STATUS, default='1')
     order_type = models.CharField(max_length=10,blank=True,null=True)
     special_instructions = models.CharField(max_length=200,blank=True,null=True)
