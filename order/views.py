@@ -101,7 +101,7 @@ class PlaceOrderShipment(APIView):
         #add time details
         flag = 0
         payload = request.data
-        payload['callback'] = "http://fabfresh.elasticbeanstalk.com/callback"
+        payload['callback'] = "http://fabfresh-dev.elasticbeanstalk.com/callback"
         print now
         if now < 20 and now > 9:
             print type(payload['order_details']['order_id'])
