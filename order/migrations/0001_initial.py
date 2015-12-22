@@ -13,10 +13,19 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='Brand',
+            fields=[
+                ('brand_id', models.AutoField(serialize=False, primary_key=True)),
+                ('brand_name', models.CharField(max_length=10)),
+            ],
+        ),
+        migrations.CreateModel(
             name='ClothInfo',
             fields=[
                 ('cloth_id', models.AutoField(serialize=False, primary_key=True)),
                 ('gender', models.CharField(max_length=7)),
+                ('damage', models.BooleanField(default=False)),
+                ('brand', models.ForeignKey(to='order.Brand', null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -81,7 +90,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='clothinfo',
             name='order',
-            field=models.ForeignKey(to='order.orders'),
+            field=models.ForeignKey(related_name='ClothInfo', to='order.orders'),
         ),
         migrations.AddField(
             model_name='clothinfo',

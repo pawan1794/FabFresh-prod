@@ -62,12 +62,20 @@ class Color(models.Model):
     def __unicode__(self):
         return unicode(self.color_name)
 
+
+class Brand(models.Model):
+    brand_id = models.AutoField(primary_key=True)
+    brand_name = models.CharField(max_length=10)
+    def __unicode__(self):
+        return unicode(self.brand_name)
+
 class ClothInfo(models.Model):
     cloth_id = models.AutoField(primary_key=True)
     order = models.ForeignKey(orders,related_name='ClothInfo')
     size = models.ForeignKey(Size)
     type = models.ForeignKey(Type)
     color = models.ForeignKey(Color)
+    brand = models.ForeignKey(Brand,null=True)
     gender = models.CharField(max_length=7)
-
+    damage = models.BooleanField(default=False)
 

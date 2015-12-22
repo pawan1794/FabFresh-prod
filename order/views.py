@@ -8,14 +8,15 @@ from rest_framework.response import Response
 import requests
 import json
 from users.models import UserInfo
-from .models import Color, Type, Size, ClothInfo, DriverDetails
+from .models import Color, Type, Size, ClothInfo, DriverDetails, Brand
 from .serializers import ColorSerializer, \
     TypeSerializer, \
     SizeSerializer, \
     ClothInfoSerializer, \
     ClothInforamtionSerializer, \
     ClothsOrdersSerializer, \
-    DriverDetailsSerializer
+    DriverDetailsSerializer, \
+    BrandSerializer
 from gcm import *
 from push_notifications.models import GCMDevice,APNSDevice
 import datetime
@@ -387,6 +388,10 @@ class ColorViewSet(viewsets.ModelViewSet):
     queryset = Color.objects.all()
     serializer_class = ColorSerializer
 
+class BrandViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
 
 class TypeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]

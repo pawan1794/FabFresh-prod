@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import orders, Size,Type, Color,ClothInfo,DriverDetails
+from .models import orders, Size,Type, Color,ClothInfo,DriverDetails,Brand
 
 class ClothInforamtionSerializer(serializers.ModelSerializer):
     '''
@@ -13,9 +13,10 @@ class ClothInforamtionSerializer(serializers.ModelSerializer):
     color = serializers.ReadOnlyField(source='color.color_name')
     type = serializers.ReadOnlyField(source='type.type_name')
     size = serializers.ReadOnlyField(source='size.size_name')
+    brand = serializers.ReadOnlyField(source='brand.brand_name')
     class Meta:
         model = ClothInfo
-        fields = ('color' , 'type' , 'size' , 'gender')
+        fields = ('color' , 'type' , 'size' , 'brand' , 'gender')
 
 
 class ordersSerializer(serializers.ModelSerializer):
@@ -43,6 +44,9 @@ class ColorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Color
 
+class BrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
 
 class ClothInfoSerializer(serializers.ModelSerializer):
 
