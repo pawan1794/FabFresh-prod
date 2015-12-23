@@ -8,7 +8,7 @@ from rest_framework.response import Response
 import requests
 import json
 from users.models import UserInfo
-from .models import Color, Type, Size, ClothInfo, DriverDetails, Brand
+from .models import Color, Type, Size, ClothInfo, DriverDetails, Brand, StatusTimeStamp
 from .serializers import ColorSerializer, \
     TypeSerializer, \
     SizeSerializer, \
@@ -16,7 +16,9 @@ from .serializers import ColorSerializer, \
     ClothInforamtionSerializer, \
     ClothsOrdersSerializer, \
     DriverDetailsSerializer, \
-    BrandSerializer
+    BrandSerializer, \
+    StatusTimeStampSerializer
+
 from gcm import *
 from push_notifications.models import GCMDevice,APNSDevice
 import datetime
@@ -90,7 +92,7 @@ class ordersViewSet(viewsets.ModelViewSet):
 
                 userInfo = UserInfo.objects.filter(owner = self.request.user)
 
-                if int(request.data['status']) is 6 :
+                if int(request.data['status']) is 9 :
                     text_message = "Dear "+ str(owner) +" , Your Order is packed and Ready for Delivery . Please Select Deliver Now in the app to get it at your doorstep. "
                     message(self,phone, text_message)
 
@@ -190,7 +192,7 @@ class PlaceOrderShipment(APIView):
                             message(self, userInfo[0].phone, text_message)
 
                         if flag == 1:
-                            order.update(status=7)
+                            order.update(status=10)
                             DriverDetail.new_trip = False
                             DriverDetail.save()
                             text_message = "Dear " + payload['drop']['user']['name'] + ". Your Order No :" + \
@@ -437,3 +439,7 @@ class DriverDetailsViewSet(viewsets.ModelViewSet):
     queryset = DriverDetails.objects.all()
     serializer_class = DriverDetailsSerializer
 
+class StatusTimeStampViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = StatusTimeStamp.objects.all()
+    serializer_class = StatusTimeStampSerializer
