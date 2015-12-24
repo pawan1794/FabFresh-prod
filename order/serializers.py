@@ -1,15 +1,7 @@
 from rest_framework import serializers
-from .models import orders, Size,Type, Color,ClothInfo,DriverDetails,Brand
+from .models import orders, Size,Type, Color,ClothInfo,DriverDetails,Brand, StatusTimeStamp
 
 class ClothInforamtionSerializer(serializers.ModelSerializer):
-    '''
-    order = ordersSerializer(read_only=True)
-    color = ColorSerializer(read_only=True)
-    type = TypeSerializer(read_only=True)
-    size = SizeSerializer(read_only=True)
-    class Meta:
-        model = ClothInfo
-    '''
     color = serializers.ReadOnlyField(source='color.color_name')
     type = serializers.ReadOnlyField(source='type.type_name')
     size = serializers.ReadOnlyField(source='size.size_name')
@@ -18,13 +10,22 @@ class ClothInforamtionSerializer(serializers.ModelSerializer):
         model = ClothInfo
         fields = ('color' , 'type' , 'size' , 'brand' , 'gender')
 
+class StatusTimeStampSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = StatusTimeStamp
+        fields = ('status' , 'timestamp')
+
 
 class ordersSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     ClothInfo = ClothInforamtionSerializer(many=True)
+    StatusTimeStamp = StatusTimeStampSerializer(many=True)
     class Meta:
         model = orders
-        fields = ('id','amount','status','created_at_time','modified_at_time','owner','weight','quantity','order_type','p_id' , 'special_instructions','ClothInfo')
+        fields = ('id','amount','status','created_at_time','modified_at_time','owner','weight','quantity','order_type','p_id' , 'special_instructions','ClothInfo','StatusTimeStamp')
+
+
 
 class DriverDetailsSerializer(serializers.ModelSerializer):
     class Meta:

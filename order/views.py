@@ -8,7 +8,7 @@ from rest_framework.response import Response
 import requests
 import json
 from users.models import UserInfo
-from .models import Color, Type, Size, ClothInfo, DriverDetails, Brand
+from .models import Color, Type, Size, ClothInfo, DriverDetails, Brand, StatusTimeStamp
 from .serializers import ColorSerializer, \
     TypeSerializer, \
     SizeSerializer, \
@@ -16,7 +16,9 @@ from .serializers import ColorSerializer, \
     ClothInforamtionSerializer, \
     ClothsOrdersSerializer, \
     DriverDetailsSerializer, \
-    BrandSerializer
+    BrandSerializer, \
+    StatusTimeStampSerializer
+
 from gcm import *
 from push_notifications.models import GCMDevice,APNSDevice
 import datetime
@@ -86,11 +88,21 @@ class ordersViewSet(viewsets.ModelViewSet):
 
         for i in request.data:
             if str(i) == "status":
-                order = orders.objects.filter(id = kwargs['pk'])
-
-                userInfo = UserInfo.objects.filter(owner = self.request.user)
-
-                if int(request.data['status']) is 6 :
+                print "status is" + str(request.data['status'])
+                try:
+                    order = orders.objects.filter(id = kwargs['pk'])
+                except Exception as e:
+                    return JsonResponse({'status':'order id not valid'}, status = status.HTTP_404_OK)
+                try:
+                    userInfo = UserInfo.objects.filter(owner = self.request.user)
+                except Exception as e:
+                    return JsonResponse({'status':'user not registered'}, status = status.HTTP_404_OK)
+                statusTimeStamp = StatusTimeStamp(order=order[0]
+                                                  ,status = request.data['status']
+                                                  ,timestamp = timezone.now())
+                statusTimeStamp.save()
+                print "asd"
+                if int(request.data['status']) is 10 :
                     text_message = "Dear "+ str(owner) +" , Your Order is packed and Ready for Delivery . Please Select Deliver Now in the app to get it at your doorstep. "
                     message(self,phone, text_message)
 
@@ -177,6 +189,7 @@ class PlaceOrderShipment(APIView):
                                                 driver_name = r.json()['driver_name'],
                                                 driver_phone = r.json()['driver_phone'],
                                                 order_id = r.json()['order_id'])
+
                         print "After driver informations stored"
                         if flag == 0:
                             order.roadrunner_order_id = r.json()['order_id']
@@ -189,7 +202,7 @@ class PlaceOrderShipment(APIView):
                             message(self, userInfo[0].phone, text_message)
 
                         if flag == 1:
-                            order.update(status=7)
+                            order.update(status=10)
                             DriverDetail.new_trip = False
                             DriverDetail.save()
                             text_message = "Dear " + payload['drop']['user']['name'] + ". Your Order No :" + \
@@ -312,6 +325,12 @@ class setPrice(APIView):
                     phone = i.phone
                     name = i.owner
                 print (i.owner_id)
+
+                statusTimeStamp = StatusTimeStamp(order=order[0]
+                                                  ,status = payload['status']
+                                                  ,timestamp = timezone.now())
+                statusTimeStamp.save()
+
                 # userInfo = UserInfo.objects.filter(owner = self.request.user)
                 text_message = "Dear " + str(name) + " , Your Order No : " + str(
                     payload['id']) + ". Number of Clothes : " + str(order[0].quantity) + " , Weight : " + str(
@@ -436,3 +455,7 @@ class DriverDetailsViewSet(viewsets.ModelViewSet):
     queryset = DriverDetails.objects.all()
     serializer_class = DriverDetailsSerializer
 
+class StatusTimeStampViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = StatusTimeStamp.objects.all()
+    serializer_class = StatusTimeStampSerializer

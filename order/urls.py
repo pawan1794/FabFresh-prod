@@ -11,7 +11,7 @@ router.register('^cloth/size',views.SizeViewSet)
 router.register('^cloth/cloths',views.ClothViewSet)
 router.register('^cloth/info',views.ClothInfoViewSet)
 router.register('^drive/info',views.DriverDetailsViewSet)
-
+router.register('^order/status',views.StatusTimeStampViewSet)
 
 urlpatterns = patterns(
     '',

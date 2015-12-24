@@ -1,5 +1,6 @@
 from django.db import models
 
+'''
 STATUS = (
     ('0' , 'cancelled'),
     ('1', 'created'),
@@ -11,6 +12,23 @@ STATUS = (
     ('7','shipped'),
     ('8','completed')
 )
+'''
+
+STATUS = (
+    ('0' , 'cancelled'),
+    ('1', 'created'),
+    ('2', 'pickup'),
+    ('3', 'receivedAtCenter'),
+    ('4', 'precheck'),
+    ('5', 'tagging'),
+    ('6', 'wash'),
+    ('7', 'dry'),
+    ('8', 'iron'),
+    ('9', 'package'),
+    ('10', 'shipped'),
+    ('11', 'drop'),
+    ('12', 'completed')
+)
 
 class orders(models.Model):
     owner = models.ForeignKey('auth.User', related_name='orders')
@@ -20,7 +38,7 @@ class orders(models.Model):
     weight = models.FloatField(blank=True,null=True)
     created_at_time = models.DateTimeField(auto_now_add=True, blank=True)
     modified_at_time = models.DateTimeField(auto_now_add=True, blank=True,null=True)
-    status = models.CharField(max_length=1, choices=STATUS, default='1')
+    status = models.CharField(max_length=2, choices=STATUS, default='1')
     order_type = models.CharField(max_length=10,blank=True,null=True)
     special_instructions = models.CharField(max_length=200,blank=True,null=True)
     p_id = models.IntegerField(blank=True,null=True)
@@ -30,6 +48,12 @@ class orders(models.Model):
 
     def __unicode__(self):
         return unicode(self.id)
+
+class StatusTimeStamp(models.Model):
+    order = models.ForeignKey(orders,related_name='StatusTimeStamp')
+    status = models.CharField(max_length=2, choices=STATUS, default='1')
+    timestamp = models.DateTimeField(auto_now_add=True, blank=True)
+
 
 class DriverDetails(models.Model):
     orders = models.ForeignKey(orders)
@@ -78,4 +102,3 @@ class ClothInfo(models.Model):
     brand = models.ForeignKey(Brand,null=True)
     gender = models.CharField(max_length=7)
     damage = models.BooleanField(default=False)
-
