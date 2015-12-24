@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import orders,DriverDetails,Size, Type, Color, ClothInfo, Brand
+from .models import orders,DriverDetails,Size, Type, Color, ClothInfo, Brand , StatusTimeStamp
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('owner','id','amount' , 'quantity' , 'weight' , 'created_at_time','modified_at_time' ,'status', 'special_instructions','p_id')
@@ -23,6 +23,9 @@ class ClothInfoAdmin(admin.ModelAdmin):
 class BrandInfoAdmin(admin.ModelAdmin):
     list_display = ('brand_id' , 'brand_name')
 
+class StatusTimeStampAdmin(admin.ModelAdmin):
+    list_display = ('order','status','timestamp')
+
 admin.site.register(orders, OrderAdmin)
 admin.site.register(DriverDetails, DriverDetailsAdmin)
 admin.site.register(Size,sizeAdmin)
@@ -30,3 +33,4 @@ admin.site.register(Type,TypeAdmin)
 admin.site.register(Color,ColorAdmin)
 admin.site.register(ClothInfo,ClothInfoAdmin)
 admin.site.register(Brand,BrandInfoAdmin)
+admin.site.register(StatusTimeStamp,StatusTimeStampAdmin)

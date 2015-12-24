@@ -10,17 +10,21 @@ class ClothInforamtionSerializer(serializers.ModelSerializer):
         model = ClothInfo
         fields = ('color' , 'type' , 'size' , 'brand' , 'gender')
 
+class StatusTimeStampSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = StatusTimeStamp
+        fields = ('status' , 'timestamp')
+
 
 class ordersSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     ClothInfo = ClothInforamtionSerializer(many=True)
+    StatusTimeStamp = StatusTimeStampSerializer(many=True)
     class Meta:
         model = orders
-        fields = ('id','amount','status','created_at_time','modified_at_time','owner','weight','quantity','order_type','p_id' , 'special_instructions','ClothInfo')
+        fields = ('id','amount','status','created_at_time','modified_at_time','owner','weight','quantity','order_type','p_id' , 'special_instructions','ClothInfo','StatusTimeStamp')
 
-class StatusTimeStampSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StatusTimeStamp
 
 
 class DriverDetailsSerializer(serializers.ModelSerializer):
