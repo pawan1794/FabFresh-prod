@@ -1,5 +1,6 @@
 amqp==1.4.8
 anyjson==0.3.3
+APScheduler==3.0.4
 awsebcli==3.5.4
 backports.ssl-match-hostname==3.4.0.2
 billiard==3.3.0.22
@@ -40,6 +41,7 @@ python-openid==2.2.5
 python-social-auth==0.2.13
 pytz==2015.4
 PyYAML==3.11
+redis==2.10.5
 requests==2.6.2
 requests-oauthlib==0.5.0
 six==1.9.0
