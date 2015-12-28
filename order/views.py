@@ -195,6 +195,7 @@ class PlaceOrderShipment(APIView):
                         if flag == 0:
                             order.roadrunner_order_id = r.json()['order_id']
                             order.delivery_id = r.json()['delivery_id']
+                            order.status="2"
                             order.save()
                             DriverDetail.new_trip = True
                             DriverDetail.save()
@@ -377,7 +378,7 @@ class CallBackApiView(APIView):
         payload = request.data
         print(payload)
         if payload['status'] == "REACHED_PICKUP":
-            text_message = str(payload['status'])
+            text_message = str(payload)
             message(self, "7204680605", text_message)
         return Response("Success", status=status.HTTP_200_OK)
 
