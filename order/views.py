@@ -203,7 +203,7 @@ class PlaceOrderShipment(APIView):
                             message(self, userInfo[0].phone, text_message)
 
                         if flag == 1:
-                            order.update(status=10)
+                            order.update(status=11)
                             DriverDetail.new_trip = False
                             DriverDetail.save()
                             text_message = "Dear " + payload['drop']['user']['name'] + ". Your Order No :" + \
