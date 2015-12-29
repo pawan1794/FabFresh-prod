@@ -1,2 +1,2 @@
 from __future__ import absolute_import
-from .celery import app as celery
+from ._celery import app as celery
