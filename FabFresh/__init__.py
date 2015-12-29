@@ -1,2 +1,2 @@
 from __future__ import absolute_import
-from ._celery import app as _celery
+from .task import app

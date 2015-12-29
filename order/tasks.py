@@ -1,4 +1,4 @@
-from FabFresh._celery import app as celery
+from FabFresh.task import app as celery
 
 @celery.task
 def add(x, y):
