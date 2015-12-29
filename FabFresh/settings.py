@@ -156,13 +156,6 @@ EMAIL_USE_TLS = True
 
 
 
-
-
-
-import djcelery
-djcelery.setup_loader()
-
-
 CELERY_IMPORTS=('order.tasks')
 CELERY_RESULT_BACKEND = 'amqp'
 CELERY_TASK_RESULT_EXPIRES = 18000
