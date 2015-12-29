@@ -1,4 +1,5 @@
 import os
+import urllib
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -27,6 +28,9 @@ INSTALLED_APPS = (
     'order',
     'rest_framework_swagger',
     'push_notifications',
+
+    #celery
+    'djcelery',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -150,3 +154,50 @@ EMAIL_HOST_PASSWORD = 'fabfresh123'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+
+
+
+
+
+import djcelery
+djcelery.setup_loader()
+
+
+CELERY_IMPORTS=('order.tasks')
+CELERY_RESULT_BACKEND = 'amqp'
+CELERY_TASK_RESULT_EXPIRES = 18000
+
+
+#SQS
+AWS_ACCESS_KEY = 'AKIAIWH34GQPAG7KQLRA'
+AWS_SECRET_KEY = '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'
+
+
+
+'''
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json', 'yaml']
+CELERY_RESULT_SERIALIZER = 'json'
+
+CELERY_ENABLE_REMOTE_CONTROL = False
+CELERY_SEND_EVENTS = False
+
+CELERY_ENABLE_UTC = True
+CELERY_DISABLE_RATE_LIMITS = True
+
+#BROKER_TRANSPORT = 'sqs'
+BROKER_URL = 'https://sqs.eu-west-1.amazonaws.com/649666883728/fabfresh@'.format(AWS_ACCESS_KEY, urllib.quote(AWS_SECRET_KEY, safe=''))
+BROKER_TRANSPORT_OPTIONS = {
+ 'queue_name_prefix': 'fabfresh',
+ 'visibility_timeout': 60, # seconds
+ 'wait_time_seconds': 20,  # Long polling
+ 'region' : 'eu-west-1'
+}
+
+BROKER_URL = 'sqs://'+ AWS_ACCESS_KEY + ':' + AWS_SECRET_KEY + 'fabfresh@:80//'
+BROKER_TRANSPORT_OPTIONS = {
+    'region' : 'eu-west-1',
+    'sdb_persistence': False
+}
+'''
