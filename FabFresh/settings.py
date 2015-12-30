@@ -28,9 +28,6 @@ INSTALLED_APPS = (
     'order',
     'rest_framework_swagger',
     'push_notifications',
-
-    #celery
-    'djcelery',
 )
 
 MIDDLEWARE_CLASSES = (
