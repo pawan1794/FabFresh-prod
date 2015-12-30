@@ -1,7 +1,7 @@
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+print BASE_DIR
 
 SECRET_KEY = '+m*(+1@a!$cu(1*rn5o56bu%*$*%h(n$oai#grpbv+#b9w=&kc'
 
@@ -132,7 +132,7 @@ PUSH_NOTIFICATIONS_SETTINGS = {
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-STATIC_URL = '/static/static/'
+STATIC_URL = '/opt/python/current/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, '..','static')
 #STATIC_ROOT = "/opt/python/current/app/FabFresh/FabFresh/static"
 
