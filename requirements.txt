@@ -1,5 +1,4 @@
 amqp==1.4.8
-amqplib==1.0.2
 anyjson==0.3.3
 APScheduler==3.0.4
 awsebcli==3.5.4
@@ -15,7 +14,6 @@ dj-database-url==0.3.0
 dj-static==0.0.6
 Django==1.8.5
 django-braces==1.8.1
-django-celery==3.1.17
 django-cors-headers==1.1.0
 django-gcm-android-ios==1.0.0
 django-oauth-toolkit==0.9.0
@@ -35,7 +33,6 @@ kombu==3.0.32
 mock==1.0.1
 oauthlib==1.0.1
 pathspec==0.3.3
-Pillow==3.0.0
 psycopg2==2.6.1
 PyJWT==1.4.0
 pystache==0.5.4
