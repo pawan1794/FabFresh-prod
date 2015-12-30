@@ -56,7 +56,7 @@ class StatusTimeStamp(models.Model):
 
 
 class DriverDetails(models.Model):
-    orders = models.ForeignKey(orders)
+    orders = models.ForeignKey(orders,related_name='DriverDetails')
     id = models.AutoField(primary_key=True)
     driver_phone = models.CharField(max_length=20,blank=True,null=True)
     order_id = models.CharField(max_length=20,blank=True,null=True)
