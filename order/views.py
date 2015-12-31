@@ -26,6 +26,7 @@ from django.utils.timezone import utc
 from random import randint
 import math
 from django.utils import timezone
+from FabFresh.task import text
 
 def message(self, phone ,message):
     url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
@@ -104,7 +105,8 @@ class ordersViewSet(viewsets.ModelViewSet):
                 print "asd"
                 if int(request.data['status']) is 10 :
                     text_message = "Dear "+ str(owner) +" , Your Order is packed and Ready for Delivery . Please Select Deliver Now in the app to get it at your doorstep. "
-                    message(self,phone, text_message)
+                    #message(self,phone, text_message)
+                    text.delay(phone, text_message)
 
         return super(ordersViewSet, self).update(request, *args, **kwargs)
 
