@@ -8,8 +8,8 @@ from rest_framework import status
 
 
 
-#app = Celery('fabfresh', broker='amqp://hari:hari@52.48.75.63:5672/fabfresh')
-app = Celery('fabfresh',backend='redis://',broker='amqp://guest@localhost//')
+app = Celery('fabfresh', broker='amqp://hari:hari@52.48.75.63:5672/fabfresh')
+#app = Celery('fabfresh',backend='redis://',broker='amqp://guest@localhost//')
 
 @app.task
 def add(x, y):
@@ -27,10 +27,14 @@ def text(phone,message):
 def serviceAv(payload):
     url = 'http://roadrunnr.in/v1/orders/serviceability'
     headers = {'Authorization' : 'Bearer L0vqwtrFUodi6VA8HhxKtSdVjTinUUaoHEUk2VPP' , 'Content-Type' : 'application/json'}
-    r = requests.post(url, json.dumps(payload), headers=headers)
+    try:
+        r = requests.post(url, json.dumps(payload), headers=headers)
+    except Exception as e:
+        serviceAv.retry()
     #response = Response(r.json(),status=status.HTTP_200_OK)
-
-    print r.json()['serviceable']
-    if r.json()['serviceable'] == "false":
+    print r.json()
+    if len(r.json()) < 4 :
+        serviceAv.retry(countdown=5,max_retries=10)
         print "asd"
-    print r
+    else:
+        text.delay("7204680605","Delivery boy available, you can make your order now")

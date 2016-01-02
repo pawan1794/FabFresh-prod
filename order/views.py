@@ -123,7 +123,7 @@ class PlaceOrderShipment(APIView):
         payload['callback'] = "http://fabfresh.elasticbeanstalk.com/callback"
         print now
         if now < 20 and now > 9:
-            print type(payload['order_details']['order_id'])
+
             if int(payload['order_details']['order_id']) is 0:
                 try:
                     order = orders(owner=self.request.user)
@@ -136,7 +136,12 @@ class PlaceOrderShipment(APIView):
                     return Response(e, status=status.HTTP_404_NOT_FOUND)
             else:
                 flag = 1
-                order = orders.objects.filter(id=payload['order_details']['order_id'])
+                order = orders.objects.get(id=payload['order_details']['order_id'])
+                print "order Details"
+                print order.status
+                if order.status == 1:
+                    print "Initialize flag to Zero"
+                    flag = 0
                 if not order:
                     return Response("orderid is not available",status=status.HTTP_200_OK)
 
@@ -175,7 +180,7 @@ class PlaceOrderShipment(APIView):
                     return JsonResponse({'status':'Service Not Available'}, status = status.HTTP_200_OK)
             #url = 'http://128.199.241.199/v1/orders/ship'
             url = 'http://roadrunnr.in/v1/orders/ship'
-            headers = {'Authorization' : 'Bearer L0vqwtrFUodi6VA8HhxKtSdVjTinUUaoHEUk2VPP' , 'Content-Type' : 'application/json'}
+            headers = {'Authorization' : 'Bearer aL0vqwtrFUodi6VA8HhxKtSdVjTinUUaoHEUk2VPP' , 'Content-Type' : 'application/json'}
             try:
 
                 r = requests.post(url, json.dumps(payload), headers=headers)
