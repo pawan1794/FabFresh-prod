@@ -91,16 +91,19 @@ def register_by_access_token(request, backend):
     except Exception as e:
         return HttpResponse(e,status=status.HTTP_404_NOT_FOUND)
 
-
+from FabFresh.task import serviceAv
 class CheckAvailabilityApiView(APIView):
 
     permission_classes = [permissions.AllowAny]
 
     def post(self,request, *args, **kw):
         payload = request.data
+        #serviceAv.delay(payload)
         url = 'http://roadrunnr.in/v1/orders/serviceability'
         headers = {'Authorization' : 'Bearer L0vqwtrFUodi6VA8HhxKtSdVjTinUUaoHEUk2VPP' , 'Content-Type' : 'application/json'}
         r = requests.post(url, json.dumps(payload), headers=headers)
+        if len(r.json()) < 4 :
+            serviceAv.delay(payload)
         response = Response(r.json(),status=status.HTTP_200_OK)
         return response
 

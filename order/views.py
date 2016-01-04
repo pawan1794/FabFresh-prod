@@ -26,6 +26,7 @@ from django.utils.timezone import utc
 from random import randint
 import math
 from django.utils import timezone
+from FabFresh.task import text
 
 def message(self, phone ,message):
     url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
@@ -104,7 +105,8 @@ class ordersViewSet(viewsets.ModelViewSet):
                 print "asd"
                 if int(request.data['status']) is 10 :
                     text_message = "Dear "+ str(owner) +" , Your Order is packed and Ready for Delivery . Please Select Deliver Now in the app to get it at your doorstep. "
-                    message(self,phone, text_message)
+                    #message(self,phone, text_message)
+                    text.delay(phone, text_message)
 
         return super(ordersViewSet, self).update(request, *args, **kwargs)
 
@@ -120,8 +122,13 @@ class PlaceOrderShipment(APIView):
         payload = request.data
         payload['callback'] = "http://fabfresh.elasticbeanstalk.com/callback"
         print now
+<<<<<<< HEAD
         if now < 20 and now > 8:
             print type(payload['order_details']['order_id'])
+=======
+        if now < 20 and now > 9:
+
+>>>>>>> dev
             if int(payload['order_details']['order_id']) is 0:
                 try:
                     order = orders(owner=self.request.user)
@@ -134,7 +141,12 @@ class PlaceOrderShipment(APIView):
                     return Response(e, status=status.HTTP_404_NOT_FOUND)
             else:
                 flag = 1
-                order = orders.objects.filter(id=payload['order_details']['order_id'])
+                order = orders.objects.get(id=payload['order_details']['order_id'])
+                print "order Details"
+                print order.status
+                if order.status == 1:
+                    print "Initialize flag to Zero"
+                    flag = 0
                 if not order:
                     return Response("orderid is not available",status=status.HTTP_200_OK)
 
@@ -172,7 +184,7 @@ class PlaceOrderShipment(APIView):
                 '''
             #url = 'http://128.199.241.199/v1/orders/ship'
             url = 'http://roadrunnr.in/v1/orders/ship'
-            headers = {'Authorization' : 'Bearer L0vqwtrFUodi6VA8HhxKtSdVjTinUUaoHEUk2VPP' , 'Content-Type' : 'application/json'}
+            headers = {'Authorization' : 'Bearer aL0vqwtrFUodi6VA8HhxKtSdVjTinUUaoHEUk2VPP' , 'Content-Type' : 'application/json'}
             try:
 
                 r = requests.post(url, json.dumps(payload), headers=headers)
