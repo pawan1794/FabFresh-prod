@@ -20,6 +20,8 @@ from .permission import IsOwnerOrReadOnly
 from django.conf import settings
 import logging
 
+
+
 class PostalCodeViewSet(viewsets.ModelViewSet):
     queryset = PostalCode.objects.all()
     serializer_class = PostalCodeSerializer
@@ -68,6 +70,56 @@ class UserInfoViewSet(viewsets.ModelViewSet):
         print(self.request.user)
         serializer.save(owner=self.request.user)
 
+class otpVerification(APIView):
+
+    def get(self, request, *args, **kw):
+        '''userInfo = UserInfo.objects.get(owner = self.request.user.id)
+        print userProfile.opt
+        '''
+        otp = request.GET.get('otp')
+        userInfo = UserInfo.objects.get(owner = self.request.user.id)
+        statusCode = "Sucess"
+        if otp is not None and userInfo.otp is not None:
+            if int(otp) == int(userInfo.otp):
+                code = "Verified"
+            else:
+                code = "Not Verified"
+        payload = {
+            "Status" : code
+        }
+        return Response(payload, status=status.HTTP_200_OK)
+import random
+from .tools import message
+
+class otpResend(APIView):
+    def get(self,request,*args,**kw):
+        code = "default"
+
+        userInfo = UserInfo.objects.get(owner = self.request.user.id)
+        if userInfo is None:
+            code = "No user data"
+            payload = {
+                "status" : code
+            }
+            return Response(payload, status=status.HTTP_200_OK)
+        #OTP
+        otp = random.randint(10000,1000000)
+        OTP_text_message = "OTP:"+ str(otp) + ". Use the above OTP to verify you mobile number on FabFresh"
+        try:
+            message(userInfo.phone,OTP_text_message)
+        except Exception as e:
+            code = "message not sent"
+            payload = {
+                "status" : code
+            }
+        userInfo.otp = otp
+        userInfo.save()
+        code = "success"
+        payload = {
+            "status" : code
+        }
+        return Response(payload, status=status.HTTP_200_OK)
+
 
 @psa('social:complete')
 def register_by_access_token(request, backend):
@@ -92,6 +144,7 @@ def register_by_access_token(request, backend):
         return HttpResponse(e,status=status.HTTP_404_NOT_FOUND)
 
 from FabFresh.task import serviceAv
+
 class CheckAvailabilityApiView(APIView):
 
     permission_classes = [permissions.AllowAny]
