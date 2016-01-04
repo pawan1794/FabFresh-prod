@@ -122,13 +122,10 @@ class PlaceOrderShipment(APIView):
         payload = request.data
         payload['callback'] = "http://fabfresh.elasticbeanstalk.com/callback"
         print now
-<<<<<<< HEAD
         if now < 20 and now > 8:
             print type(payload['order_details']['order_id'])
-=======
         if now < 20 and now > 9:
 
->>>>>>> dev
             if int(payload['order_details']['order_id']) is 0:
                 try:
                     order = orders(owner=self.request.user)
