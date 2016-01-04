@@ -34,7 +34,8 @@ def serviceAv(payload):
     #response = Response(r.json(),status=status.HTTP_200_OK)
     print r.json()
     if len(r.json()) < 4 :
-        serviceAv.retry(countdown=5,max_retries=10)
+        result = serviceAv.retry(countdown=5,max_retries=10)
+        print result.status
         print "asd"
     else:
         text.delay("7204680605","Delivery boy available, you can make your order now")
