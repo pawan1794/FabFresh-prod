@@ -4,14 +4,14 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register(r'orders',views.ordersViewSet,)
-router.register('^cloth/color',views.ColorViewSet)
-router.register('^cloth/brand',views.BrandViewSet)
-router.register('^cloth/type',views.TypeViewSet)
-router.register('^cloth/size',views.SizeViewSet)
-router.register('^cloth/cloths',views.ClothViewSet)
-router.register('^cloth/info',views.ClothInfoViewSet)
-router.register('^drive/info',views.DriverDetailsViewSet)
-router.register('^order/status',views.StatusTimeStampViewSet)
+router.register(r'cloth/color',views.ColorViewSet)
+router.register('cloth/brand',views.BrandViewSet)
+router.register('cloth/type',views.TypeViewSet)
+router.register('cloth/size',views.SizeViewSet)
+router.register('cloth/cloths',views.ClothViewSet)
+router.register('cloth/info',views.ClothInfoViewSet)
+router.register('drive/info',views.DriverDetailsViewSet)
+router.register('order/status',views.StatusTimeStampViewSet)
 
 urlpatterns = patterns(
     '',
