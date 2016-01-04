@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 class UserInfo(models.Model):
     owner = models.OneToOneField('auth.User', related_name='UserInfo')
     phone = models.CharField(max_length=10)
-
+    otp = models.IntegerField(blank=True,null=True)
     def __unicode__(self):
         return unicode(self.owner)
 

@@ -8,6 +8,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from models import User,UserInfo
 import logging
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +38,14 @@ def get_token_json(access_token, a, number,user,email):
         #sending message to new registered users
         text_message = "Dear "+ str(user) +" , Thanks for Signing up with FabFresh . More Time to You ! from now on . "
         message(number,text_message)
+
+        #OTP
+        otp = random.randint(10000,1000000)
+        OTP_text_message = "OTP:"+ str(otp) + ". Use the above OTP to verify you mobile number on FabFresh"
+        message(number,OTP_text_message)
+        userInfo.update(otp=otp)
+
+
         #send email
         send_mail('FabFresh Welcome\'s You', 'Welcome to FabFresh. We are happy to have you. More Time to You ! from now on', settings.EMAIL_HOST_USER, [str(email)], fail_silently=False)
         logger.info("New User " + str(user) + " has registered with fabfresh" )
