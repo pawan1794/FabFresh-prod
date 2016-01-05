@@ -11,17 +11,19 @@ from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope, TokenHasS
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authentication import BasicAuthentication
 
 from django.contrib.auth.models import User
-from .serializers import UserSerializer,UserInfoSerializer, UserProfileSerializer, PostalCodeSerializer, SignUpSerializer
+from .serializers import UserSerializer,UserInfoSerializer, UserProfileSerializer, PostalCodeSerializer, SignUpSerializer, LoginSerializer, ChangePasswordSerializer
 from .models import UserInfo, UserProfile, PostalCode
 from rest_framework import viewsets
 from .permission import IsOwnerOrReadOnly, IsAuthenticatedOrCreate
 from django.conf import settings
 import logging
 from django.core.exceptions import ValidationError
-
-
+from django.contrib.auth import authenticate, login
+from rest_framework.decorators import detail_route, list_route
+from allauth.account.forms import ResetPasswordForm
 
 class PostalCodeViewSet(viewsets.ModelViewSet):
     queryset = PostalCode.objects.all()
@@ -56,6 +58,37 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return User.objects.filter(id=self.request.user.id)
 
+    @list_route(methods=['post'], url_path='change-password',permission_classes=[permissions.IsAuthenticated])
+    def change_password(self, request, pk=None):
+        try:
+            print "asd"
+            print request.data
+            serializer = ChangePasswordSerializer(data=request.data)
+            print "Asd"
+            if serializer.is_valid():
+                user = request.user
+                print user.check_password(request.data['password'])
+                if user.check_password(request.data['password']):
+                    if request.data['new_password'] == request.data['confirm_password']:
+                        user.set_password(request.data['new_password'])
+                        user.save()
+                        return Response({'status': 'Password Change Successfully'}, status=status.HTTP_200_OK)
+                    else:
+                        data = {'detail': 'New Password mismatch'}
+                else:
+                    data = {'detail': 'Please enter your correct password!'}
+        except Exception as e:
+            data = {'detail': 'Unable to change password'}
+        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
+    @list_route(methods=['post'],url_path='reset-password', permission_classes=[permissions.AllowAny])
+    def recover_password(self, request):
+        if request.data.get('email'):
+            form = ResetPasswordForm({'email': request.data.get('email')})
+        if form.is_valid():
+            form.save(request)
+            return Response("reset password sent to email", status=status.HTTP_400_BAD_REQUEST)
+        return Response("Error", status=status.HTTP_400_BAD_REQUEST)
 
 class UserInfoViewSet(viewsets.ModelViewSet):
     serializer_class = UserInfoSerializer
@@ -186,4 +219,19 @@ class SignUp(generics.CreateAPIView):
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+class Login(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = LoginSerializer
+    permission_classes = [permissions.AllowAny,]
+    http_method_names = [ 'post',]
+
+    def post(self,request,*args,**kwargs):
+        username = request.data['username']
+        password = request.data['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            return get_access_token(user,"","")
+        else:
+            return Response("Not Authenticated", status=status.HTTP_200_OK)
 

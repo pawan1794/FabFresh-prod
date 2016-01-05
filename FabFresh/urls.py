@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^', include('order.urls')),
     url('', include('social.apps.django_app.urls', namespace='social')),
     url(r'^docs/', include('rest_framework_swagger.urls')),
+    url(r'^accounts/', include('allauth.urls')),
 ]
