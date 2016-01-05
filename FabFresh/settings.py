@@ -48,6 +48,8 @@ ROOT_URLCONF = 'FabFresh.urls'
 AUTHENTICATION_BACKENDS = (
     'social.backends.facebook.FacebookAppOAuth2',
     'social.backends.facebook.FacebookOAuth2',
+    'social_auth.backends.google.GoogleOAuth2Backend',
+    'social_auth.backends.google.GoogleBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -137,10 +139,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, '..','static')
 #STATIC_ROOT = "/opt/python/current/app/FabFresh/FabFresh/static"
 
 
-SOCIAL_AUTH_ENABLED_BACKENDS=('facebook')
+SOCIAL_AUTH_ENABLED_BACKENDS=('facebook',)
 
 SOCIAL_AUTH_FACEBOOK_KEY = '1640925132856151'
 SOCIAL_AUTH_FACEBOOK_SECRET = '5fc388d8613577ec2b1ce2d74b19c424'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
 
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 

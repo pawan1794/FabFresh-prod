@@ -34,3 +34,4 @@ admin.site.register(Color,ColorAdmin)
 admin.site.register(ClothInfo,ClothInfoAdmin)
 admin.site.register(Brand,BrandInfoAdmin)
 admin.site.register(StatusTimeStamp,StatusTimeStampAdmin)
+admin.site.site_header = 'FabFresh'

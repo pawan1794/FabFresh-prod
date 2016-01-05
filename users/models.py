@@ -1,11 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, class_prepared
+from users import MAX_USERNAME_LENGTH, REQUIRE_UNIQUE_EMAIL
+from django.core.validators import MaxLengthValidator
+from django.utils.translation import ugettext_lazy as _
 
 class UserInfo(models.Model):
     owner = models.OneToOneField('auth.User', related_name='UserInfo')
     phone = models.CharField(max_length=10)
     otp = models.IntegerField(blank=True,null=True)
+    flag = models.BooleanField(default=False)
     def __unicode__(self):
         return unicode(self.owner)
 
@@ -47,3 +51,44 @@ class UserProfile(models.Model):
 post_save.connect(create_user_profile, sender=User)
 '''
 
+def longer_username_and_email_signal(sender, *args, **kwargs):
+    if (sender.__name__ == "User" and
+        sender.__module__ == "django.contrib.auth.models"):
+        patch_user_model_username(sender)
+        patch_user_model_email(sender)
+class_prepared.connect(longer_username_and_email_signal)
+
+def patch_user_model_username(model):
+    field = model._meta.get_field("username")
+    field.max_length = MAX_USERNAME_LENGTH()
+    field.help_text = _("Required, %s characters or fewer. Only letters, "
+                        "numbers, and @, ., +, -, or _ "
+                        "characters." % MAX_USERNAME_LENGTH())
+
+    # patch model field validator because validator doesn't change if we change
+    # max_length
+    for v in field.validators:
+        if isinstance(v, MaxLengthValidator):
+            v.limit_value = MAX_USERNAME_LENGTH()
+
+
+def patch_user_model_email(model):
+    field = model._meta.get_field("email")
+    field.blank = False
+    field._unique = REQUIRE_UNIQUE_EMAIL()
+    field.max_length = MAX_USERNAME_LENGTH()
+    field.help_text = _("Required, %s characters or fewer. Only letters, "
+                        "numbers, and @, ., +, -, or _ "
+                        "characters." % MAX_USERNAME_LENGTH())
+    # patch model field validator because validator doesn't change if we change
+    # max_length
+    for v in field.validators:
+        if isinstance(v, MaxLengthValidator):
+            v.limit_value = MAX_USERNAME_LENGTH()
+
+
+if User._meta.get_field("email").max_length != MAX_USERNAME_LENGTH():
+    patch_user_model_email(User)
+
+if User._meta.get_field("username").max_length != MAX_USERNAME_LENGTH():
+    patch_user_model_username(User)
