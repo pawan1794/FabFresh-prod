@@ -24,5 +24,6 @@ urlpatterns = patterns(
         views.CheckAvailabilityApiView.as_view(), name='my_rest_view'),
     url(r'^otp/$', views.otpVerification.as_view(), name='otpVerification'),
     url(r'^otpresend/$',views.otpResend.as_view(), name='otpresend'),
+    url(r'^sign_up/$', views.SignUp.as_view(), name="sign_up"),
 
 )

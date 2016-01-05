@@ -51,4 +51,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
 '''
 
+#new change
+class SignUpSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = User
+        fields = ('username', 'password','email')
+        write_only_fields = ('password',)

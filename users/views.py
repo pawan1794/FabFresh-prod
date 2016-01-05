@@ -6,19 +6,20 @@ from .tools import get_access_token
 import json
 import requests
 
-from rest_framework import permissions
+from rest_framework import permissions,generics
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope, TokenHasScope
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
 from django.contrib.auth.models import User
-from .serializers import UserSerializer,UserInfoSerializer, UserProfileSerializer, PostalCodeSerializer
+from .serializers import UserSerializer,UserInfoSerializer, UserProfileSerializer, PostalCodeSerializer, SignUpSerializer
 from .models import UserInfo, UserProfile, PostalCode
 from rest_framework import viewsets
-from .permission import IsOwnerOrReadOnly
+from .permission import IsOwnerOrReadOnly, IsAuthenticatedOrCreate
 from django.conf import settings
 import logging
+from django.core.exceptions import ValidationError
 
 
 
@@ -78,10 +79,12 @@ class otpVerification(APIView):
         '''
         otp = request.GET.get('otp')
         userInfo = UserInfo.objects.get(owner = self.request.user.id)
-        statusCode = "Sucess"
+        statusCode = "Success"
         if otp is not None and userInfo.otp is not None:
             if int(otp) == int(userInfo.otp):
                 code = "Verified"
+                userInfo.flag = True
+                userInfo.save()
             else:
                 code = "Not Verified"
         payload = {
@@ -159,4 +162,28 @@ class CheckAvailabilityApiView(APIView):
             serviceAv.delay(payload)
         response = Response(r.json(),status=status.HTTP_200_OK)
         return response
+
+#new change for login
+class SignUp(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = SignUpSerializer
+    permission_classes = (IsAuthenticatedOrCreate,)
+
+    def create(self, request, *args, **kwargs):
+        request.data['username'] = request.data['email']
+        serializer = self.get_serializer(data=request.data)
+        print UserInfo.objects.filter(phone= request.data['phone'],flag = True)
+        if UserInfo.objects.filter(phone = request.data['phone'],flag = True).count() :
+            return Response("Phone number already registered",status=status.HTTP_200_OK)
+
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        userInfo = UserInfo.objects.get(owner = User.objects.get(email = request.data['email']).id)
+        userInfo.phone = int(request.data['phone'])
+        userInfo.save()
+        u = User.objects.get(id = User.objects.get(email = request.data['email']).id)
+        return get_access_token(u,int(request.data['phone']),User.objects.get(email = request.data['email']))
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
