@@ -13,6 +13,7 @@ colorama==0.3.3
 dj-database-url==0.3.0
 dj-static==0.0.6
 Django==1.8.5
+django-allauth==0.24.1
 django-braces==1.8.1
 django-cors-headers==1.1.0
 django-gcm-android-ios==1.0.0

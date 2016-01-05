@@ -25,5 +25,6 @@ urlpatterns = patterns(
     url(r'^otp/$', views.otpVerification.as_view(), name='otpVerification'),
     url(r'^otpresend/$',views.otpResend.as_view(), name='otpresend'),
     url(r'^sign_up/$', views.SignUp.as_view(), name="sign_up"),
+    url(r'^login/$', views.Login.as_view(), name="login"),
 
 )

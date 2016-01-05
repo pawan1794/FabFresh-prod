@@ -28,6 +28,11 @@ INSTALLED_APPS = (
     'order',
     'rest_framework_swagger',
     'push_notifications',
+    #allauth
+    'allauth',
+    'allauth.account',
+    'django.contrib.sites',
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -49,9 +54,9 @@ ROOT_URLCONF = 'FabFresh.urls'
 AUTHENTICATION_BACKENDS = (
     'social.backends.facebook.FacebookAppOAuth2',
     'social.backends.facebook.FacebookOAuth2',
-    'social_auth.backends.google.GoogleOAuth2Backend',
-    'social_auth.backends.google.GoogleBackend',
     'django.contrib.auth.backends.ModelBackend',
+    #allauth
+    'allauth.account.auth_backends.AuthenticationBackend'
 )
 
 REST_FRAMEWORK = {
@@ -145,8 +150,6 @@ SOCIAL_AUTH_ENABLED_BACKENDS=('facebook',)
 SOCIAL_AUTH_FACEBOOK_KEY = '1640925132856151'
 SOCIAL_AUTH_FACEBOOK_SECRET = '5fc388d8613577ec2b1ce2d74b19c424'
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
 
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
@@ -196,3 +199,4 @@ BROKER_TRANSPORT_OPTIONS = {
     'sdb_persistence': False
 }
 '''
+SITE_ID=1
