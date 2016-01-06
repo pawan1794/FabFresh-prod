@@ -111,8 +111,10 @@ class Size(models.Model):
 #shirt or pant
 class Type(models.Model):
     type_id = models.AutoField(primary_key=True)
-    type_name = models.CharField(max_length=100)
-    type_price = models.FloatField(max_length=100000,default=0.0, validators=[MinValueValidator(1)])
+    type_name = models.CharField(max_length=100,unique=True)
+    type_price_wash_and_iron = models.FloatField(max_length=100000,default=0.0, validators=[MinValueValidator(1)])
+    type_price_wash = models.FloatField(max_length=100000,default=0.0, validators=[MinValueValidator(1)])
+    type_price_iron = models.FloatField(max_length=100000,default=0.0, validators=[MinValueValidator(1)])
 
     def __unicode__(self):
         return unicode(self.type_name)

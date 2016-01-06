@@ -12,7 +12,7 @@ class sizeAdmin(admin.ModelAdmin):
     list_display = ('size_id','size_name')
 
 class TypeAdmin(admin.ModelAdmin):
-    list_display = ('type_id','type_name','type_price')
+    list_display = ('type_id','type_name','type_price_wash_and_iron','type_price_wash','type_price_iron')
 
 class ColorAdmin(admin.ModelAdmin):
     list_display = ('color_id' , 'color_name')
