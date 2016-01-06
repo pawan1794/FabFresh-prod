@@ -19,8 +19,8 @@ class Wallet(models.Model):
 
 def create_user_Info(sender, instance, created, **kwargs):
     if created:
-       profile, created = UserInfo.objects.get_or_create(owner=instance)
-
+        profile, created = UserInfo.objects.get_or_create(owner=instance)
+        wallet, created = Wallet.objects.get_or_create(owner=instance)
 
 post_save.connect(create_user_Info, sender=User)
 
