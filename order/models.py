@@ -142,4 +142,3 @@ class ClothInfo(models.Model):
     brand = models.ForeignKey(Brand,null=True)
     gender = models.CharField(max_length=7)
     damage = models.BooleanField(default=False)
-
