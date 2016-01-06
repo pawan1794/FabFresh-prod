@@ -13,6 +13,10 @@ class UserInfo(models.Model):
     def __unicode__(self):
         return unicode(self.owner)
 
+class Wallet(models.Model):
+    owner = models.OneToOneField('auth.User' , related_name='Wallet')
+    wallet = models.FloatField(max_length=1000000,default=0)
+
 def create_user_Info(sender, instance, created, **kwargs):
     if created:
        profile, created = UserInfo.objects.get_or_create(owner=instance)

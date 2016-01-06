@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserInfo, UserProfile,PostalCode #, Locality, Address, City
+from .models import UserInfo, UserProfile,PostalCode, Wallet #, Locality, Address, City
 from django.contrib.auth.models import User
 from order.models import orders
 from oauth2_provider.models import AccessToken, RefreshToken
@@ -14,6 +14,11 @@ class UserInfoSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = UserInfo
+
+class WalletSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    class Meta:
+        model = Wallet
 
 #Only to get phone number[userinfo model]
 class PhoneNumberSerializer(serializers.ModelSerializer):
@@ -33,6 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
     UserProfile = UserProfileSerializer(many=True)
     #UserInfo = serializers.PrimaryKeyRelatedField(queryset=UserInfo.objects.all())
     orders = serializers.PrimaryKeyRelatedField(many=True, queryset=orders.objects.all())
+    
 
     class Meta:
         model = User
