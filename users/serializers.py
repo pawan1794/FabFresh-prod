@@ -38,7 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
     UserProfile = UserProfileSerializer(many=True)
     #UserInfo = serializers.PrimaryKeyRelatedField(queryset=UserInfo.objects.all())
     orders = serializers.PrimaryKeyRelatedField(many=True, queryset=orders.objects.all())
-    
+
 
     class Meta:
         model = User
