@@ -318,6 +318,7 @@ class setPrice(APIView):
                 a = str(a)
                 if a < 1000:
                     a = a + 1000
+            print a[:4]
             order.update(p_id=a[:4])
 
             #setting up the price
