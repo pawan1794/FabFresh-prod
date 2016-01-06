@@ -172,13 +172,12 @@ class PlaceOrderShipment(APIView):
                 payload['drop']['user']['full_address']['city']['name'] = "Bangalore"
                 payload['drop']['user']['full_address']['geo']['latitude'] = "12.943834"
                 payload['drop']['user']['full_address']['geo']['longitude'] = "77.623928"
-                print "asd"
-                print haversine(float(payload['pickup']['user']['full_address']['geo']['latitude']),float(payload['pickup']['user']['full_address']['geo']['longitude']),12.948645,77.594783)
 
-                if haversine(float(payload['pickup']['user']['full_address']['geo']['latitude']),float(payload['pickup']['user']['full_address']['geo']['longitude']),12.948645,77.594783) < 4.0:
+                '''if haversine(float(payload['pickup']['user']['full_address']['geo']['latitude']),float(payload['pickup']['user']['full_address']['geo']['longitude']),12.948645,77.594783) < 100.0:
                     pass
                 else:
                     return JsonResponse({'status':'Service Not Available'}, status = status.HTTP_200_OK)
+                '''
             #url = 'http://128.199.241.199/v1/orders/ship'
             url = 'http://roadrunnr.in/v1/orders/ship'
             headers = {'Authorization' : 'Bearer L0vqwtrFUodi6VA8HhxKtSdVjTinUUaoHEUk2VPP' , 'Content-Type' : 'application/json'}
