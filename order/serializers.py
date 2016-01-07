@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import orders, Size,Type, Color,ClothInfo,DriverDetails,Brand, StatusTimeStamp
+from .models import orders, Size,Type, Color,ClothInfo,DriverDetails,Brand, StatusTimeStamp, Coupon
 
 class ClothInforamtionSerializer(serializers.ModelSerializer):
     color = serializers.ReadOnlyField(source='color.color_name')
@@ -21,6 +21,9 @@ class DriverDetailsSerializer(serializers.ModelSerializer):
         model = DriverDetails
 
 
+class CouponSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coupon
 
 class ordersSerializer(serializers.ModelSerializer):
 
@@ -28,12 +31,11 @@ class ordersSerializer(serializers.ModelSerializer):
     ClothInfo = ClothInforamtionSerializer(many=True)
     StatusTimeStamp = StatusTimeStampSerializer(many=True)
     DriverDetails = DriverDetailsSerializer(many=True)
+    coupon = serializers.ReadOnlyField(source='coupon.coupon_tag')
 
     class Meta:
         model = orders
-        fields = ('id','amount','status','created_at_time','modified_at_time','owner','weight','quantity','order_type','p_id' , 'special_instructions','ClothInfo','StatusTimeStamp','DriverDetails')
-
-
+        fields = ('id','amount','status','created_at_time','modified_at_time','owner','weight','quantity','order_type','p_id' , 'special_instructions','ClothInfo','StatusTimeStamp','DriverDetails','coupon')
 
 
 

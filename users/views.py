@@ -191,8 +191,8 @@ class CheckAvailabilityApiView(APIView):
         url = 'http://roadrunnr.in/v1/orders/serviceability'
         headers = {'Authorization' : 'Bearer L0vqwtrFUodi6VA8HhxKtSdVjTinUUaoHEUk2VPP' , 'Content-Type' : 'application/json'}
         r = requests.post(url, json.dumps(payload), headers=headers)
-        if len(r.json()) < 4 :
-            serviceAv.delay(payload)
+        #if len(r.json()) < 4 :
+        #    serviceAv.delay(payload)
         response = Response(r.json(),status=status.HTTP_200_OK)
         return response
 

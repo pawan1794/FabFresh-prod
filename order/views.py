@@ -27,7 +27,7 @@ from random import randint
 import math
 from django.utils import timezone
 from FabFresh.task import text
-
+from django.db.models import Count
 
 def message(self, phone ,message):
     url1 = "http://bhashsms.com/api/sendmsg.php?user=7204680605&pass=9ba84c5&sender=Ffresh&phone="+phone+"&text="+message+"&priority=ndnd&stype=normal"
@@ -182,9 +182,8 @@ class PlaceOrderShipment(APIView):
                 '''
             #url = 'http://128.199.241.199/v1/orders/ship'
             url = 'http://roadrunnr.in/v1/orders/ship'
-            headers = {'Authorization' : 'Bearer aL0vqwtrFUodi6VA8HhxKtSdVjTinUUaoHEUk2VPP' , 'Content-Type' : 'application/json'}
+            headers = {'Authorization' : 'Bearer L0vqwtrFUodi6VA8HhxKtSdVjTinUUaoHEUk2VPP' , 'Content-Type' : 'application/json'}
             try:
-
                 r = requests.post(url, json.dumps(payload), headers=headers)
                 if r.status_code == 200:
                     print "Inside 200 status"
@@ -213,7 +212,8 @@ class PlaceOrderShipment(APIView):
                             message(self, userInfo[0].phone, text_message)
 
                         if flag == 1:
-                            order.update(status=11)
+                            order.status="11"
+                            order.save()
                             DriverDetail.new_trip = False
                             DriverDetail.save()
                             text_message = "Dear " + payload['drop']['user']['name'] + ". Your Order No :" + \
@@ -286,6 +286,7 @@ def random_with_N_digits(n):
 class setPrice(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
+
     def get_queryset(self):
         if self.request.user.is_superuser:
             return orders.objects.all()
@@ -293,6 +294,7 @@ class setPrice(APIView):
             return orders.objects.filter(owner=self.request.user.id)
 
     def post(self, request, *args, **kw):
+
         try:
             payload = request.data
             try:
@@ -300,7 +302,7 @@ class setPrice(APIView):
                 if not order:
                     return JsonResponse({'status' : 'Order not Avalilable'}, status=status.HTTP_404_NOT_FOUND)
             except Exception as e:
-                return Response(e, status=status.HTTP_404_NOT_FOUND)
+                return Response("order not found", status=status.HTTP_404_NOT_FOUND)
 
             order.update(quantity=payload['quantity'])
             order.update(weight=float(payload['weight']))
@@ -317,19 +319,31 @@ class setPrice(APIView):
                 a = str(a)
                 if a < 1000:
                     a = a + 1000
+            print a[:4]
             order.update(p_id=a[:4])
 
-            if order[0].order_type == 1:
-                order.update(amount=0)
-            else:
-                order.update(amount=0)
+            #setting up the price
+            count = 0
+            washandiron = 'type_price_wash_and_iron'
+            clothResult = ClothInfo.objects.filter(order=order[0].id).values('type').annotate(c=Count('type'))
+            typer = Type.objects.all()
+            for i in xrange(0,len(clothResult)):
+                for j in typer:
+                    if j.type_id is clothResult[i]['type']:
+                        if int(order[0].order_type) is 0:
+                            count = count + j.type_price_wash_and_iron * clothResult[i]['c']
+                        elif int(order[0].order_type) is 1:
+                            count = count + j.type_price_wash * clothResult[i]['c']
+                        else:
+                            count = count + j.type_price_iron * clothResult[i]['c']
+
+            order.update(amount=count)
+
             try:
                 order = orders.objects.filter(id=payload['id'])
                 for i in order:
                     print i.owner
                 userInfo = UserInfo.objects.filter(owner = i.owner)
-
-
                 phone = 0
                 name = " "
                 for i in userInfo:

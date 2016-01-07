@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.validators import MaxValueValidator, MinValueValidator
 '''
 STATUS = (
     ('0' , 'cancelled'),
@@ -15,7 +15,7 @@ STATUS = (
 '''
 
 STATUS = (
-    ('0' , 'cancelled'),
+    ('0', 'cancelled'),
     ('1', 'created'),
     ('2', 'pickup'),
     ('3', 'receivedAtCenter'),
@@ -30,6 +30,39 @@ STATUS = (
     ('12', 'completed')
 )
 
+VALUETYPE = (
+    ('0','percentage'),
+    ('1','flat')
+)
+
+COUPONTYPE = (
+    ('0','firstorder'),
+    ('1','flatoff'),
+    ('2','one time use')
+)
+
+class CouponType(models.Model):
+    coupon_type_id = models.AutoField(primary_key=True)
+    coupon_type_name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.coupon_type_name
+
+class Coupon(models.Model):
+    coupon_tag = models.CharField(max_length=100,unique=True)
+    coupon_created_at_time = models.DateTimeField(auto_now_add=True)
+    coupon_valid_until_time = models.DateTimeField()
+    coupon_used_counter = models.IntegerField(blank=True,null=True)
+    coupon_value_type = models.CharField(max_length=1,choices=VALUETYPE,default='1')
+    coupon_value = models.IntegerField()
+    coupon_valid_flag = models.BooleanField()
+    coupon_coupon_type = models.CharField(max_length=1,choices=COUPONTYPE,default='1')
+    #coupon_type = models.ForeignKey(CouponType,null=True)
+
+    def __str__(self):
+        return self.coupon_tag
+
+
 class orders(models.Model):
     owner = models.ForeignKey('auth.User', related_name='orders')
     id = models.AutoField(primary_key=True)
@@ -42,6 +75,9 @@ class orders(models.Model):
     order_type = models.CharField(max_length=10,blank=True,null=True)
     special_instructions = models.CharField(max_length=200,blank=True,null=True)
     p_id = models.IntegerField(blank=True,null=True)
+
+    #Coupons
+    coupon = models.ForeignKey(Coupon, blank=True,null=True)
 
     delivery_id = models.CharField(max_length=200, blank=True, null=True)
     roadrunner_order_id = models.CharField(max_length=200, blank=True, null=True)
@@ -67,7 +103,7 @@ class DriverDetails(models.Model):
 #medium small or large
 class Size(models.Model):
     size_id = models.AutoField(primary_key=True)
-    size_name = models.CharField(max_length=10)
+    size_name = models.CharField(max_length=100)
 
     def __unicode__(self):
         return unicode(self.size_name)
@@ -75,21 +111,25 @@ class Size(models.Model):
 #shirt or pant
 class Type(models.Model):
     type_id = models.AutoField(primary_key=True)
-    type_name = models.CharField(max_length=10)
+    type_name = models.CharField(max_length=100,unique=True)
+    type_price_wash_and_iron = models.FloatField(max_length=100000,default=0.0, validators=[MinValueValidator(1)])
+    type_price_wash = models.FloatField(max_length=100000,default=0.0, validators=[MinValueValidator(1)])
+    type_price_iron = models.FloatField(max_length=100000,default=0.0, validators=[MinValueValidator(1)])
 
     def __unicode__(self):
         return unicode(self.type_name)
+
 #blue green etc
 class Color(models.Model):
     color_id = models.AutoField(primary_key=True)
-    color_name = models.CharField(max_length=10)
+    color_name = models.CharField(max_length=100)
     def __unicode__(self):
         return unicode(self.color_name)
 
 
 class Brand(models.Model):
     brand_id = models.AutoField(primary_key=True)
-    brand_name = models.CharField(max_length=10)
+    brand_name = models.CharField(max_length=100)
     def __unicode__(self):
         return unicode(self.brand_name)
 
