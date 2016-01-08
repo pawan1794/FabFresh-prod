@@ -1,5 +1,7 @@
 from django.http import JsonResponse
+from django.contrib.auth.models import User
 from rest_framework import viewsets,permissions,status
+from rest_framework.renderers import JSONRenderer
 from .serializers import ordersSerializer
 from order.models import orders
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope
@@ -125,7 +127,7 @@ class PlaceOrderShipment(APIView):
         print now
         if now < 20 and now > 8:
             print type(payload['order_details']['order_id'])
-        if now < 20 and now > 9:
+        if now < 24 and now > 9:
 
             if int(payload['order_details']['order_id']) is 0:
                 try:
@@ -152,7 +154,7 @@ class PlaceOrderShipment(APIView):
 
             print(userInfo[0].phone)
 
-            if flag == 1:
+            if flag == 1:# for Drop from Factory
                 payload['pickup']['user']['name'] = "FabFresh"
                 payload['pickup']['user']['phone_no'] = "9108014238"
                 payload['pickup']['user']['email'] = "fabfresh.in"
@@ -163,7 +165,7 @@ class PlaceOrderShipment(APIView):
                 payload['pickup']['user']['full_address']['city']['name'] = "Bangalore"
                 payload['pickup']['user']['full_address']['geo']['latitude'] = "12.943834"
                 payload['pickup']['user']['full_address']['geo']['longitude'] = "77.623928"
-            if flag == 0:
+            if flag == 0:#for pickup from customer
                 payload['drop']['user']['name'] = "FabFresh"
                 payload['drop']['user']['phone_no'] = "9108014238"
                 payload['drop']['user']['email'] = "fabfresh.in"
@@ -188,8 +190,18 @@ class PlaceOrderShipment(APIView):
                 if r.status_code == 200:
                     print "Inside 200 status"
                     if r.json()['status']['code'] == 706:
+
+                        #call ShadowFax Here
+
+                        r1 = shadowFax(self,flag,order,payload,userInfo[0].phone)
+                        response = Response(r1.json(),status=status.HTTP_200_OK)
+
+                        if r1.json()['message'] == 'done successfully':
+                            return JsonResponse({"status" :"Success"})
                         if flag == 0:
                             order.delete()
+                        #end of shadowfax
+
                         response = JsonResponse({"status" : "Delivery Boy Not Available"})
                     else:
                         response = Response(r.json(),status=status.HTTP_200_OK)
@@ -199,7 +211,7 @@ class PlaceOrderShipment(APIView):
                                                 driver_phone = r.json()['driver_phone'],
                                                 order_id = r.json()['order_id'])
 
-                        print "After driver informations stored"
+
                         if flag == 0:
                             order.roadrunner_order_id = r.json()['order_id']
                             order.delivery_id = r.json()['delivery_id']
@@ -231,6 +243,131 @@ class PlaceOrderShipment(APIView):
                 return Response(e, status=status.HTTP_404_NOT_FOUND)
         else:
             return JsonResponse({'status':'Time Up'}, status = status.HTTP_200_OK)
+
+from .serializers import ShadowfaxSerializer, UserSerializer
+from users.models import UserProfile
+import datetime
+def shadowFax(self,flag,order,roadPayorder,phone):
+    print order.id
+    print order.status
+    print order.amount
+    print order.owner
+    print roadPayorder['drop']['user']['full_address']['address']
+    print roadPayorder['pickup']['user']['full_address']['address']
+
+
+    payload = {
+                #"store_code" : "FAB001",
+                #"callback_url" : "http://fabfresh.elasticbeanstalk.com/callback/",
+                #"pickup_contact_number" : "7204680605",
+                "order_details" : {
+                    "client_order_id" : "01",
+                    "order_value" : 10,
+                    "paid" : "true"
+
+                },
+                "customer_details" : {
+                    "name" : "hari",
+                    "contact_number" : "7204680605",
+                    "address_line_1" : "#99 4th B Cross",
+                    "address_line_2" : "Kormangala 5h Block",
+                    "city" : "Bangalore",
+                    "latitude" : 12.943834,
+                    "longitude" : 77.623928
+                }
+            }
+
+    payload['order_details']['client_order_id'] = order.id
+
+    payload['customer_details']['name'] = order.owner.username
+    payload['customer_details']['contact_number'] = phone
+    payload['customer_details']['city'] = "Bangalore"
+
+    print "amount"
+    print order.amount
+    if flag == 1:
+        #drop
+        payload['store_code'] = "fabtest01"
+        payload['pickup_contact_number'] = "9108014238"
+        payload['order_details']['order_value'] = order.amount
+        payload['order_details']['paid'] = "true"
+        payload['customer_details']['address_line_1'] = str(roadPayorder['drop']['user']['full_address']['address'])
+        payload['customer_details']['address_line_2'] = str(roadPayorder['drop']['user']['full_address']['locality']['name'])
+        payload['customer_details']['latitude'] = float(roadPayorder['drop']['user']['full_address']['geo']['latitude'])
+        payload['customer_details']['longitude'] = float(roadPayorder['drop']['user']['full_address']['geo']['longitude'])
+
+    if flag == 0:
+        #pickup
+        payload['store_code'] = "fabtest01"
+        payload['pickup_contact_number'] = "9108014238" #Add customer Number
+        payload['customer_details']['address_line_1'] = str(roadPayorder['pickup']['user']['full_address']['address'])
+        payload['customer_details']['address_line_2'] = str(roadPayorder['pickup']['user']['full_address']['locality']['name'])
+        payload['customer_details']['latitude'] = float(roadPayorder['pickup']['user']['full_address']['geo']['latitude'])
+        payload['customer_details']['longitude'] = float(roadPayorder['pickup']['user']['full_address']['geo']['longitude'])
+
+    payload['callback_url'] = "http://fabfresh.elasticbeanstalk.com/callback/"
+
+    url = 'http://api.shadowfax.in/api/v1/stores/orders/'
+    headers = {'Authorization' : 'Token 1ed5dc52a5b70f8f0f174e2a6912d0ec975ca956' , 'Content-Type' : 'application/json'}
+    try:
+        print payload
+        r = requests.post(url, json.dumps(payload), headers=headers)
+        print r.json()
+        if r.json()['message'] == 'done successfully':
+            print "success"
+            print r.json()
+            DriverDetail = DriverDetails(orders_id = order.id,
+                                         order_id = r.json()['data']['sfx_order_id'],
+                                         logistics = 2)
+
+            if flag == 0:
+                order.status = "2"
+                order.save()
+                DriverDetail.new_trip = True
+                DriverDetail.save()
+                text_message = "Dear " + roadPayorder['pickup']['user']['name'] + ". Your Order No :" + \
+                                   str(order.id) + " with FabFresh is placed Successfully. Our Logistics " \
+                                              "Partner will be there to pick up your clothes . " \
+                                              "Pickup boy details will be sent to you shortly." \
+                                              " You can track your order in the app now !"
+                message(self, phone, text_message)
+
+            if flag == 1:
+                order.status = "11"
+                order.save()
+                DriverDetail.new_trip = False
+                DriverDetail.save()
+                text_message = "Dear " + roadPayorder['drop']['user']['name'] + ". Your Order No :" + \
+                                       str(order.id) + \
+                               "  is on its way. Delivery Boy details will be sent to you shortly." \
+                               " Once again , Thanks for using FabFresh. Please provide your feedback " \
+                               "in the app . Have a Wonderful day ! "
+                message(self, phone, text_message)
+            return r
+
+        if r.json()['detail'] == 'Invalid token.':
+            print "Token Expired"
+        print "asd"
+
+    except Exception as e:
+        print "Inside Exception"
+        print e
+        return Response("Error" , status=status.HTTP_400_BAD_REQUEST)
+    return r
+
+
+
+
+class PlaceOrderShadowFax(APIView):
+    permission_classes = [permissions.AllowAny,]
+
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request):
+        r = shadowFax(self,1)
+        response = Response(r.json(),status=status.HTTP_200_OK)
+        print "after return"
+        return response
 
 class OrderCancel(APIView):
     permission_classes = [permissions.IsAuthenticated]

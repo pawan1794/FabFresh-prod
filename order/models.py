@@ -41,6 +41,11 @@ COUPONTYPE = (
     ('2','one time use')
 )
 
+LOGISTICS = (
+    ('1','roadrunner'),
+    ('2','shadowfax')
+)
+
 class CouponType(models.Model):
     coupon_type_id = models.AutoField(primary_key=True)
     coupon_type_name = models.CharField(max_length=100)
@@ -99,6 +104,8 @@ class DriverDetails(models.Model):
     delivery_id = models.CharField(max_length=20,blank=True,null=True)
     new_trip = models.BooleanField(blank=True)
     driver_name = models.CharField(max_length=20,blank=True,null=True)
+    logistics = models.CharField(max_length=1,choices=LOGISTICS,default=1)
+
 
 #medium small or large
 class Size(models.Model):

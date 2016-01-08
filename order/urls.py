@@ -19,6 +19,8 @@ urlpatterns = patterns(
         include(router.urls)),
     url(r'^placeorder/$',
         views.PlaceOrderShipment.as_view(), name='place_order'),
+    url('^shadowfax/$',
+        views.PlaceOrderShadowFax.as_view(), name='place_order_shadowfax'),
     url(r'^track/$',views.Track.as_view(),name='track'),
     url(r'^callback/$',views.CallBackApiView().as_view(),name='callBack'),
     url(r'^setAmount/$' , views.setPrice.as_view(), name='setPrice'),
