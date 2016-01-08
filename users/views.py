@@ -73,14 +73,16 @@ class UserViewSet(viewsets.ModelViewSet):
                     if request.data['new_password'] == request.data['confirm_password']:
                         user.set_password(request.data['new_password'])
                         user.save()
-                        return Response({'status': 'Password Change Successfully'}, status=status.HTTP_200_OK)
+                        return JsonResponse({'status':'Password Change Successfully'}, status = status.HTTP_200_OK)
                     else:
-                        data = {'detail': 'New Password mismatch'}
+                        return JsonResponse({'status':'New Password mismatch'}, status = status.HTTP_200_OK)
+                        #data = {'detail': 'New Password mismatch'}
                 else:
-                    data = {'detail': 'Please enter your correct password!'}
+                    return JsonResponse({'status':'Please enter your correct password!'}, status = status.HTTP_200_OK)
+                    #data = {'detail': 'Please enter your correct password!'}
         except Exception as e:
             data = {'detail': 'Unable to change password'}
-        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)
 
     @list_route(methods=['post'],url_path='reset-password', permission_classes=[permissions.AllowAny])
     def recover_password(self, request):
