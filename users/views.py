@@ -5,6 +5,7 @@ from social.apps.django_app.utils import psa
 from .tools import get_access_token
 import json
 import requests
+from django.http import JsonResponse
 
 from rest_framework import permissions,generics
 from oauth2_provider.ext.rest_framework import TokenHasReadWriteScope, TokenHasScope
@@ -206,8 +207,9 @@ class SignUp(generics.CreateAPIView):
         request.data['username'] = request.data['email']
         serializer = self.get_serializer(data=request.data)
         print UserInfo.objects.filter(phone= request.data['phone'],flag = True)
+        data  = "Phone number already registered"
         if UserInfo.objects.filter(phone = request.data['phone'],flag = True).count() :
-            return Response("Phone number already registered",status=status.HTTP_200_OK)
+            return JsonResponse({'status':data}, status = status.HTTP_200_OK)
 
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
