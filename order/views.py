@@ -244,8 +244,6 @@ class PlaceOrderShipment(APIView):
         else:
             return JsonResponse({'status':'Time Up'}, status = status.HTTP_200_OK)
 
-from .serializers import ShadowfaxSerializer, UserSerializer
-from users.models import UserProfile
 import datetime
 def shadowFax(self,flag,order,roadPayorder,phone):
     print order.id

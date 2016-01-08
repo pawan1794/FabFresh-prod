@@ -109,7 +109,7 @@ class ClothsOrdersSerializer(serializers.ModelSerializer):
     class Meta:
         model = orders
 
-from users.serializers import *
+'''from users.serializers import *
 class UserSerializer(serializers.ModelSerializer):
     UserInfo = PhoneNumberSerializer()
     UserProfile = UserProfileSerializer(many=True)
@@ -121,3 +121,4 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'UserInfo','UserProfile', 'first_name','orders','email','Wallet')
+'''
