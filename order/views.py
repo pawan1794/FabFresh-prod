@@ -456,46 +456,65 @@ class CouponView(APIView):
                 return JsonResponse({'status': 'Invalid order'}, status=status.HTTP_200_OK)
 
             if int(coupon.coupon_coupon_type) == 0:
-                v =  firstTimeCoupon(self, order, coupon, user)
-                print v
-                if v == 1:
-                    return JsonResponse({'status': 'Coupon Valid'}, status=status.HTTP_200_OK)
-                else:
-                    return JsonResponse({'status': 'Invalid Coupon'}, status=status.HTTP_200_OK)
+                v = firstTimeCoupon(self, order, coupon, user)
             elif int(coupon.coupon_coupon_type) == 1:
-                print "flatoff"
+                v = flatoff(self, order, coupon, user)
             elif int(coupon.coupon_coupon_type) == 2:
+                v = 0
                 print "One Time Coupon"
+        else:
+            return JsonResponse({'status': 'Invalid Coupon'}, status=status.HTTP_200_OK)
+        if v == 1:
+            coupon.coupon_used_counter = int(coupon.coupon_used_counter) + 1
+            coupon.save()
+            return JsonResponse({'status': 'Coupon Valid'}, status=status.HTTP_200_OK)
         else:
             return JsonResponse({'status': 'Invalid Coupon'}, status=status.HTTP_200_OK)
 
 
+def flatoff(self, order, coupon, user):
+    discount = 0
+    discount = calculatePrice(self, coupon, order)
+    if order.amount > 1:
+        temp = float(order.amount) - discount
+        if temp < 0:
+            order.afterDiscount = 0
+        else:
+            order.afterDiscount = temp
+
+    order.coupon = coupon
+    order.save()
+    return 1
+
+
+# For FIrst time Use
 def firstTimeCoupon(self, order, coupon, user):
     # For First Time Coupon
+
     if orders.objects.filter(owner=user).count() < 2:
         discount = 0
-        print "Asd"
-        print order
-        if int(coupon.coupon_value_type) == 0:
-            print coupon.coupon_value
-            print order.amount
-            discount = float(float(coupon.coupon_value) / 100) * order.amount
-            print discount
-        elif int(coupon.coupon_value_type) == 1:
-            discount = coupon.coupon_value
-
+        discount = calculatePrice(self, coupon, order)
         if order.amount > 1:
             temp = float(order.amount) - discount
             if temp < 0:
                 order.afterDiscount = 0
             else:
                 order.afterDiscount = temp
+
         order.coupon = coupon
         order.save()
-        print "Inside Method"
         return 1
     else:
         return 0
+
+
+def calculatePrice(self, coupon, order):
+    discount = 0
+    if int(coupon.coupon_value_type) == 0:
+        discount = float(float(coupon.coupon_value) / 100) * order.amount
+    elif int(coupon.coupon_value_type) == 1:
+        discount = coupon.coupon_value
+    return discount
 
 
 class setPrice(APIView):
@@ -615,9 +634,9 @@ class CallBackApiView(APIView):
     def post(self, request, *args, **kw):
         payload = request.data
         print(payload)
-        if payload['status'] == "REACHED_PICKUP":
-            text_message = str(payload)
-            message(self, "7204680605", text_message)
+        text_message = str(payload)
+        message(self, "7204680605", text_message)
+
         return Response("Success", status=status.HTTP_200_OK)
 
 

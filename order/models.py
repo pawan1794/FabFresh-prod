@@ -57,7 +57,7 @@ class Coupon(models.Model):
     coupon_tag = models.CharField(max_length=100,unique=True)
     coupon_created_at_time = models.DateTimeField(auto_now_add=True)
     coupon_valid_until_time = models.DateTimeField()
-    coupon_used_counter = models.IntegerField(blank=True,null=True)
+    coupon_used_counter = models.IntegerField(blank=True,null=True,default=0)
     coupon_value_type = models.CharField(max_length=1,choices=VALUETYPE,default='1')
     coupon_value = models.IntegerField()
     coupon_valid_flag = models.BooleanField()
