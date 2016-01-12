@@ -83,6 +83,7 @@ class orders(models.Model):
 
     #Coupons
     coupon = models.ForeignKey(Coupon, blank=True,null=True)
+    afterDiscount = models.FloatField(blank=True, null=True)
 
     delivery_id = models.CharField(max_length=200, blank=True, null=True)
     roadrunner_order_id = models.CharField(max_length=200, blank=True, null=True)

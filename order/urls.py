@@ -25,5 +25,6 @@ urlpatterns = patterns(
     url(r'^cancel/$', views.OrderCancel.as_view(), name = 'CancelOrder'),
     url(r'^aboutus/$' , views.AboutUs.as_view(), name='AboutUs'),
     url(r'^faq/$', views.Faq.as_view(), name='FaQ'),
-    url(r'^deletegcm/$',views.deleteGCM.as_view(),name='deleteGCM')
+    url(r'^deletegcm/$',views.deleteGCM.as_view(),name='deleteGCM'),
+    url(r'^coupons/$',views.CouponView.as_view(),name='coupon')
 )
