@@ -292,7 +292,7 @@ def shadowFax(self, flag, order, roadPayorder, phone):
     print order.amount
     if flag == 1:
         # drop
-        payload['store_code'] = "fabtest01"
+        payload['store_code'] = "FAB002"
         payload['pickup_contact_number'] = "9108014238"
         payload['order_details']['order_value'] = order.amount
         payload['order_details']['paid'] = "true"
@@ -305,7 +305,7 @@ def shadowFax(self, flag, order, roadPayorder, phone):
 
     if flag == 0:
         # pickup
-        payload['store_code'] = "fabtest01"
+        payload['store_code'] = "FAB001"
         payload['pickup_contact_number'] = "9108014238"  # Add customer Number
         payload['customer_details']['address_line_1'] = str(roadPayorder['pickup']['user']['full_address']['address'])
         payload['customer_details']['address_line_2'] = str(
