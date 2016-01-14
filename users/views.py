@@ -15,8 +15,8 @@ from rest_framework import status
 from rest_framework.authentication import BasicAuthentication
 
 from django.contrib.auth.models import User
-from .serializers import UserSerializer,UserInfoSerializer, UserProfileSerializer, PostalCodeSerializer, SignUpSerializer, LoginSerializer, ChangePasswordSerializer
-from .models import UserInfo, UserProfile, PostalCode
+from .serializers import UserSerializer,UserInfoSerializer, UserProfileSerializer, PostalCodeSerializer, SignUpSerializer, LoginSerializer, ChangePasswordSerializer,AndroidAppVersionSerializer, NotificationBoardSerializer
+from .models import UserInfo, UserProfile, PostalCode, AndroidAppVersion, NotificationBoard
 from rest_framework import viewsets
 from .permission import IsOwnerOrReadOnly, IsAuthenticatedOrCreate
 from django.conf import settings
@@ -25,6 +25,18 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate, login
 from rest_framework.decorators import detail_route, list_route
 from allauth.account.forms import ResetPasswordForm
+
+
+class NotificationBoardViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = NotificationBoard.objects.all()
+    serializer_class = NotificationBoardSerializer
+
+
+class AndroidAppVersionViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.AllowAny]
+    queryset = AndroidAppVersion.objects.all()
+    serializer_class = AndroidAppVersionSerializer
 
 class PostalCodeViewSet(viewsets.ModelViewSet):
     queryset = PostalCode.objects.all()
@@ -238,4 +250,3 @@ class Login(generics.ListAPIView):
             return get_access_token(user,"","")
         else:
             return Response("Not Authenticated", status=status.HTTP_200_OK)
-

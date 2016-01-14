@@ -96,3 +96,18 @@ if User._meta.get_field("email").max_length != MAX_USERNAME_LENGTH():
 
 if User._meta.get_field("username").max_length != MAX_USERNAME_LENGTH():
     patch_user_model_username(User)
+
+class AndroidAppVersion(models.Model):
+    versionNumber = models.FloatField()
+
+    def __str__(self):
+        return str(self.versionNumber)
+
+class NotificationBoard(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.CharField(max_length=200)
+    coupon_valid_until_time = models.DateTimeField()
+
+
+    def __str__(self):
+        return self.title

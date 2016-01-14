@@ -13,6 +13,8 @@ router.register(r'^device/gcm', GCMDeviceAuthorizedViewSet)
 router.register(r'^device/apns', APNSDeviceAuthorizedViewSet)
 router.register(r'^address',views.UserProfileViewSet)
 router.register(r'^postalcode',views.PostalCodeViewSet)
+router.register(r'^appversion',views.AndroidAppVersionViewSet)
+router.register(r'^notificationboard',views.NotificationBoardViewSet)
 
 urlpatterns = patterns(
     '',

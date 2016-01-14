@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserInfo, UserProfile,PostalCode, Wallet #, Locality, Address, City
+from .models import UserInfo, UserProfile,PostalCode, Wallet, AndroidAppVersion, NotificationBoard #, Locality, Address, City
 from django.contrib.auth.models import User
 from order.models import orders
 from oauth2_provider.models import AccessToken, RefreshToken
@@ -77,3 +77,10 @@ class ResetPasswordSerializer(serializers.Serializer):
 class ChangePasswordSerializer(ResetPasswordSerializer):
     password = serializers.CharField()
 
+class AndroidAppVersionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AndroidAppVersion
+
+class NotificationBoardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NotificationBoard
