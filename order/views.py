@@ -140,7 +140,7 @@ class PlaceOrderShipment(APIView):
         print now
         if now < 20 and now > 8:
             print type(payload['order_details']['order_id'])
-        if now < 22 and now > 9:
+        if now < 22 and now > 1:
 
             if int(payload['order_details']['order_id']) is 0:
                 try:
@@ -601,7 +601,6 @@ class setPrice(APIView):
                                                   , timestamp=timezone.now())
                 statusTimeStamp.save()
 
-                # userInfo = UserInfo.objects.filter(owner = self.request.user)
                 text_message = "Dear " + str(name) + " , Your Order No : " + str(
                     payload['id']) + ". Number of Clothes : " + str(order[0].quantity) + " , Weight : " + str(
                     order[0].weight) + " KG , Price : " + str(order[
@@ -619,22 +618,6 @@ class setPrice(APIView):
             '''
             gcm(self, i.owner_id, payload['id'], 2)
 
-            '''print i.id
-            print "user id" + str(self.request.user.id)
-            reg_id = GCMDevice.objects.filter(user_id = i.owner_id)
-            print reg_id
-            try:
-                gcm_reg_id= reg_id[0].registration_id
-
-                device = GCMDevice.objects.get(registration_id=gcm_reg_id)
-                try:
-                    device.send_message( str(payload['id']) + " 2")
-                except Exception as e:
-                    print e
-            except Exception as e:
-                print e
-            '''
-
         except Exception as e:
             return Response(e, status=status.HTTP_404_NOT_FOUND)
         return Response("Success", status=status.HTTP_200_OK)
@@ -647,7 +630,7 @@ class CallBackApiView(APIView):
         payload = request.data
         print(payload)
         text_message = str(payload)
-        message(self, "7204680605", text_message)
+        #message(self, "7204680605", text_message)
 
         return Response("Success", status=status.HTTP_200_OK)
 
@@ -737,3 +720,39 @@ class StatusTimeStampViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     queryset = StatusTimeStamp.objects.all()
     serializer_class = StatusTimeStampSerializer
+
+from django.core import serializers
+
+class clothsTypeQantityPrice(APIView):
+
+    def post(self, request, *args, **kw):
+        # setting up the price
+
+        typesMatrix = []
+
+        order = orders.objects.filter(id=request.data['id'])
+        count = 0
+        washandiron = 'type_price_wash_and_iron'
+        clothResult = ClothInfo.objects.filter(order=order[0].id).values('type').annotate(c=Count('type'))
+        typer = Type.objects.all()
+        for i in xrange(0, len(clothResult)):
+            for j in typer:
+                if j.type_id is clothResult[i]['type']:
+                    print j.type_name
+                    print clothResult[i]['c']
+                    if int(order[0].order_type) is 0:
+                        print j.type_price_wash_and_iron
+                        print j.type_price_wash_and_iron * clothResult[i]['c']
+                        typesMatrix.append(({'id':i,'typeName' : j.type_name,'typeQuantity' : clothResult[i]['c']
+                                            ,'typePrice' : j.type_price_wash_and_iron,'total' : j.type_price_wash_and_iron * clothResult[i]['c']}).copy())
+                    elif int(order[0].order_type) is 1:
+                        print j.type_price_wash_and_iron
+                        print j.type_price_wash_and_iron * clothResult[i]['c']
+                    else:
+                        print j.type_price_wash_and_iron
+                        print j.type_price_wash_and_iron * clothResult[i]['c']
+
+        #jsonData = json.dumps([dict(TypeValue=pn) for pn in typesMatrix])
+        jsonData = json.dumps(typesMatrix)
+        return Response(jsonData)
+        #return JsonResponse(jsonData,status=status.HTTP_200_OK)
