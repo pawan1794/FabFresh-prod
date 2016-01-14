@@ -131,7 +131,7 @@ class PlaceOrderShipment(APIView):
         print now
         if now < 20 and now > 8:
             print type(payload['order_details']['order_id'])
-        if now < 24 and now > 24:
+        if now < 22 and now > 9:
 
             if int(payload['order_details']['order_id']) is 0:
                 try:

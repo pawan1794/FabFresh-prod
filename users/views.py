@@ -203,7 +203,7 @@ class CheckAvailabilityApiView(APIView):
 class SignUp(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = SignUpSerializer
-    permission_classes = (IsAuthenticatedOrCreate,)
+    permission_classes = [permissions.AllowAny,]
 
     def create(self, request, *args, **kwargs):
         request.data['username'] = request.data['email']
