@@ -29,6 +29,7 @@ import math
 from django.utils import timezone
 from FabFresh.task import text
 from django.db.models import Count
+from rest_framework.decorators import detail_route, list_route
 
 
 def message(self, phone, message):
@@ -116,6 +117,14 @@ class ordersViewSet(viewsets.ModelViewSet):
                     text.delay(phone, text_message)
 
         return super(ordersViewSet, self).update(request, *args, **kwargs)
+
+    @list_route(methods=['post'], url_path='rating',permission_classes=[permissions.IsAuthenticated])
+    def rating(self, request, pk=None):
+
+        order = orders.objects.get(id = request.data['id'])
+        order.rating = request.data['rating']
+        order.save()
+        return JsonResponse({'status':'ok'}, status = status.HTTP_200_OK)
 
 
 class PlaceOrderShipment(APIView):

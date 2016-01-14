@@ -85,8 +85,12 @@ class orders(models.Model):
     coupon = models.ForeignKey(Coupon, blank=True,null=True)
     afterDiscount = models.FloatField(blank=True, null=True)
 
+    #rating
+    rating = models.FloatField(blank=True,null=True)
+
     delivery_id = models.CharField(max_length=200, blank=True, null=True)
     roadrunner_order_id = models.CharField(max_length=200, blank=True, null=True)
+
 
     def __unicode__(self):
         return unicode(self.id)
