@@ -108,6 +108,5 @@ class NotificationBoard(models.Model):
     description = models.CharField(max_length=200)
     coupon_valid_until_time = models.DateTimeField()
 
-
     def __str__(self):
         return self.title

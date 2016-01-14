@@ -24,7 +24,7 @@ class WalletSerializer(serializers.ModelSerializer):
 class PhoneNumberSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserInfo
-        fields = ('phone',)
+        fields = ('phone','flag')
 
 #Getting address
 class UserProfileSerializer(serializers.ModelSerializer):

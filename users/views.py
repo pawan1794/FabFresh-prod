@@ -25,12 +25,15 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate, login
 from rest_framework.decorators import detail_route, list_route
 from allauth.account.forms import ResetPasswordForm
-
+from django.utils import timezone
 
 class NotificationBoardViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
-    queryset = NotificationBoard.objects.all()
+    #queryset = NotificationBoard.objects.all()
     serializer_class = NotificationBoardSerializer
+
+    def get_queryset(self):
+        return NotificationBoard.objects.filter(coupon_valid_until_time__gt = timezone.now())
 
 
 class AndroidAppVersionViewSet(viewsets.ModelViewSet):
