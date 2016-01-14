@@ -209,7 +209,7 @@ class PlaceOrderShipment(APIView):
 
                         r1 = shadowFax(self, flag, order, payload, userInfo[0].phone)
                         response = Response(r1.json(), status=status.HTTP_200_OK)
-
+                        print "asd"
                         if r1.json()['message'] == 'done successfully':
                             return JsonResponse({"status": "Success"})
                         if flag == 0:
@@ -293,8 +293,8 @@ def shadowFax(self, flag, order, roadPayorder, phone):
 
     payload['order_details']['client_order_id'] = order.id
 
-    payload['customer_details']['name'] = order.owner.username
-    payload['customer_details']['contact_number'] = phone
+    payload['customer_details']['name'] = str(order.owner.username)
+    payload['customer_details']['contact_number'] = str(phone)
     payload['customer_details']['city'] = "Bangalore"
 
     print "amount"
@@ -328,7 +328,7 @@ def shadowFax(self, flag, order, roadPayorder, phone):
             roadPayorder['pickup']['user']['full_address']['geo']['longitude'])
 
     payload['callback_url'] = "http://fabfresh.elasticbeanstalk.com/callback/"
-
+    print payload
     url = 'http://api.shadowfax.in/api/v1/stores/orders/'
     headers = {'Authorization': 'Token 1ed5dc52a5b70f8f0f174e2a6912d0ec975ca956', 'Content-Type': 'application/json'}
     try:
@@ -743,8 +743,7 @@ class clothsTypeQantityPrice(APIView):
                     if int(order[0].order_type) is 0:
                         print j.type_price_wash_and_iron
                         print j.type_price_wash_and_iron * clothResult[i]['c']
-                        typesMatrix.append(({'id':i,'typeName' : j.type_name,'typeQuantity' : clothResult[i]['c']
-                                            ,'typePrice' : j.type_price_wash_and_iron,'total' : j.type_price_wash_and_iron * clothResult[i]['c']}).copy())
+                        typesMatrix.append(({"id":str(i),"typeName" : str(j.type_name),"typeQuantity" : str(j.type_name), "typePrice" : str(j.type_price_wash_and_iron),"total" : str(j.type_price_wash_and_iron * clothResult[i]['c'])}).copy())
                     elif int(order[0].order_type) is 1:
                         print j.type_price_wash_and_iron
                         print j.type_price_wash_and_iron * clothResult[i]['c']
