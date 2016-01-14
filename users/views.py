@@ -33,7 +33,7 @@ class NotificationBoardViewSet(viewsets.ModelViewSet):
     serializer_class = NotificationBoardSerializer
 
     def get_queryset(self):
-        return NotificationBoard.objects.filter(notification_valid_until_time__gt = timezone.now())
+        return NotificationBoard.objects.filter(notification_valid_until_time__gte = timezone.now())
 
 
 class AndroidAppVersionViewSet(viewsets.ModelViewSet):
