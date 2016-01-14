@@ -99,14 +99,15 @@ if User._meta.get_field("username").max_length != MAX_USERNAME_LENGTH():
 
 class AndroidAppVersion(models.Model):
     versionNumber = models.FloatField()
-
+    serverShutdown = models.BooleanField(default=False)
+    serverShutdownReason = models.CharField(max_length=300,null=True)
     def __str__(self):
         return str(self.versionNumber)
 
 class NotificationBoard(models.Model):
     title = models.CharField(max_length=200)
     description = models.CharField(max_length=200)
-    coupon_valid_until_time = models.DateTimeField()
+    notification_valid_until_time = models.DateTimeField()
 
     def __str__(self):
         return self.title

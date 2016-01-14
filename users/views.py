@@ -28,16 +28,17 @@ from allauth.account.forms import ResetPasswordForm
 from django.utils import timezone
 
 class NotificationBoardViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
-    #queryset = NotificationBoard.objects.all()
+    permission_classes = [permissions.AllowAny]
+    http_method_names = ['get',]
     serializer_class = NotificationBoardSerializer
 
     def get_queryset(self):
-        return NotificationBoard.objects.filter(coupon_valid_until_time__gt = timezone.now())
+        return NotificationBoard.objects.filter(notification_valid_until_time__gt = timezone.now())
 
 
 class AndroidAppVersionViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
+    http_method_names = ['get',]
     queryset = AndroidAppVersion.objects.all()
     serializer_class = AndroidAppVersionSerializer
 
