@@ -10,7 +10,7 @@ from rest_framework.response import Response
 import requests
 import json
 from users.models import UserInfo
-from .models import Color, Type, Size, ClothInfo, DriverDetails, Brand, StatusTimeStamp
+from .models import Color, Type, Size, ClothInfo, DriverDetails, Brand, StatusTimeStamp,ClothSplitPrice
 from .serializers import ColorSerializer, \
     TypeSerializer, \
     SizeSerializer, \
@@ -19,7 +19,8 @@ from .serializers import ColorSerializer, \
     ClothsOrdersSerializer, \
     DriverDetailsSerializer, \
     BrandSerializer, \
-    StatusTimeStampSerializer
+    StatusTimeStampSerializer, \
+    ClothSplitPriceSerializer
 from gcm import *
 from push_notifications.models import GCMDevice, APNSDevice
 import datetime
@@ -577,6 +578,8 @@ class setPrice(APIView):
                     if j.type_id is clothResult[i]['type']:
                         if int(order[0].order_type) is 0:
                             count = count + j.type_price_wash_and_iron * clothResult[i]['c']
+                            c = ClothSplitPrice(orders=order[0],typeName=j.type_name,typeQuantity=clothResult[i]['c'],typePrice=j.type_price_wash_and_iron,total=j.type_price_wash_and_iron * clothResult[i]['c'])
+                            c.save()
                         elif int(order[0].order_type) is 1:
                             count = count + j.type_price_wash * clothResult[i]['c']
                         else:
@@ -633,6 +636,16 @@ class CallBackApiView(APIView):
         #message(self, "7204680605", text_message)
 
         return Response("Success", status=status.HTTP_200_OK)
+
+#delete
+class test(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self,request, *args, **kw):
+        print request.data["id"]
+        orderObj = orders.objects.get(id = request.data["id"])
+        result =  ClothSplitPrice.objects.filter(orders = orderObj)
+        return JsonResponse(result,status=status.HTTP_200_OK)
 
 
 class deleteGCM(APIView):
@@ -722,6 +735,8 @@ class StatusTimeStampViewSet(viewsets.ModelViewSet):
     serializer_class = StatusTimeStampSerializer
 
 from django.core import serializers
+from django.http import HttpResponse
+from .models import ClothSplitPrice
 
 class clothsTypeQantityPrice(APIView):
 
@@ -729,8 +744,8 @@ class clothsTypeQantityPrice(APIView):
         # setting up the price
 
         typesMatrix = []
-
         order = orders.objects.filter(id=request.data['id'])
+
         count = 0
         washandiron = 'type_price_wash_and_iron'
         clothResult = ClothInfo.objects.filter(order=order[0].id).values('type').annotate(c=Count('type'))
@@ -743,7 +758,9 @@ class clothsTypeQantityPrice(APIView):
                     if int(order[0].order_type) is 0:
                         print j.type_price_wash_and_iron
                         print j.type_price_wash_and_iron * clothResult[i]['c']
-                        typesMatrix.append(({"id":str(i),"typeName" : str(j.type_name),"typeQuantity" : str(j.type_name), "typePrice" : str(j.type_price_wash_and_iron),"total" : str(j.type_price_wash_and_iron * clothResult[i]['c'])}).copy())
+                        typesMatrix.append({"id":str(i),"typeName" : str(j.type_name),"typeQuantity" : str(j.type_name), "typePrice" : str(j.type_price_wash_and_iron),"total" : str(j.type_price_wash_and_iron * clothResult[i]['c'])})
+                        c = ClothSplitPrice(orders=order[0],typeName=j.type_name,typeQuantity=clothResult[i]['c'],typePrice=j.type_price_wash_and_iron,total=j.type_price_wash_and_iron * clothResult[i]['c'])
+                        c.save()
                     elif int(order[0].order_type) is 1:
                         print j.type_price_wash_and_iron
                         print j.type_price_wash_and_iron * clothResult[i]['c']
@@ -751,7 +768,20 @@ class clothsTypeQantityPrice(APIView):
                         print j.type_price_wash_and_iron
                         print j.type_price_wash_and_iron * clothResult[i]['c']
 
-        #jsonData = json.dumps([dict(TypeValue=pn) for pn in typesMatrix])
         jsonData = json.dumps(typesMatrix)
         return Response(jsonData)
         #return JsonResponse(jsonData,status=status.HTTP_200_OK)
+
+
+class ClothSplitPriceViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.AllowAny]
+    #queryset = ClothSplitPrice.objects.all()
+    serializer_class = ClothSplitPriceSerializer
+
+    def get_queryset(self):
+        #queryset = ClothSplitPrice.objects.all()
+        orderid = self.request.GET.get('id')
+        #orderid = self.request.query_params.get('id', None)
+        orderInstance = orders.objects.get(id=orderid)
+        return ClothSplitPrice.objects.filter(orders = orderInstance)
+

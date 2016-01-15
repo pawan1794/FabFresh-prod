@@ -154,3 +154,11 @@ class ClothInfo(models.Model):
     brand = models.ForeignKey(Brand,null=True)
     gender = models.CharField(max_length=7)
     damage = models.BooleanField(default=False)
+
+
+class ClothSplitPrice(models.Model):
+    orders = models.ForeignKey(orders,related_name='ClothSplitPrice')
+    typeName = models.CharField(max_length=100)
+    typeQuantity = models.IntegerField()
+    typePrice = models.FloatField(max_length=100000,default=0.0, validators=[MinValueValidator(1)])
+    total = models.FloatField(max_length=100000,default=0.0, validators=[MinValueValidator(1)])

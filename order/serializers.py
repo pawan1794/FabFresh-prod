@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import orders, Size,Type, Color,ClothInfo,DriverDetails,Brand, StatusTimeStamp, Coupon
+from .models import orders, Size,Type, Color,ClothInfo,DriverDetails,Brand, \
+    StatusTimeStamp, Coupon, ClothSplitPrice
 
 from django.contrib.auth.models import User
 from users.models import UserProfile
@@ -42,6 +43,10 @@ class ordersSerializer(serializers.ModelSerializer):
                   'p_id', 'special_instructions','ClothInfo','StatusTimeStamp','DriverDetails','coupon','rating')
 
 
+class ClothSplitPriceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ClothSplitPrice
 
 class SizeSerializer(serializers.ModelSerializer):
     class Meta:

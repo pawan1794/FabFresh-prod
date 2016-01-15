@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import orders,DriverDetails,Size, Type, Color, ClothInfo, Brand , StatusTimeStamp, Coupon, CouponType
+from .models import orders,DriverDetails,Size, Type, Color, ClothInfo, Brand , StatusTimeStamp, Coupon, CouponType, ClothSplitPrice
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('owner','id','amount' ,'afterDiscount' ,'coupon', 'quantity' , 'weight' , 'created_at_time','modified_at_time' ,'status', 'special_instructions','p_id')
@@ -39,4 +39,5 @@ admin.site.register(Brand,BrandInfoAdmin)
 admin.site.register(StatusTimeStamp,StatusTimeStampAdmin)
 admin.site.register(Coupon,CouponAdmin)
 admin.site.register(CouponType)
+admin.site.register(ClothSplitPrice)
 admin.site.site_header = 'FabFresh'

@@ -12,6 +12,7 @@ router.register('cloth/cloths',views.ClothViewSet)
 router.register('cloth/info',views.ClothInfoViewSet)
 router.register('drive/info',views.DriverDetailsViewSet)
 router.register('order/status',views.StatusTimeStampViewSet)
+router.register(r'^order/reciept',views.ClothSplitPriceViewSet,base_name='reciept')
 
 urlpatterns = patterns(
     '',
@@ -27,5 +28,5 @@ urlpatterns = patterns(
     url(r'^faq/$', views.Faq.as_view(), name='FaQ'),
     url(r'^deletegcm/$',views.deleteGCM.as_view(),name='deleteGCM'),
     url(r'^coupons/$',views.CouponView.as_view(),name='coupon'),
-    url(r'^clothsAmountQuantity/$',views.clothsTypeQantityPrice.as_view(),name='clothsTypeQantityPrice')
+    url(r'^clothsAmountQuantity/$',views.clothsTypeQantityPrice.as_view(),name='clothsTypeQantityPrice'),
 )
