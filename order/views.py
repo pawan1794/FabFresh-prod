@@ -141,7 +141,7 @@ class PlaceOrderShipment(APIView):
         print now
         if now < 20 and now > 8:
             print type(payload['order_details']['order_id'])
-        if now < 22 and now > 1:
+        if now < 24 and now > 0:
 
             if int(payload['order_details']['order_id']) is 0:
                 try:
@@ -303,7 +303,9 @@ def shadowFax(self, flag, order, roadPayorder, phone):
     if flag == 1:
         # drop
         #FAB002
-        payload['store_code'] = "FAB002"
+        #payload['store_code'] = "FAB002"
+        payload['store_code'] = "fabtest01"
+
         payload['pickup_contact_number'] = "9108014238"
         payload['order_details']['order_value'] = order.amount
         payload['order_details']['paid'] = "true"
@@ -318,7 +320,8 @@ def shadowFax(self, flag, order, roadPayorder, phone):
         # pickup
         #fabtest01
         #FAB001
-        payload['store_code'] = "FAB001"
+        #payload['store_code'] = "FAB001"
+        payload['store_code'] = "fabtest01"
         payload['pickup_contact_number'] = "9108014238"  # Add customer Number
         payload['customer_details']['address_line_1'] = str(roadPayorder['pickup']['user']['full_address']['address'])
         payload['customer_details']['address_line_2'] = str(
@@ -578,13 +581,16 @@ class setPrice(APIView):
                     if j.type_id is clothResult[i]['type']:
                         if int(order[0].order_type) is 0:
                             count = count + j.type_price_wash_and_iron * clothResult[i]['c']
-                            c = ClothSplitPrice(orders=order[0],typeName=j.type_name,typeQuantity=clothResult[i]['c'],typePrice=j.type_price_wash_and_iron,total=j.type_price_wash_and_iron * clothResult[i]['c'])
-                            c.save()
+                            c = ClothSplitPrice(orders=order[0],typeName=j.type_name,typeQuantity=clothResult[i]['c'],typePrice=j.type_price_wash_and_iron,total=j.type_price_wash_and_iron * clothResult[i]['c'],amount=order[0].amount)
+
                         elif int(order[0].order_type) is 1:
                             count = count + j.type_price_wash * clothResult[i]['c']
+                            c = ClothSplitPrice(orders=order[0],typeName=j.type_name,typeQuantity=clothResult[i]['c'],typePrice=j.type_price_wash_and_iron,total=j.type_price_wash_and_iron * clothResult[i]['c'])
+
                         else:
                             count = count + j.type_price_iron * clothResult[i]['c']
-
+                            c = ClothSplitPrice(orders=order[0],typeName=j.type_name,typeQuantity=clothResult[i]['c'],typePrice=j.type_price_wash_and_iron,total=j.type_price_wash_and_iron * clothResult[i]['c'])
+                        c.save()
             order.update(amount=count)
 
             try:
@@ -778,11 +784,21 @@ class ClothSplitPriceViewSet(viewsets.ModelViewSet):
     queryset = ClothSplitPrice.objects.all()
     serializer_class = ClothSplitPriceSerializer
 
-'''
     def get_queryset(self):
         #queryset = ClothSplitPrice.objects.all()
         orderid = self.request.GET.get('id')
         #orderid = self.request.query_params.get('id', None)
         orderInstance = orders.objects.get(id=orderid)
+        c = ClothSplitPrice.objects.filter(orders= orderInstance)
+
+        print orderInstance.afterDiscount
+        if orderInstance.afterDiscount is None:
+            pass
+        else:
+            print c
+            for i in c:
+                i.afterDiscount = orderInstance.afterDiscount
+                i.invoiceid = orderInstance.id
+                i.save()
+
         return ClothSplitPrice.objects.filter(orders = orderInstance)
-    '''

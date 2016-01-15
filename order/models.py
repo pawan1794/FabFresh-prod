@@ -162,3 +162,7 @@ class ClothSplitPrice(models.Model):
     typeQuantity = models.IntegerField()
     typePrice = models.FloatField(max_length=100000,default=0.0, validators=[MinValueValidator(1)])
     total = models.FloatField(max_length=100000,default=0.0, validators=[MinValueValidator(1)])
+    amount = models.FloatField(blank=True, null=True)
+    afterDiscount = models.FloatField(blank=True, null=True)
+    created_at_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    invoiceid = models.IntegerField(blank=True,null=True)
