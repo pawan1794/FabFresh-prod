@@ -585,11 +585,11 @@ class setPrice(APIView):
 
                         elif int(order[0].order_type) is 1:
                             count = count + j.type_price_wash * clothResult[i]['c']
-                            c = ClothSplitPrice(orders=order[0],typeName=j.type_name,typeQuantity=clothResult[i]['c'],typePrice=j.type_price_wash_and_iron,total=j.type_price_wash_and_iron * clothResult[i]['c'])
+                            c = ClothSplitPrice(orders=order[0],typeName=j.type_name,typeQuantity=clothResult[i]['c'],typePrice=j.type_price_wash_and_iron,total=j.type_price_wash_and_iron * clothResult[i]['c'],amount=order[0].amount)
 
                         else:
                             count = count + j.type_price_iron * clothResult[i]['c']
-                            c = ClothSplitPrice(orders=order[0],typeName=j.type_name,typeQuantity=clothResult[i]['c'],typePrice=j.type_price_wash_and_iron,total=j.type_price_wash_and_iron * clothResult[i]['c'])
+                            c = ClothSplitPrice(orders=order[0],typeName=j.type_name,typeQuantity=clothResult[i]['c'],typePrice=j.type_price_wash_and_iron,total=j.type_price_wash_and_iron * clothResult[i]['c'],amount=order[0].amount)
                         c.save()
             order.update(amount=count)
 
