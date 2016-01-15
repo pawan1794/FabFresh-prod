@@ -113,7 +113,7 @@ class ordersViewSet(viewsets.ModelViewSet):
                 print "asd"
                 if int(request.data['status']) is 10:
                     text_message = "Dear " + str(
-                        owner) + " , Your Order is packed and Ready for Delivery . Please Select Deliver Now in the app to get it at your doorstep. "
+                        owner) + " , Your Order is packed and Ready for Delivery . Please Select Deliver Now in the app's My Order Page to get it at your doorstep. "
                     # message(self,phone, text_message)
                     text.delay(phone, text_message)
 
@@ -141,7 +141,7 @@ class PlaceOrderShipment(APIView):
         print now
         if now < 20 and now > 8:
             print type(payload['order_details']['order_id'])
-        if now < 24 and now > 0:
+        if now < 24 and now > -1:
 
             if int(payload['order_details']['order_id']) is 0:
                 try:
