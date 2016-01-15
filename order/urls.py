@@ -12,7 +12,7 @@ router.register('cloth/cloths',views.ClothViewSet)
 router.register('cloth/info',views.ClothInfoViewSet)
 router.register('drive/info',views.DriverDetailsViewSet)
 router.register('order/status',views.StatusTimeStampViewSet)
-router.register(r'^order/reciept',views.ClothSplitPriceViewSet,base_name='reciept')
+router.register(r'^order/reciept',views.ClothSplitPriceViewSet)
 
 urlpatterns = patterns(
     '',

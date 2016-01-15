@@ -774,14 +774,15 @@ class clothsTypeQantityPrice(APIView):
 
 
 class ClothSplitPriceViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.AllowAny]
-    #queryset = ClothSplitPrice.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = ClothSplitPrice.objects.all()
     serializer_class = ClothSplitPriceSerializer
 
+'''
     def get_queryset(self):
         #queryset = ClothSplitPrice.objects.all()
         orderid = self.request.GET.get('id')
         #orderid = self.request.query_params.get('id', None)
         orderInstance = orders.objects.get(id=orderid)
         return ClothSplitPrice.objects.filter(orders = orderInstance)
-
+    '''
