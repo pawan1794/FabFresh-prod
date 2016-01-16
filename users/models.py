@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class UserInfo(models.Model):
     owner = models.OneToOneField('auth.User', related_name='UserInfo')
-    phone = models.CharField(max_length=10)
+    phone = models.CharField(max_length=10,unique=True)
     otp = models.IntegerField(blank=True,null=True)
     flag = models.BooleanField(default=False)
     def __unicode__(self):
