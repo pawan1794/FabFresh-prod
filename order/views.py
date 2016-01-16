@@ -179,14 +179,13 @@ class PlaceOrderShipment(APIView):
                 payload['pickup']['user']['full_address']['city']['name'] = "Bangalore"
                 payload['pickup']['user']['full_address']['geo']['latitude'] = "12.943834"
                 payload['pickup']['user']['full_address']['geo']['longitude'] = "77.623928"
-                '''
-                if order.afterDiscount is not None:
 
-                    payload['order_details']['order_items']['price'] = order.amount
+                if order.afterDiscount is None:
+                    payload['order_details']['order_value'] = str(order.amount)
                 else:
-                    payload['order_details']['order_items']['price'] = order.afterDiscount
+                    payload['order_details']['order_value'] = str(order.afterDiscount)
 
-                '''
+
             if flag == 0:  # for pickup from customer
                 payload['drop']['user']['name'] = "FabFresh"
                 payload['drop']['user']['phone_no'] = "9108014238"
@@ -286,7 +285,7 @@ def shadowFax(self, flag, order, roadPayorder, phone):
         "order_details": {
             "client_order_id": "01",
             "order_value": 10,
-            "paid": "true"
+            "paid": "false"
 
         },
         "customer_details": {
@@ -323,6 +322,8 @@ def shadowFax(self, flag, order, roadPayorder, phone):
         payload['customer_details']['latitude'] = float(roadPayorder['drop']['user']['full_address']['geo']['latitude'])
         payload['customer_details']['longitude'] = float(
             roadPayorder['drop']['user']['full_address']['geo']['longitude'])
+
+        payload['order_details']['order_value'] = roadPayorder['order_details']['order_value']
 
     if flag == 0:
         # pickup
