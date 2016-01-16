@@ -111,7 +111,7 @@ class ordersViewSet(viewsets.ModelViewSet):
                                                   , timestamp=timezone.now())
                 statusTimeStamp.save()
                 print "asd"
-                if int(request.data['status']) is 10:
+                if int(request.data['status']) is 11:
                     text_message = "Dear " + str(
                         owner) + " , Your Order is packed and Ready for Delivery . Please Select Deliver Now in the app's My Order Page to get it at your doorstep. "
                     # message(self,phone, text_message)
