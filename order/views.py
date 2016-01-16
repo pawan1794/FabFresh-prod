@@ -179,6 +179,14 @@ class PlaceOrderShipment(APIView):
                 payload['pickup']['user']['full_address']['city']['name'] = "Bangalore"
                 payload['pickup']['user']['full_address']['geo']['latitude'] = "12.943834"
                 payload['pickup']['user']['full_address']['geo']['longitude'] = "77.623928"
+                '''
+                if order.afterDiscount is not None:
+
+                    payload['order_details']['order_items']['price'] = order.amount
+                else:
+                    payload['order_details']['order_items']['price'] = order.afterDiscount
+
+                '''
             if flag == 0:  # for pickup from customer
                 payload['drop']['user']['name'] = "FabFresh"
                 payload['drop']['user']['phone_no'] = "9108014238"
