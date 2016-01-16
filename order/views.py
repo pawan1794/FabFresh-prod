@@ -141,7 +141,7 @@ class PlaceOrderShipment(APIView):
         print now
         if now < 20 and now > 8:
             print type(payload['order_details']['order_id'])
-        if now < 24 and now > -1:
+        if now < 22 and now > 9:
 
             if int(payload['order_details']['order_id']) is 0:
                 try:
@@ -303,8 +303,8 @@ def shadowFax(self, flag, order, roadPayorder, phone):
     if flag == 1:
         # drop
         #FAB002
-        #payload['store_code'] = "FAB002"
-        payload['store_code'] = "fabtest01"
+        payload['store_code'] = "FAB002"
+        #payload['store_code'] = "fabtest01"
 
         payload['pickup_contact_number'] = "9108014238"
         payload['order_details']['order_value'] = order.amount
@@ -320,8 +320,8 @@ def shadowFax(self, flag, order, roadPayorder, phone):
         # pickup
         #fabtest01
         #FAB001
-        #payload['store_code'] = "FAB001"
-        payload['store_code'] = "fabtest01"
+        payload['store_code'] = "FAB001"
+        #payload['store_code'] = "fabtest01"
         payload['pickup_contact_number'] = "9108014238"  # Add customer Number
         payload['customer_details']['address_line_1'] = str(roadPayorder['pickup']['user']['full_address']['address'])
         payload['customer_details']['address_line_2'] = str(
