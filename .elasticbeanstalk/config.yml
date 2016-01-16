@@ -2,7 +2,7 @@ branch-defaults:
   dev:
     environment: FabFresh
   master:
-    environment: FabFresh-dev
+    environment: FabFresh
 global:
   application_name: My First Elastic Beanstalk Application
   default_ec2_keyname: rabbitmq-fabfresh
