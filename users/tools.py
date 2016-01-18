@@ -50,6 +50,17 @@ def get_token_json(access_token, a, number,user,email):
         logger.info("New User " + str(user) + " has registered with fabfresh" )
         return JsonResponse(token)
     else:
+        if number:
+            u = User.objects.get(id = user.id)
+            up = UserInfo.objects.get(owner = u.id)
+            if up.phone is not int(number):
+                up.phone = number
+                otp = random.randint(10000,1000000)
+                OTP_text_message = "OTP:"+ str(otp) + ". Use the above OTP to verify you mobile number on FabFresh"
+                message(number,OTP_text_message)
+                up.otp = otp
+                up.save()
+
         token1 = {
         'access_token': access_token.token,
         'expires_in': oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS,
