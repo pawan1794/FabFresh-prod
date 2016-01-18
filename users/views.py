@@ -183,16 +183,13 @@ def register_by_access_token(request, backend):
     phone = request.GET.get('phone')
     email = request.GET.get('email')
 
-    data  = "Phone number already registered"
 
-    if UserInfo.objects.filter(phone = phone,flag = True).count() :
-        print "Here"
-        return JsonResponse({'status':data}, status = status.HTTP_200_OK)
 
-    data = "Email already taken"
-    print User.objects.filter(email = str(email)).count()
-    if User.objects.filter(email = email).count() :
-        print "Here"
+    if User.objects.filter(username = email).count() :
+        data  = "Phone number already registered"
+        if UserInfo.objects.filter(phone = phone,flag = True).count() :
+            return JsonResponse({'status':data}, status = status.HTTP_200_OK)
+        data = "Email already taken"
         return JsonResponse({'status':data}, status = status.HTTP_200_OK)
 
 
