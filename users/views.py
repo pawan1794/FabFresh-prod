@@ -184,8 +184,17 @@ def register_by_access_token(request, backend):
     email = request.GET.get('email')
 
     data  = "Phone number already registered"
+
     if UserInfo.objects.filter(phone = phone,flag = True).count() :
+        print "Here"
         return JsonResponse({'status':data}, status = status.HTTP_200_OK)
+
+    data = "Email already taken"
+    print User.objects.filter(email = str(email)).count()
+    if User.objects.filter(email = email).count() :
+        print "Here"
+        return JsonResponse({'status':data}, status = status.HTTP_200_OK)
+
 
     try:
         user = request.backend.do_auth(token)
@@ -229,8 +238,10 @@ class SignUp(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         request.data['username'] = request.data['email']
         serializer = self.get_serializer(data=request.data)
-        print UserInfo.objects.filter(phone= request.data['phone'],flag = True)
+        print request.data['phone']
+        print UserInfo.objects.filter(phone= int(request.data['phone']),flag = True)
         data  = "Phone number already registered"
+        print UserInfo.objects.filter(phone = request.data['phone'],flag = True).count()
         if UserInfo.objects.filter(phone = request.data['phone'],flag = True).count() :
             return JsonResponse({'status':data}, status = status.HTTP_200_OK)
 
