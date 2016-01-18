@@ -143,6 +143,7 @@ class otpVerification(APIView):
             "Status" : code
         }
         return Response(payload, status=status.HTTP_200_OK)
+
 import random
 from .tools import message
 
@@ -181,6 +182,10 @@ def register_by_access_token(request, backend):
     token = request.GET.get('access_token')
     phone = request.GET.get('phone')
     email = request.GET.get('email')
+
+    data  = "Phone number already registered"
+    if UserInfo.objects.filter(phone = phone,flag = True).count() :
+        return JsonResponse({'status':data}, status = status.HTTP_200_OK)
 
     try:
         user = request.backend.do_auth(token)
