@@ -59,6 +59,7 @@ def get_token_json(access_token, a, number,user,email):
                 OTP_text_message = "OTP:"+ str(otp) + ". Use the above OTP to verify you mobile number on FabFresh"
                 message(number,OTP_text_message)
                 up.otp = otp
+                up.flag = False
                 up.save()
 
         token1 = {
