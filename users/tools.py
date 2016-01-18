@@ -56,8 +56,8 @@ def get_token_json(access_token, a, number,user,email):
             if up.phone is not int(number):
                 up.phone = number
                 data  = "Phone number already registered"
-                print UserInfo.objects.filter(phone = number,flag = True).count()
-                if UserInfo.objects.filter(phone = number,flag = True).count() :
+                print UserInfo.objects.filter(phone = int(number),flag = True).count()
+                if UserInfo.objects.filter(phone = int(number),flag = True).count() > 1:
                     return JsonResponse({'status':data})
 
                 otp = random.randint(10000,1000000)
