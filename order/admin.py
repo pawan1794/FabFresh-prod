@@ -28,6 +28,8 @@ class StatusTimeStampAdmin(admin.ModelAdmin):
 
 class CouponAdmin(admin.ModelAdmin):
     list_display = ('coupon_tag','coupon_created_at_time','coupon_valid_until_time','coupon_value_type','coupon_value','coupon_coupon_type','coupon_valid_flag')
+    list_filter = ['coupon_valid_until_time', 'coupon_value_type' ]
+    search_fields = ['coupon_value']
 
 class ClothSplitPriceAdmin(admin.ModelAdmin):
     list_display = ('orders','typeName','typeQuantity','typePrice','total','amount','afterDiscount','created_at_time')

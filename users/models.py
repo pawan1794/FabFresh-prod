@@ -5,6 +5,25 @@ from users import MAX_USERNAME_LENGTH, REQUIRE_UNIQUE_EMAIL
 from django.core.validators import MaxLengthValidator
 from django.utils.translation import ugettext_lazy as _
 
+class Car(models.Model):
+    name = models.CharField(max_length='80')
+    num = models.IntegerField()
+
+    def  __str__(self):
+        return self.name
+
+class Vehical(models.Model):
+    mp = models.ForeignKey(Car)
+    capacity = models.IntegerField()
+    def __str__(self):
+        return str(self.capacity)
+
+
+class AllInOne(models.Model):
+    abc = models.IntegerField()
+    def __str__(self):
+        return str(self.abc)
+
 class UserInfo(models.Model):
     owner = models.OneToOneField('auth.User', related_name='UserInfo')
     phone = models.CharField(max_length=10)
@@ -15,7 +34,7 @@ class UserInfo(models.Model):
 
 class Wallet(models.Model):
     owner = models.OneToOneField('auth.User' , related_name='Wallet')
-    wallet = models.FloatField(max_length=1000000,default=0)
+    wallet = models.FloatField('money', max_length=1000000,default=0)
 
 def create_user_Info(sender, instance, created, **kwargs):
     if created:

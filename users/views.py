@@ -15,8 +15,8 @@ from rest_framework import status
 from rest_framework.authentication import BasicAuthentication
 
 from django.contrib.auth.models import User
-from .serializers import UserSerializer,UserInfoSerializer, UserProfileSerializer, PostalCodeSerializer, SignUpSerializer, LoginSerializer, ChangePasswordSerializer,AndroidAppVersionSerializer, NotificationBoardSerializer
-from .models import UserInfo, UserProfile, PostalCode, AndroidAppVersion, NotificationBoard
+from .serializers import UserSerializer,UserInfoSerializer,AllInOneSeriallizer, UserProfileSerializer, PostalCodeSerializer, SignUpSerializer, LoginSerializer, ChangePasswordSerializer,AndroidAppVersionSerializer, NotificationBoardSerializer
+from .models import UserInfo, UserProfile, PostalCode, AndroidAppVersion, NotificationBoard, AllInOne
 from rest_framework import viewsets
 from .permission import IsOwnerOrReadOnly, IsAuthenticatedOrCreate
 from django.conf import settings
@@ -26,6 +26,12 @@ from django.contrib.auth import authenticate, login
 from rest_framework.decorators import detail_route, list_route
 from allauth.account.forms import ResetPasswordForm
 from django.utils import timezone
+
+class AllInOneViewSet(viewsets.ModelViewSet):
+    queryset = AllInOne.objects.all()
+   # permission_classes = [permissions.AllowAny]
+    #http_method_names = ['get',]
+    serializer_class = AllInOneSeriallizer
 
 class NotificationBoardViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]

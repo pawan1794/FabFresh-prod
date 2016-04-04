@@ -1,10 +1,13 @@
 from rest_framework import serializers
-from .models import UserInfo, UserProfile,PostalCode, Wallet, AndroidAppVersion, NotificationBoard #, Locality, Address, City
+from .models import UserInfo, UserProfile,PostalCode, Wallet, AndroidAppVersion, NotificationBoard, AllInOne #, Locality, Address, City
 from django.contrib.auth.models import User
 from order.models import orders
 from oauth2_provider.models import AccessToken, RefreshToken
 from django.utils import timezone
 
+class AllInOneSeriallizer(serializers.ModelSerializer):
+    class Meta:
+        model = AllInOne
 
 class PostalCodeSerializer(serializers.ModelSerializer):
     class Meta:
